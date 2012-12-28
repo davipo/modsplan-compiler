@@ -24,7 +24,8 @@ nextarg => ',' arg
 arg => nonterm
 arg => terminal
 
-nonterm => qualident index?
+### nonterm => qualident index?
+nonterm => identifier   ### simpler for testing
 
 qualident => identifier qualifier?
 
