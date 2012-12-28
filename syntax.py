@@ -114,8 +114,11 @@ class SyntaxParser:
                 print tkn
             print
         if 'r' in debug:
-            print 'Reassembled source from tokens:'
+            print '\nReassembled source from tokens:'
             print tokenize.reassemble(tokens)
+            print
+        print
+            
         # Start at syntax root, find terminals matching tokens of source file.
         # Build parse tree depth-first, climbing syntax to classify nodes.
         nonterm = self.syntax.root
