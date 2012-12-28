@@ -13,7 +13,7 @@ item => definition
 
 endline => COMMENT? NEWLINE
 
-definition => signature endline instructions? NEWLINE
+definition => signature endline instructions NEWLINE
 
 signature => nonterm '(' arglist? ')'
 signature => terminal '(' STRING ')' 	# matches when terminal text = string
@@ -39,9 +39,9 @@ identifier => LNAME 		# lowercase letters only
 terminal => UPPERNAME 		# uppercase letters and '_'
 
 
-instructions => INDENT instruction+ NEWLINE? DEDENT
+instructions => INDENT instruction+ DEDENT
 
-instruction => COMMENT NEWLINE
+instruction => endline
 instruction => directive endline
 instruction => operation endline
 instruction => label ':' endline
