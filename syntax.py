@@ -151,12 +151,12 @@ class SyntaxParser:
             self.expected = None
             for ia, alt in enumerate(nonterm.alternates):
                 if '3' in debug:
-                    print node.indent(1) + '%s %s: %s' % (nonterm, ia, alt)
+                    print node.indent(1) + '%s %s => %s' % (nonterm, ia, alt)
                 if self.inprefixes(token, alt.prefixes):    # this alternate may match
                     self.expected = None
                     numtokens = self.parse_alt(tokens, alt, node)
                     if not self.expected:       # success
-                        print node.indent(1) + '%s %d: %s' % ( nonterm, ia,
+                        print node.indent(1) + '%s %d = %s' % ( nonterm, ia,
                                                             listtokens(tokens[:numtokens]) )
                         break
             else:
@@ -229,7 +229,7 @@ class SyntaxParser:
         
         
 def listtokens(tokens):
-    return '[' + ' '.join(map(str, tokens)) + ']'
+    return ' '.join(map(str, tokens))
 
 
 #### use in pdb with alias v scalars(locals()) ?
