@@ -15,11 +15,17 @@ Token_t = namedtuple('Token', 'name, text, linenum, column')
 """
 
 class Token(Token_t):
+
     def __str__(self):
+        """ If no text, return name. If no name, return quoted text.
+            If both, return name(text)."""
         if self.name:
-            return self.name + '(' + self.text + ')'
+            result = self.name
+            if self.text:
+                result += '(' + self.text + ')'
         else:
-            return "'" + self.text + "'"
+            result = "'" + self.text + "'"
+        return result
 
 
 class TokenGrammar(grammar.Grammar):
