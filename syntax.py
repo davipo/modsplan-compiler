@@ -145,24 +145,23 @@ class SyntaxParser:
         # Prefixes checked here
         numtokens = 0           # number of tokens matching syntax
         token = tokens[0]
-        if '3' in debug:
-            print '\n' + node.indent() + 'parse %s with token %s' % (nonterm, token)
-        if self.inprefixes(token, nonterm.prefixes):    # nonterm is possible
-            self.expected = None
-            for ia, alt in enumerate(nonterm.alternates):
-                if '3' in debug:
-                    print node.indent(1) + '%s %s => %s' % (nonterm, ia, alt)
-                if self.inprefixes(token, alt.prefixes):    # this alternate may match
-                    self.expected = None
-                    numtokens = self.parse_alt(tokens, alt, node)
-                    if not self.expected:       # success
-                        print node.indent(1) + '%s %d = %s' % ( nonterm, ia,
-                                                            listtokens(tokens[:numtokens]) )
-                        break
-            else:
-                self.expected = nonterm     # no alternate parsed successfully
+        log(3, 'parse %s with token %s' % (nonterm, token), node, level=0)
+        if not self.inprefixes(token, nonterm.prefixes):
+            self.expected = nonterm     # fail, nonterm not possible with token
         else:
-            self.expected = nonterm     # fail, token not a prefix
+            # token must be in prefixes of some alternate
+            for ia, alt in enumerate(nonterm.alternates):
+                log(3, '%s %s => %s' % (nonterm, ia, alt), node)
+                if self.inprefixes(token, alt.prefixes):    # this alternate may match
+                    self.expected = None        # forget previous failures
+                    numtokens = self.parse_alt(tokens, alt, node)
+                    if not self.expected:
+                        log(4, '%s %d: %s' % (nonterm, ia, 
+                                                listtokens(tokens[:numtokens])), node)
+                        break       # success
+        if self.expected:
+            log(4, '%s failed: expected %s, saw %s' % (nonterm,
+                                                    self.expected, tokens[numtokens]), node)
         return numtokens
 
 
@@ -177,8 +176,6 @@ class SyntaxParser:
             Return number of tokens parsed. Quantifiers handled here.
         """
         numtokens = 0           # number of tokens matching syntax
-#         if '3' in debug:
-#             print '  ' * (node.level + 1),
         for item in alternate.items:
             nt = self.parse_item(tokens[numtokens:], item, node)
             if self.expected:               # wrong item
@@ -220,16 +217,20 @@ class SyntaxParser:
         else:   # nonterminal
             nonterm = self.syntax.nonterms[item.text()]
             nonterm_node = ParseNode(nonterm.name, level=node.level + 1)
+            log(3, '', node)    # blank line
             numtokens = self.parse_nonterm(tokens, nonterm, nonterm_node)
             if not self.expected:       # success
                 node.add_child(nonterm_node)
-                if '5' in debug:
-                    print node.indent(1) + listtokens(tokens[:numtokens]) + str(item)
         return numtokens
         
         
 def listtokens(tokens):
     return ' '.join(map(str, tokens))
+
+
+def log(msgtype, message, node, level=1):
+    if str(msgtype) in debug:
+        print node.indent(level) + message
 
 
 #### use in pdb with alias v scalars(locals()) ?
