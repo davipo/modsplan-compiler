@@ -13,7 +13,7 @@ defn => definition
 
 endline => COMMENT? NEWLINE
 
-definition => signature endline instructions NEWLINE
+definition => signature endline instructions
 
 signature => nonterm '(' arglist? ')'
 signature => terminal '(' STRING ')' 	# matches when terminal text = string
