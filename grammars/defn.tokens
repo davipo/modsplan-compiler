@@ -1,0 +1,35 @@
+# defn.tokens
+# This is the token specification for .defn files.
+
+# Created September 2011.
+# Copyright (c) 2011 David H. Post. All rights reserved.
+
+
+# All characters not recognized become single-character tokens.
+# A single uppercase letter denotes a character class; see base.metagrammar.
+
+
+LNAME => L+
+
+UPPERNAME => upper+
+
+upper => U
+upper => '_'
+
+DIGIT => digit
+
+INTEGER => digits
+
+digits => digit+
+
+digit => D		# digit character class, matches any digit
+
+
+STRING => '"' P* '"'
+STRING => "'" P* "'"
+
+COMMENT => '#' P*
+
+# P* = any printable characters, must be followed by terminal or end of line.
+# (P may be used only with *)
+# (See base.metagrammar)

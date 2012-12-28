@@ -1,0 +1,54 @@
+# Modsplan small.syntax
+# (A small base language)
+
+
+module.root => block
+
+block => line*
+
+line => endline
+line => statement
+
+endline => COMMENT? NEWLINE
+
+statement => declaration endline
+statement => assignment endline
+statement => if
+
+declaration => 'declare' attributes? variable
+
+attributes => 'external'
+
+
+assignment => designator ASSIGN test
+
+designator => variable
+
+
+if => 'if' test ':' endline suite
+
+suite => INDENT block DEDENT
+
+
+test => comparison
+
+comparison => expr
+
+expr => term ADD_OP term
+expr => term
+
+term => factor
+
+factor => atom
+
+atom => variable
+atom => literal
+
+
+variable => identifier
+
+identifier => NAME
+
+literal => number
+
+number => INTEGER

@@ -1,0 +1,39 @@
+# Modsplan small.defn
+# Small sample defn file
+
+
+declaration(attributes, variable)
+	# provides for external functions (for I/O, etc.) and variables
+	.addsymbol(variable, attributes)
+
+
+assignment(designator, ASSIGN, test)
+	&designator
+	&test
+	&ASSIGN
+	
+ASSIGN('=')
+	store
+	
+ASSIGN('+=')
+	add_in_place
+
+
+if(test, suite)
+	&test
+	branch if_true, if_false
+	if_true:
+		&suite
+	if_false:
+
+
+ADD_OP('+')
+    add
+
+
+identifier(NAME)
+	.getsymbol(NAME) 		# compile error if NAME undefined
+	
+
+number(INTEGER)
+	const INTEGER

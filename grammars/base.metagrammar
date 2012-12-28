@@ -1,0 +1,59 @@
+# base.metagrammar: base syntax for Modsplan grammars
+
+# This is also the metagrammar for itself!
+
+# Specify spacing between terminals?
+# Handle blank lines explicitly?
+
+
+grammar => preface body
+
+preface => preface_line*
+
+preface_line => comment
+preface_line => import
+
+import => 'use' filename comma_filename*
+
+comma_filename => ',' filename
+
+filename => identifier
+
+body => body_line*
+
+body_line => production? comment? "\n"
+
+comment => "#" P*
+
+production => nonterminal "=>" alternate
+
+nonterminal => nonterm
+
+nonterm => identifier
+
+identifier => L+
+
+alternate => word+
+
+word => item repeatflag
+
+repeatflag => "*" 			# zero or more
+repeatflag => "+" 			# one or more
+repeatflag => "?" 			# zero or one
+
+item => nonterm 
+item => literal
+item => charclass
+
+literal => "'" P* "'" 		# terminal
+literal => '"' P* '"' 		# terminal
+
+charclass => U 				# terminal
+
+# Character classes are represented by a single uppercase letter:
+# U => any upper case letter
+# L => any lower case letter
+# D => any digit
+#
+# P* = any printable characters, must be followed by terminal or end of line.
+# (P may be used only with *)

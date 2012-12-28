@@ -1,0 +1,79 @@
+# defn.syntax
+# This is the syntax for .defn specifications.
+
+# Created September 2011.
+# Copyright (c) 2011 David H. Post. All rights reserved.
+
+
+
+defn_file.root => item*
+
+item => endline
+item => definition
+
+endline => COMMENT? NEWLINE
+
+definition => signature endline instructions? NEWLINE
+
+signature => nonterm '(' arglist? ')'
+signature => terminal '(' STRING ')' 	# matches when terminal text = string
+
+arglist => arg nextarg*
+nextarg => ',' arg
+
+arg => nonterm
+arg => terminal
+
+nonterm => qualident index?
+
+qualident => identifier qualifier?
+
+qualifier => '_' subtype
+
+subtype => identifier
+
+index => DIGIT 				# to distinguish multiple instances
+
+identifier => LNAME 		# lowercase letters only
+
+terminal => UPPERNAME 		# uppercase letters and '_'
+
+
+instructions => INDENT instruction+ NEWLINE? DEDENT
+
+instruction => COMMENT NEWLINE
+instruction => directive endline
+instruction => operation endline
+instruction => label ':' endline
+
+label => qualident
+
+directive => '.' identifier '(' cargs? ')' 		# compiler directive
+directive => '&' arg 							# expand arg
+directive => '=' signature						# rewrite
+
+# use '=' also for expand?
+# directive => '=' arg 							# expand arg
+
+cargs => carg next_carg
+next_carg => ',' carg
+
+carg => nonterm
+carg => terminal
+carg => constant
+
+
+operation => identifier iargs?
+
+iargs => iarg next_iarg?
+next_iarg => ',' iarg
+
+iarg => constant
+iarg => label
+iarg => terminal 			# substitutes text of terminal
+iarg => directive
+
+constant => number
+constant => STRING
+
+number => INTEGER
