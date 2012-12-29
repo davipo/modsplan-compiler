@@ -153,14 +153,13 @@ class SyntaxParser:
             self.expected = nonterm     # fail, nonterm not possible with token
         else:
             # token must be in prefixes of some alternate
-            for ia, alt in enumerate(nonterm.alternates):
-                log(3, '%s %s => %s' % (nonterm, ia, alt), node)
+            for alt in nonterm.alternates:
+                log(3, '%s => %s' % (nonterm, alt), node)
                 if self.inprefixes(token, alt.prefixes):    # this alternate may match
                     self.expected = None        # forget previous failures
                     numtokens = self.parse_alt(tokens, alt, node)
                     if not self.expected:
-                        log(4, '%s %d: %s' % (nonterm, ia, 
-                                                listtokens(tokens[:numtokens])), node)
+                        log(4, '%s: %s' % (nonterm, listtokens(tokens[:numtokens])), node)
                         break       # success
         if self.expected:
             log(4, '%s failed: expected %s, saw %s' % (nonterm,
