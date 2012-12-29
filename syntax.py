@@ -148,14 +148,14 @@ class SyntaxParser:
         # Prefixes checked here
         numtokens = 0           # number of tokens matching syntax
         token = tokens[0]
-        log(3, 'parse %s with token %s' % (nonterm, token), node, level=0)
+        log(3, token)
         if not self.inprefixes(token, nonterm.prefixes):
             self.expected = nonterm     # fail, nonterm not possible with token
         else:
             # token must be in prefixes of some alternate
             for alt in nonterm.alternates:
-                log(3, '%s => %s' % (nonterm, alt), node)
                 if self.inprefixes(token, alt.prefixes):    # this alternate may match
+                    log(3, '%s => %s' % (nonterm, alt), node)
                     self.expected = None        # forget previous failures
                     numtokens = self.parse_alt(tokens, alt, node)
                     if not self.expected:
@@ -219,7 +219,7 @@ class SyntaxParser:
         else:   # nonterminal
             nonterm = self.syntax.nonterms[item.text()]
             nonterm_node = ParseNode(nonterm.name, level=node.level + 1)
-            log(3, '', node)    # blank line
+#             log(3, '')    # blank line
             numtokens = self.parse_nonterm(tokens, nonterm, nonterm_node)
             if not self.expected:       # success
                 node.add_child(nonterm_node)
@@ -230,9 +230,10 @@ def listtokens(tokens):
     return ' '.join(map(str, tokens))
 
 
-def log(msgtype, message, node, level=1):
+def log(msgtype, message, node=None):
     if str(msgtype) in debug:
-        print node.indent(level) + message
+        indent = node.indent() if node else ''
+        print indent + str(message)
 
 
 #### use in pdb with alias v scalars(locals()) ?
@@ -263,11 +264,11 @@ if __name__ == '__main__':
     src = 'sample.lang'
     src = 'snape.lang'
     src = 'sample source/' + src
-#     tree = test(src, 'L0')
+    tree = test(src, 'L0')
 
     src = 'grammars/smaller.defn'
 #     src = 'grammars/assign.defn'
-    tree = test(src, 'defn')
+#     tree = test(src, 'defn')
     
     if 't' in debug:
         print '\n\nTree:\n'
