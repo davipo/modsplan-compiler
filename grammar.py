@@ -22,11 +22,10 @@ class Nonterminal:
         return self.name
     
     def show(self):
+        """ Return string showing name with list of alternates."""
         result = self.name + ': '
         indent = ' ' * len(result)
-        for alt in self.alternates:
-            result += str(alt) + '\n' + indent
-        return result
+        return result + ('\n' + indent).join(map(str, self.alternates)) + '\n'
 
     def find_prefixes(self, nonterms):
         """ Compute set of all possible first terminals generated from this Nonterminal,
@@ -51,10 +50,7 @@ class Alternate:
         self.flags = flags          # list of attribute strings
     
     def __str__(self):
-        result = ''
-        for item in self.items:
-            result += str(item) + ' '
-        return result
+        return ' '.join(map(str, self.items))
     
     def find_prefixes(self, nonterms):
         """ Compute set of all possible first terminals generated from this Alternate,
