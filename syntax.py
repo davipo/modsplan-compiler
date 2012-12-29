@@ -116,18 +116,19 @@ class SyntaxParser:
         if 'r' in debug:
             print '\nReassembled source from tokens:'
             print tokenize.reassemble(tokens)
-            print
-        print
             
         # Start at syntax root, find terminals matching tokens of source file.
         # Build parse tree depth-first, climbing syntax to classify nodes.
         nonterm = self.syntax.root
         parse_tree = ParseNode(nonterm.name)        # root of parse tree
-        numtokens = self.parse_nonterm(tokens, nonterm, parse_tree)
-        print '\n\nParsed %d tokens of %d total.' % (numtokens, len(tokens))
-        if numtokens < len(tokens):
-            token = tokens[numtokens]
-            self.syntax_error(token, self.expected)
+        if tokens:
+            log(3, '\nParse trace:\n')
+            log(3, tokens[0])
+            numtokens = self.parse_nonterm(tokens, nonterm, parse_tree)
+            print '\n\nParsed %d tokens of %d total.' % (numtokens, len(tokens))
+            if numtokens < len(tokens):
+                token = tokens[numtokens]
+                self.syntax_error(token, self.expected)
         return parse_tree
 
 
@@ -148,7 +149,6 @@ class SyntaxParser:
         # Prefixes checked here
         numtokens = 0           # number of tokens matching syntax
         token = tokens[0]
-        log(3, token)
         if not self.inprefixes(token, nonterm.prefixes):
             self.expected = nonterm     # fail, nonterm not possible with token
         else:
@@ -162,8 +162,7 @@ class SyntaxParser:
                         log(4, '%s: %s' % (nonterm, listtokens(tokens[:numtokens])), node)
                         break       # success
         if self.expected:
-            log(4, '%s failed: expected %s, saw %s' % (nonterm,
-                                                    self.expected, tokens[numtokens]), node)
+            log(4, '%s failed: expected %s' % (nonterm, self.expected), node)
         return numtokens
 
 
@@ -214,12 +213,13 @@ class SyntaxParser:
                     numtokens = 1
                     if token.text:          # don't output NEWLINE, INDENT, DEDENT
                         node.add_child(ParseNode(token.name, token.text))
-            if numtokens == 0:
+            if numtokens == 1:
+                log(3, tokens[1] if len(tokens) > 1 else '')    # display next token if any
+            else:
                 self.expected = item    # item not found
         else:   # nonterminal
             nonterm = self.syntax.nonterms[item.text()]
             nonterm_node = ParseNode(nonterm.name, level=node.level + 1)
-#             log(3, '')    # blank line
             numtokens = self.parse_nonterm(tokens, nonterm, nonterm_node)
             if not self.expected:       # success
                 node.add_child(nonterm_node)
