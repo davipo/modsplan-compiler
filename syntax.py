@@ -248,8 +248,8 @@ parser = None
 def test(source, grammar):
     global parser
     parser = SyntaxParser('grammars/' + grammar)
+    print 'Syntax loaded from ' + parser.syntax.filename
     if 's' in debug:
-        print 'Syntax loaded from ' + parser.syntax.filename
         parser.syntax.show()
     if 'p' in debug:
         print parser.syntax.show_prefixes()
