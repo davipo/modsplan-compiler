@@ -60,9 +60,9 @@ class ParseNode:
             grammar.Error().msg('Cannot add child (%s) to terminal node (%s)' %
                                 (child, self))
 
-#     def remove_children(self):
-#         self.content = list()
-#     
+    def remove_children(self):
+        self.content = list()
+    
 #     def has_children(self):
 #         return not self.isterminal() and len(self.content) > 0
     
@@ -192,6 +192,7 @@ class SyntaxParser:
                     self.expected = None            # no failure, continue parsing alt
                 else:                           # item cannot be missing, alt fails
                     numtokens += nt                 # location of failure
+                    node.remove_children()
                     break
             else:                           # one item parsed successfully
                 numtokens += nt
@@ -273,6 +274,7 @@ debug = 'or345t'
 if __name__ == '__main__':
     src = 'sample.lang'
     src = 'snape.lang'
+#     src = 'snop.lang'
     src = 'sample source/' + src
     tree = test(src, 'L0')
 
