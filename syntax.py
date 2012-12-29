@@ -98,7 +98,7 @@ class SyntaxParser:
         self.source_filename = None
         self.err = None             # Error instance for reporting, set in parse()
         self.expected = None        # when parse fails, expected item or nonterm, else None
-        self.newtoken = None        # next token to parse, held temporarily for tracing
+        self.newtoken = None        # True when new token will be parsed (for trace display)
 
         
     def parse(self, filename):
@@ -157,8 +157,8 @@ class SyntaxParser:
             for alt in nonterm.alternates:
                 if self.inprefixes(token, alt.prefixes):    # this alternate may match
                     if self.newtoken:
-                        log(3, self.newtoken)       # display new token once
-                        self.newtoken = None
+                        log(3, token)           # display new token once
+                        self.newtoken = False
                     log(3, '%s => %s' % (nonterm, alt), node)
                     self.expected = None        # forget previous failures
                     numtokens = self.parse_alt(tokens, alt, node)
@@ -224,10 +224,10 @@ class SyntaxParser:
                         node.add_child(ParseNode(token.name, token.text))
             if numtokens == 1:
                 log(5, '    %s found' % item, node)
-                self.newtoken = tokens[1] if len(tokens) > 1 else None    # next token if any
             else:
                 log(5, '    %s not found' % item, node)
                 self.expected = item    # item not found
+            self.newtoken = numtokens == 1      # show new token in trace
         else:   # nonterminal
             nonterm = self.syntax.nonterms[item.text()]
             nonterm_node = ParseNode(nonterm.name, level=node.level + 1)
