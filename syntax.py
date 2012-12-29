@@ -266,24 +266,28 @@ def test(source, grammar):
     if 'p' in debug:
         print parser.syntax.show_prefixes()
     tree = parser.parse(source)
+    if 't' in debug:
+        print '\n\nTree:\n'
+        print tree.show()
+    print "\n\n**** Syntax test done ****"
     return tree
 
-# debug: o = tokens, p = prefixes, r = reassemble, s = syntax, t = tree, 3 = parse trace
+
+# debug: o = tokens, p = prefixes, r = reassemble, s = syntax, t = tree, 
+#        3, 4, 5 = parse trace levels
 debug = 'or345t'
+
 
 if __name__ == '__main__':
     src = 'sample.lang'
     src = 'snape.lang'
 #     src = 'snop.lang'
     src = 'sample source/' + src
-    tree = test(src, 'L0')
+#     tree = test(src, 'L0')
 
-    src = 'grammars/smaller.defn'
+    src = 'grammars/small.defn'
+#     src = 'grammars/smaller.defn'
 #     src = 'grammars/assign.defn'
-#     tree = test(src, 'defn')
+    tree = test(src, 'defn')
     
-    if 't' in debug:
-        print '\n\nTree:\n'
-        print tree.show()
-    print "\n\n**** Syntax test done ****"
 
