@@ -35,7 +35,7 @@ subtype => identifier
 
 index => DIGIT 				# to distinguish multiple instances
 
-identifier => LNAME 		# lowercase letters only
+identifier => LOWERNAME 	# lowercase letters only
 
 terminal => UPPERNAME 		# uppercase letters and '_'
 
