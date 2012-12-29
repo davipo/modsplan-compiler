@@ -98,6 +98,7 @@ class SyntaxParser:
         self.source_filename = None
         self.err = None             # Error instance for reporting, set in parse()
         self.expected = None        # when parse fails, expected item or nonterm, else None
+        self.newtoken = None        # next token to parse, held temporarily for tracing
 
         
     def parse(self, filename):
@@ -121,9 +122,9 @@ class SyntaxParser:
         # Build parse tree depth-first, climbing syntax to classify nodes.
         nonterm = self.syntax.root
         parse_tree = ParseNode(nonterm.name)        # root of parse tree
+        log(3, '\nParse trace:\n')
         if tokens:
-            log(3, '\nParse trace:\n')
-            log(3, tokens[0])
+            self.newtoken = tokens[0]
             numtokens = self.parse_nonterm(tokens, nonterm, parse_tree)
             print '\n\nParsed %d tokens of %d total.' % (numtokens, len(tokens))
             if numtokens < len(tokens):
@@ -155,6 +156,9 @@ class SyntaxParser:
             # token must be in prefixes of some alternate
             for alt in nonterm.alternates:
                 if self.inprefixes(token, alt.prefixes):    # this alternate may match
+                    if self.newtoken:
+                        log(3, self.newtoken)       # display new token once
+                        self.newtoken = None
                     log(3, '%s => %s' % (nonterm, alt), node)
                     self.expected = None        # forget previous failures
                     numtokens = self.parse_alt(tokens, alt, node)
@@ -162,7 +166,11 @@ class SyntaxParser:
                         log(4, '%s: %s' % (nonterm, listtokens(tokens[:numtokens])), node)
                         break       # success
         if self.expected:
-            log(4, '%s failed: expected %s' % (nonterm, self.expected), node)
+            if isinstance(self.expected, grammar.Nonterminal):
+                log(4, '%s failed: expected one of ' % nonterm, node)
+                log(4, '    %s' % list(self.expected.prefixes), node)
+            else:
+                log(4, '%s failed: expected %s' % (nonterm, self.expected), node)
         return numtokens
 
 
@@ -214,8 +222,10 @@ class SyntaxParser:
                     if token.text:          # don't output NEWLINE, INDENT, DEDENT
                         node.add_child(ParseNode(token.name, token.text))
             if numtokens == 1:
-                log(3, tokens[1] if len(tokens) > 1 else '')    # display next token if any
+                log(5, '    %s found' % item, node)
+                self.newtoken = tokens[1] if len(tokens) > 1 else None    # next token if any
             else:
+                log(5, '    %s not found' % item, node)
                 self.expected = item    # item not found
         else:   # nonterminal
             nonterm = self.syntax.nonterms[item.text()]
@@ -258,7 +268,7 @@ def test(source, grammar):
     return tree
 
 # debug: o = tokens, p = prefixes, r = reassemble, s = syntax, t = tree, 3 = parse trace
-debug = 'or34t'
+debug = 'or345t'
 
 if __name__ == '__main__':
     src = 'sample.lang'
