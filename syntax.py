@@ -98,7 +98,7 @@ class SyntaxParser:
         self.source_filename = None
         self.err = None             # Error instance for reporting, set in parse()
         self.expected = None        # when parse fails, expected item or nonterm, else None
-        self.newtoken = None        # True when new token will be parsed (for trace display)
+        self.newtoken = False       # True when new token will be parsed (for trace display)
 
         
     def parse(self, filename):
