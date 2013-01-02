@@ -1,6 +1,7 @@
+# tokenize.py
 # Modsplan tokenizer
-# author: David Post
-# date: 2011-05-04
+# Copyright 2011-2012 by David H Post, DaviWorks.com.
+
 
 from collections import namedtuple
 

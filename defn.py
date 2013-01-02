@@ -1,6 +1,7 @@
-# Modsplan defn parser
-# author: David Post
-# date: 2011-09-21
+# defn.py
+# Modsplan .defn parser
+# Copyright 2011-2013 by David H Post, DaviWorks.com.
+
 
 import syntax
 

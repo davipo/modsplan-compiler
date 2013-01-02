@@ -1,11 +1,10 @@
+# syntax.py
 # Modsplan syntax parser
-# author: David Post
-# date: 2011-05-27
+# Copyright 2011-2013 by David H Post, DaviWorks.com.
 
 
 import grammar
 import tokenize
-
 
 
 class SyntaxGrammar(grammar.Grammar):
