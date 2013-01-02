@@ -86,14 +86,14 @@ class SyntaxParser:
     """ Parse source code into syntax tree.
         Loads token and syntax grammars on initialization, to direct parsing.
     """
-    def __init__(self, filename):
-        """ Create parser by loading syntax grammar (filename.syntax) and 
-            token grammar (filename.tokens).
+    def __init__(self, langname):
+        """ Create parser by loading syntax grammar (langname.syntax) and 
+            token grammar (langname.tokens).
             If grammars contain 'use' directives, import all needed files.
             To use multiple grammar files, create one file of 'use' directives.
         """
-        self.tokenizer = tokenize.Tokenizer(filename + '.tokens')
-        self.syntax = SyntaxGrammar(filename + '.syntax')
+        self.tokenizer = tokenize.Tokenizer(langname + '.tokens')
+        self.syntax = SyntaxGrammar(langname + '.syntax')
         self.source_filename = None
         self.err = None             # Error instance for reporting, set in parse()
         self.expected = None        # when parse fails, expected item or nonterm, else None
@@ -256,9 +256,9 @@ def scalars(d):
 
 parser = None
 
-def test(source, grammar):
+def test(source, langname):
     global parser
-    parser = SyntaxParser('grammars/' + grammar)
+    parser = SyntaxParser('grammars/' + langname)
     print 'Syntax loaded from ' + parser.syntax.filename
     if 's' in debug:
         parser.syntax.show()
