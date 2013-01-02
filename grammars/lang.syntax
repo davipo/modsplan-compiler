@@ -5,10 +5,14 @@
 # Copyright David H Post, DaviWorks.com. All rights reserved.
 
 
-lang_file.root => item*
+# .lang files contain only 'use' directives (and comments); they specify
+#     the modular specs that collectively define a language.
 
-item => endline
-item => import
+
+lang_file.root => line*
+
+line => endline
+line => import
 
 endline => COMMENT? NEWLINE
 
@@ -16,6 +20,6 @@ import => 'use' filename
 
 filename => identifier
 
-identifier => L+
+identifier => LOWERNAME
 
  
