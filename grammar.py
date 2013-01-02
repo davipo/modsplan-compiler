@@ -1,6 +1,6 @@
-# grammar.py
-# Modsplan grammar handling
-# Copyright 2011-2012 by David H Post, DaviWorks.com.
+# Modsplan grammar
+# author: David Post
+# date: 2011-05-19
 
 
 from __future__ import print_function       # (using Python 2.7)
