@@ -102,7 +102,6 @@ class Tokenizer:
             If grammar contains 'use' directives, import all needed files.
             To use multiple grammar files, create one file of 'use' directives.
         """
-        self.grammar_filename = grammar_filename
         self.source_filename = None                     # set in token_generator
         self.tokendef = TokenGrammar(grammar_filename)  # load token definitions
 
@@ -215,7 +214,7 @@ class Tokenizer:
         if debug > 2:
             print '   match_item %s with "%s"' % (item, text)
         col = 0
-        err = Error(self.grammar_filename)
+        err = Error(self.tokendef.filename)
         quant = item.quantifier
         item_text = item.text()
 
