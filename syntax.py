@@ -1,3 +1,5 @@
+#!/usr/local/bin/python
+
 # syntax.py
 # Modsplan syntax parser
 # Copyright 2011-2013 by David H Post, DaviWorks.com.
@@ -295,5 +297,5 @@ if __name__ == '__main__':
             debug = sys.argv[2]
         tree = test(sys.argv[1])
     else:
-        print 'Usage:  python syntax.py <source_filename>'
+        print 'Usage: ./syntax.py <source_filename>'
 
