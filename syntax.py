@@ -3,6 +3,8 @@
 # Copyright 2011-2013 by David H Post, DaviWorks.com.
 
 
+import sys
+
 import grammar
 import tokenize
 
@@ -121,7 +123,7 @@ class SyntaxParser:
         # Build parse tree depth-first, climbing syntax to classify nodes.
         nonterm = self.syntax.root
         parse_tree = ParseNode(nonterm.name)        # root of parse tree
-        log(3, '\nParse trace:\n')
+        log(3, '\n\nParse trace:\n')
         if tokens:
             self.newtoken = tokens[0]
             numtokens = self.parse_nonterm(tokens, nonterm, parse_tree)
@@ -256,37 +258,42 @@ def scalars(d):
 
 parser = None
 
-def test(source, langname):
+def test(source_filename):
     global parser
-    parser = SyntaxParser('grammars/' + langname)
-    print 'Syntax loaded from ' + parser.syntax.filename
-    if 's' in debug:
-        parser.syntax.show()
-    if 'p' in debug:
-        print parser.syntax.show_prefixes()
-    tree = parser.parse(source)
-    if 't' in debug:
-        print '\n\nTree:\n'
-        print tree.show()
-    print "\n\n**** Syntax test done ****"
+    srcname, sep, langname = source_filename.rpartition('.')
+    tree = None
+    try:
+        print '\n Parsing %s ... \n' % source_filename
+        parser = SyntaxParser('grammars/' + langname)
+        print 'Tokens loaded from ' + parser.tokenizer.tokendef.filename
+        print 'Syntax loaded from ' + parser.syntax.filename
+        if 's' in debug:
+            parser.syntax.show()
+        if 'p' in debug:
+            print parser.syntax.show_prefixes()
+        tree = parser.parse(source_filename)
+        if 't' in debug:
+            print '\n\nTree:\n'
+            print tree.show()
+        print "\n\n**** Syntax test done ****"
+    except Exception as exc:
+        print exc
+    print
     return tree
 
 
-# debug: o = tokens, p = prefixes, r = reassemble, s = syntax, t = tree, 
-#        3, 4, 5 = parse trace levels
-debug = 'or345t'
+# debugging output selectors: 
+#   o = tokens, p = prefixes, r = reassemble, s = syntax, t = tree, 
+#   3, 4, 5 = parse trace levels
+debug = 'or345t'  # default debugging output
 
 
 if __name__ == '__main__':
-    src = 'sample.lang'
-    src = 'snape.lang'
-#     src = 'snop.lang'
-    src = 'sample source/' + src
-#     tree = test(src, 'L0')
-
-    src = 'grammars/small.defn'
-#     src = 'grammars/smaller.defn'
-#     src = 'grammars/assign.defn'
-    tree = test(src, 'defn')
     
+    if len(sys.argv) in (2, 3):
+        if len(sys.argv) == 3:
+            debug = sys.argv[2]
+        tree = test(sys.argv[1])
+    else:
+        print 'Usage:  python syntax.py <source_filename>'
 
