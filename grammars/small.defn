@@ -16,7 +16,7 @@ ASSIGN('=')
 	store
 	
 ASSIGN('+=')
-	add_in_place
+	add in_place
 
 
 if(test, suite)
@@ -28,7 +28,7 @@ if(test, suite)
 
 
 ADD_OP('+')
-    add
+	add
 
 
 identifier(NAME)
