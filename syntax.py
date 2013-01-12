@@ -9,6 +9,7 @@ import sys
 
 import grammar
 import tokenize
+import parsetree
 
 
 class SyntaxGrammar(grammar.Grammar):
@@ -32,59 +33,6 @@ class SyntaxItem(grammar.Item):
     def isterminal(self):
         return self.isliteral() or self.istokenkind()
 
-
-
-class ParseNode:
-    """ A node of the parse tree. """
-    def __init__(self, name, content=None, level=0):
-        self.name = name                # name of nonterminal or terminal
-        self.level = level              # depth of node in tree
-        if isinstance(content, str):
-            self.content = content      # terminal text
-        else:
-            self.content = list()       # new list of child nodes ([] would be reused)
-
-    def __str__(self):
-        if self.isterminal():
-            return self.name + '(' + self.content + ')'
-        else:       # must be list (guaranteed by __init__)
-            # check that all items in list are ParseNode?
-            return self.name + '[' + ', '.join([str(child) for child in self.content]) + ']'
-
-    def isterminal(self):
-        return isinstance(self.content, str)
-
-    def add_child(self, child):
-        """ Append child node to this node's list of children. """
-        if isinstance(self.content, list):
-            self.content.append(child)
-            child.level = self.level + 1
-        else:
-            grammar.Error().msg('Cannot add child (%s) to terminal node (%s)' %
-                                (child, self))
-
-    def remove_children(self):
-        self.content = list()
-    
-#     def has_children(self):
-#         return not self.isterminal() and len(self.content) > 0
-    
-    def show(self, indent='   ', level=0):
-        """ Return display (as string) of parse tree starting at this node.
-            level is indent level; indent string contains one indent (tab or spaces).
-        """
-        result = ''
-        if self.isterminal():
-            result += level * indent + str(self) + '\n'
-        else:
-            result += level * indent + self.name + '\n'
-            for node in self.content:
-                result += node.show(indent, level + 1)
-        return result
-        
-    def indent(self, extra=0):
-        return '    ' * (self.level + extra)
-        
 
 class SyntaxParser:
     """ Parse source code into syntax tree.
@@ -124,7 +72,7 @@ class SyntaxParser:
         # Start at syntax root, find terminals matching tokens of source file.
         # Build parse tree depth-first, climbing syntax to classify nodes.
         nonterm = self.syntax.root
-        parse_tree = ParseNode(nonterm.name)        # root of parse tree
+        parse_tree = parsetree.new(nonterm.name)    # root of parse tree
         log(3, '\n\nParse trace:\n')
         if tokens:
             self.newtoken = tokens[0]
@@ -224,7 +172,7 @@ class SyntaxParser:
                 if token.name == item.text() :
                     numtokens = 1
                     if token.text:          # don't output NEWLINE, INDENT, DEDENT
-                        node.add_child(ParseNode(token.name, token.text))
+                        node.add_child(token.name, token.text)      # terminal node
             if numtokens == 1:
                 log(5, '    %s found' % item, node)
             else:
@@ -233,10 +181,10 @@ class SyntaxParser:
             self.newtoken = numtokens == 1      # show new token in trace
         else:   # nonterminal
             nonterm = self.syntax.nonterms[item.text()]
-            nonterm_node = ParseNode(nonterm.name, level=node.level + 1)
+            nonterm_node = node.add_child(nonterm.name)
             numtokens = self.parse_nonterm(tokens, nonterm, nonterm_node)
-            if not self.expected:       # success
-                node.add_child(nonterm_node)
+            if self.expected:       # parse failed
+                node.remove_child()
         return numtokens
         
         
