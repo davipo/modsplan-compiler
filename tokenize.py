@@ -59,7 +59,8 @@ class TokenGrammar(grammar.Grammar):
         # Check for error if (string) item is a character class.
         if item.isupper() and len(item) == 1:
             if item == 'P' and quantifier != '*':
-                self.err.msg('Character class P must be used with *, error', alt.linenum)
+                message = 'Character class P must be used with *, error'
+                raise self.err.msg(message, alt.linenum)
             ## Check for valid character class (L, U, D, P) here?
         else:
             item = grammar.Grammar.check_item(self, item, quantifier, alt)
@@ -77,11 +78,10 @@ class TokenItem(grammar.Item):
 
 
 class Error(grammar.Error):
-    """ Convenient error reporting. Raises exception, never returns."""
+    """ Convenient error reporting."""
 
     def msg(self, message, loc=None, column=None):
-        """ Raise exception to report error.
-            If loc is Token, extract line number & column; else assume loc is line number.
+        """ If loc is Token, extract line number & column; else assume loc is line number.
             If line number specified, add it and filename to message; if column, insert that.
             Otherwise just use message.
         """
@@ -89,7 +89,7 @@ class Error(grammar.Error):
             lineno, column = loc.linenum, loc.column
         else:
             lineno = loc
-        grammar.Error.msg(self, message, lineno, column)
+        return grammar.Error.msg(self, message, lineno, column)
         
 
 class Tokenizer:
@@ -126,7 +126,7 @@ class Tokenizer:
         try:
             source = open(filename).read()
         except IOError, exc:
-            err.msg('Error loading file ' + filename + '\n' + str(exc))
+            raise err.msg('Error loading file ' + filename + '\n' + str(exc))
         lines = source.splitlines()
 
         # First nonblank line beginning with \t or space sets tab.
@@ -144,7 +144,7 @@ class Tokenizer:
             # Only if language is indentation-sensitive? (like python)
             level, extra = indentation(line, tab)
             if extra:               # extra spaces
-                err.msg('Inconsistent indentation', lineno)     # (raises Exception)
+                raise err.msg('Inconsistent indentation', lineno)
             if level == indentlevel + 1:
                 indentlevel += 1
                 yield(Token('INDENT', '', lineno, 1 + tabsize * indentlevel))
@@ -221,7 +221,8 @@ class Tokenizer:
         if skip:
             # last item was character class P*, so match any chars before this item
             if not item.isliteral():
-                err.msg('Terminal literal or EOL must follow character class P*', alt.linenum)
+                message = 'Terminal literal or EOL must follow character class P*'
+                raise err.msg(message, alt.linenum)
             col = text.find(item_text)
             if col == -1:       # item not found; but it may have zero occurrences, so
                 col = 0         #   don't fail, just no progress (try next item)

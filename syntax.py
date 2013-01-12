@@ -18,7 +18,7 @@ class SyntaxGrammar(grammar.Grammar):
         """ Load syntax grammar from file (format defined by metagrammar)."""
         grammar.Grammar.__init__(self, filename, SyntaxItem)
         if not self.root:
-            self.err.msg('One nonterminal must be marked .root')
+            raise self.err.msg('One nonterminal must be marked .root')
         # find prefixes for all nonterms and alternates
         for nonterm in self.nonterms.values():
             nonterm.find_prefixes(self.nonterms)
@@ -88,7 +88,7 @@ class SyntaxParser:
         message = 'Syntax error at %s token "%s"' % (token.name, token.text)
         if expect:
             message += ': expecting %s' % expect
-        self.err.msg(message, token)
+        raise self.err.msg(message, token)
 
 
     def parse_nonterm(self, tokens, nonterm, node):

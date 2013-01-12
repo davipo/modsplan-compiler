@@ -107,16 +107,14 @@ class Item:
         else:   # nonterminal
             nonterm = nonterms.get(self.element)
             if nonterm == None:
-                Error().msg('Unrecognized nonterminal (%s)' % self.element)
+                raise Error().msg('Unrecognized nonterminal (%s)' % self.element)
             nonterm.find_prefixes(nonterms)
             prefixes = nonterm.prefixes
         return prefixes
 
 
-## Either we catch these exceptions, or rewrite everything that relies on no return; then
-##  print errors to sys.err.
-class Error:
-    """ Convenient error reporting. Raises exception, never returns."""
+class Error(Exception):
+    """ Convenient error reporting."""
     def __init__(self, filename=None):
         self.filename = filename        # current filename (where errors found)
         self.message = ''
@@ -125,9 +123,8 @@ class Error:
         return self.message
 
     def msg(self, message, lineno=None, column=None):
-        """ Raise exception to report error. 
-            If line number specified, add it and filename to message; if column, insert that.
-            Otherwise just use message.
+        """ Add message. If line number specified, add it and filename to message;
+            if column, insert that. Return self.
         """
         if lineno:
             message += ' in line %d' % lineno
@@ -135,7 +132,7 @@ class Error:
                 message += ', column %s' % column
             message += ' of %s' % self.filename
         self.message = message
-        raise self
+        return self
 
 
 class Grammar:
@@ -189,7 +186,7 @@ class Grammar:
         try:
             text = open(filename).read()
         except IOError, exc:
-            self.err.msg('Error loading file ' + filename + '\n' + str(exc))
+            raise self.err.msg('Error loading file ' + filename + '\n' + str(exc))
         lines = text.splitlines()
         for line in lines:
             lineno += 1                     # first line is line 1
@@ -200,7 +197,7 @@ class Grammar:
                 continue
             if line.startswith('use '):     # files to be imported
                 if not in_preface:
-                    self.err.msg('"use" must appear before productions, error', lineno)
+                    raise self.err.msg('"use" must appear before productions, error', lineno)
                 for import_filename in line[4:].split(','):
                     import_filename = import_filename.strip()
                     if import_filename not in self.imported:
@@ -236,7 +233,7 @@ class Grammar:
 # Would string items in grammar ever have spaces in them? (If so, don't split them.)
 # If we want to save comments in terminals, don't split them.
         if len(production) < 3 or production[1] != '=>':
-            self.err.msg(line + '\nSyntax error in grammar', lineno)
+            raise self.err.msg(line + '\nSyntax error in grammar', lineno)
         nameflags = production[0].split('.')    # flags after name, separated by '.'
         name = nameflags[0]                     # remove any flags
         flags = nameflags[1:]
@@ -272,13 +269,13 @@ class Grammar:
         """ Check string item, with quantifier, in alternate alt. (Extended by subclass.)"""
         if item[0] in quote_chars:              # terminal node: literal
             if item[0] != item[-1]:
-                self.err.msg('Mismatched quotes in item (%s)' % item, alt.linenum)
+                raise self.err.msg('Mismatched quotes in item (%s)' % item, alt.linenum)
         elif item.isupper():            # terminal, handled by subclasses
             pass
         elif item in self.nonterms:     # item should be name of nonterminal
             pass
         else:
-            self.err.msg('Unrecognized item (%s)' % item, alt.linenum)
+            raise self.err.msg('Unrecognized item (%s)' % item, alt.linenum)
 
 
     
