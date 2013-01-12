@@ -297,5 +297,5 @@ if __name__ == '__main__':
             debug = sys.argv[2]
         tree = test(sys.argv[1])
     else:
-        print 'Usage: ./syntax.py <source_filename>'
+        print 'Usage: ./syntax.py <source_filename> [<debug_flags>]'
 
