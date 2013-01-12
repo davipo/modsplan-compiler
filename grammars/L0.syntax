@@ -43,11 +43,11 @@ comparison => expr
 compare => expr RELATION expr
 
 
-expr => term ADD_OP term
-expr => term
+expr => term addition*
+addition => ADD_OP term
 
-term => factor MUL_OP factor
-term => factor
+term => factor multiplication*
+multiplication => MUL_OP factor
 
 factor => atom
 

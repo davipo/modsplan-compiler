@@ -34,8 +34,8 @@ test => comparison
 
 comparison => expr
 
-expr => term ADD_OP term
-expr => term
+expr => term addition*
+addition => ADD_OP term
 
 term => factor
 
