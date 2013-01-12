@@ -270,6 +270,8 @@ class Grammar:
         if item[0] in quote_chars:              # terminal node: literal
             if item[0] != item[-1]:
                 raise self.err.msg('Mismatched quotes in item (%s)' % item, alt.linenum)
+            if len(item) < 3:
+                raise self.err.msg('Empty item not allowed (%s)' % item, alt.linenum)
         elif item.isupper():            # terminal, handled by subclasses
             pass
         elif item in self.nonterms:     # item should be name of nonterminal
