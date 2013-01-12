@@ -250,14 +250,6 @@ def log(msgtype, message, node=None):
         print indent + str(message)
 
 
-#### use in pdb with alias v scalars(locals()) ?
-def scalars(d):
-    """ Print strings and non-container items in dict d. """
-    for k, v in d.items():
-        if isinstance(v, str) or not hasattr(v, '__len__'):     # no length, not a sequence
-            print k + ' = ' + str(v)
-
-
 parser = None
 
 def test(source_filename):
@@ -278,7 +270,7 @@ def test(source_filename):
             print '\n\nTree:\n'
             print tree.show()
         print "\n\n**** Syntax test done ****"
-    except Exception as exc:
+    except grammar.Error as exc:
         print exc
     print
     return tree

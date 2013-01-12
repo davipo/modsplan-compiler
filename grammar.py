@@ -119,6 +119,10 @@ class Error:
     """ Convenient error reporting. Raises exception, never returns."""
     def __init__(self, filename=None):
         self.filename = filename        # current filename (where errors found)
+        self.message = ''
+
+    def __str__(self):
+        return self.message
 
     def msg(self, message, lineno=None, column=None):
         """ Raise exception to report error. 
@@ -130,7 +134,8 @@ class Error:
             if column:
                 message += ', column %s' % column
             message += ' of %s' % self.filename
-        raise Exception(message)
+        self.message = message
+        raise self
 
 
 class Grammar:
