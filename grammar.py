@@ -91,10 +91,10 @@ class Item:
         else:
             return self.element
 
-    def isliteral(self):                # extended by subclasses
+    def isliteral(self):
         return self.element[0] in quote_chars
 
-    def isterminal(self):
+    def isterminal(self):           # extended by subclasses
         return self.isliteral() or self.element.isupper()
 
     def get_prefixes(self, nonterms):
@@ -139,7 +139,7 @@ class Grammar:
     """ Holds a grammar."""
     def __init__(self, filename, make_item=Item):
         """ Load grammar from file (format defined by metagrammar).
-            (make_item is a subclass of Item.)
+            (make_item must be a subclass of Item.)
         """
         self.filename = filename
         self.imported=[]                # list of imported filenames
