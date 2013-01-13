@@ -12,9 +12,9 @@ line => statement
 endline => COMMENT? NEWLINE
 
 statement => declaration endline
-statement => assignment endline
 statement => if
 statement => while
+statement => assignment endline
 statement => call endline
 
 declaration => 'declare' attributes? variable
@@ -35,13 +35,8 @@ suite => INDENT block DEDENT
 
 while => 'while' test ':' endline suite
 
-test => comparison
-
-comparison => compare
-comparison => expr
-
-compare => expr RELATION expr
-
+test => expr comparison?
+comparison => RELATION expr
 
 expr => term addition*
 addition => ADD_OP term
