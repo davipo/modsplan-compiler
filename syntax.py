@@ -24,6 +24,15 @@ class SyntaxGrammar(grammar.Grammar):
             nonterm.find_prefixes(self.nonterms)
 
 
+    def check_item(self, item, quantifier, alt):
+        """ Check string item, with given quantifier, in alternate alt."""
+        if item.isupper():          # tokenkind (terminal)
+            pass
+        else:
+            item = grammar.Grammar.check_item(self, item, quantifier, alt)
+
+
+
 class SyntaxItem(grammar.Item):
     """ Item extended for SyntaxGrammar."""
     
