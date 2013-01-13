@@ -75,7 +75,7 @@ class SyntaxParser:
         parse_tree = parsetree.new(nonterm.name)    # root of parse tree
         log(3, '\n\nParse trace:\n')
         if tokens:
-            self.newtoken = tokens[0]
+            self.newtoken = True
             numtokens = self.parse_nonterm(tokens, nonterm, parse_tree)
             print '\n\nParsed %d tokens of %d total.' % (numtokens, len(tokens))
             if numtokens < len(tokens):
@@ -101,15 +101,15 @@ class SyntaxParser:
         # Prefixes checked here
         numtokens = 0           # number of tokens matching syntax
         token = tokens[0]
+        if self.newtoken:
+            log(3, token)           # display new token once
+            self.newtoken = False
         if not self.inprefixes(token, nonterm.prefixes):
             self.expected = nonterm     # fail, nonterm not possible with token
         else:
             # token must be in prefixes of some alternate
             for alt in nonterm.alternates:
                 if self.inprefixes(token, alt.prefixes):    # this alternate may match
-                    if self.newtoken:
-                        log(3, token)           # display new token once
-                        self.newtoken = False
                     log(3, '%s => %s' % (nonterm, alt), node)
                     self.expected = None        # forget previous failures
                     numtokens = self.parse_alt(tokens, alt, node)
@@ -174,11 +174,13 @@ class SyntaxParser:
                     if token.text:          # don't output NEWLINE, INDENT, DEDENT
                         node.add_child(token.name, token.text)      # terminal node
             if numtokens == 1:
+                if self.newtoken:
+                    log(3, token)           # if token display pending, show this one
                 log(5, '    %s found' % item, node)
+                self.newtoken = True    # show next token in trace
             else:
                 log(5, '    %s not found' % item, node)
                 self.expected = item    # item not found
-            self.newtoken = numtokens == 1      # show new token in trace
         else:   # nonterminal
             nonterm = self.syntax.nonterms[item.text()]
             nonterm_node = node.add_child(nonterm.name)
