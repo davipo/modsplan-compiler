@@ -174,15 +174,13 @@ class SyntaxParser:
         numtokens = 0           # number of tokens matching syntax
         token = tokens[0]
         if item.isterminal():
-            if item.isliteral():
-                if token.text == item.text():
-                    numtokens = 1
-            else:  # must be tokenkind
-                if token.name == item.text() :
-                    numtokens = 1
-                    if token.text:          # don't output NEWLINE, INDENT, DEDENT
-                        node.add_child(token.name, token.text)      # terminal node
-            if numtokens == 1:
+            # literal item matches token text; tokenkind matches token name
+            match_text = token.text if item.isliteral() else token.name
+            if match_text == item.text():
+                numtokens = 1
+                if token.text and not item.isliteral():
+                    # don't output NEWLINE, INDENT, DEDENT, or literals
+                    node.add_child(token.name, token.text)      # terminal node
                 if self.newtoken:
                     log(3, token)           # if token display pending, show this one
                 log(5, '    %s found' % item, node)
