@@ -322,19 +322,13 @@ def reassemble(tokens):
                 if not nl:
                     result += ' \t\t'
                 result += string
-            elif kind == 'RELATION' or kind.endswith('_OP'):
+            elif kind in ('ASSIGN', 'RELATION') or kind.endswith('_OP'):
                 result += ' ' + string + ' '
-            elif kind == 'ASSIGN':
-                if lastkind.endswith('_OP'):
-                    result = result.rstrip()    # remove last space
-                else:
-                    result += ' '
-                result += string + ' '
             else:
                 if kind == 'NAME' and lastkind == 'NAME':
                     result += ' '
                 result += string
-                result += ' ' * (string in ',')
+                result += ' ' * (string in ',')     # add a space after comma
             nl = False
         lastkind = kind
     return result
