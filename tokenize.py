@@ -300,26 +300,24 @@ def indentation(line, tab):
 def reassemble(tokens):
     """ Return a string of tokens in lines similar to the original source."""
     level = 0
-    nl = True
     result = ''
-    lastkind = None
+    lastkind = 'NEWLINE'
     for tkn in tokens:
         kind, string = tkn[0:2]
         if kind == 'NEWLINE':
-            if nl == True:
+            if lastkind == 'NEWLINE':
                 result += '\n'
-            nl = True
         elif kind == 'INDENT':
             level += 1
+            continue
         elif kind == 'DEDENT':
             level -= 1
+            continue
         else:
-            if nl:
-                result += '\n'
-                if kind != 'COMMENT':
-                    result += ' ' * 4 * level
+            if lastkind == 'NEWLINE':
+                result += '\n' + ' ' * 4 * level
             if kind == 'COMMENT':
-                if not nl:
+                if lastkind != 'NEWLINE':
                     result += ' \t\t'
                 result += string
             elif kind in ('ASSIGN', 'RELATION') or kind.endswith('_OP'):
@@ -329,7 +327,6 @@ def reassemble(tokens):
                     result += ' '
                 result += string
                 result += ' ' * (string in ',')     # add a space after comma
-            nl = False
         lastkind = kind
     return result
 
