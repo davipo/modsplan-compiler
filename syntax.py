@@ -56,38 +56,39 @@ class SyntaxParser:
         self.tokenizer = tokenize.Tokenizer(langname + '.tokens')
         self.syntax = SyntaxGrammar(langname + '.syntax')
         self.source_filename = None
+        self.tokens = None          # list of tokens in source file
         self.err = None             # Error instance for reporting, set in parse()
         self.newtoken = False       # True when new token will be parsed (for trace display)
 
         
     def parse(self, filename):
         """ Parse given source file, return root node of parse tree.
-            Syntax error will raise Exception.
+            Syntax error will raise Error exception.
         """
         self.source_filename = filename
-        self.err =  tokenize.Error(filename)
-        tokens = self.tokenizer.token_generator(filename)
-        tokens = list(tokens)
+        self.err =  tokenize.Error(filename)    #  to report errors by token line & column 
+        tokengen = self.tokenizer.token_generator(filename)
+        self.tokens = list(tokengen)
         if 'o' in debug:
             print '\nTokens from ' + filename + ':\n'
-            for tkn in tokens:
+            for tkn in self.tokens:
                 print tkn
             print
         if 'r' in debug:
             print '\nReassembled source from tokens:'
-            print tokenize.reassemble(tokens)
+            print tokenize.reassemble(self.tokens)
             
         # Start at syntax root, find terminals matching tokens of source file.
         # Build parse tree depth-first, climbing syntax to classify nodes.
         nonterm = self.syntax.root
         parse_tree = parsetree.new(nonterm.name)    # root of parse tree
         log(3, '\n\nParse trace:\n')
-        if tokens:
+        if self.tokens:
             self.newtoken = True
-            failure, numtokens = self.parse_nonterm(tokens, nonterm, parse_tree)
-            print '\n\nParsed %d tokens of %d total.' % (numtokens, len(tokens))
-            if numtokens < len(tokens):
-                token = tokens[numtokens]
+            failure, numtokens = self.parse_nonterm(0, nonterm, parse_tree)
+            print '\n\nParsed %d tokens of %d total.' % (numtokens, len(self.tokens))
+            if numtokens < len(self.tokens):
+                token = self.tokens[numtokens]
                 self.syntax_error(token, failure)
         return parse_tree
 
@@ -99,15 +100,15 @@ class SyntaxParser:
         raise self.err.msg(message, token)
 
 
-    def parse_nonterm(self, tokens, nonterm, node):
-        """ Parse tokens using syntax of nonterm; store parse tree in node. 
+    def parse_nonterm(self, start, nonterm, node):
+        """ Parse tokens from index start using syntax of nonterm; store parse tree in node. 
             Return parse item that failed (or None), number of tokens parsed.
             Report the failure that parsed the most tokens.
         """
         # Prefixes checked here
         numtokens = 0           # number of tokens matching syntax
         maxtokens = 0           # max number of tokens parsed among failed alternates
-        token = tokens[0]
+        token = self.tokens[start]
         if self.newtoken:
             log(3, token)           # display new token once
             self.newtoken = False
@@ -118,15 +119,16 @@ class SyntaxParser:
             for alt in nonterm.alternates:
                 if self.inprefixes(token, alt.prefixes):    # this alternate may match
                     log(3, '%s => %s' % (nonterm, alt), node)
-                    fail, numtokens = self.parse_alt(tokens, alt, node)
+                    fail, numtokens = self.parse_alt(start, alt, node)
                     if fail:
                         if numtokens > maxtokens:
                             maxtokens = numtokens
                             failure = fail              # save maximum-token failure
-                    else:
+                    else:       # success
                         failure = None
-                        log(4, '%s: %s' % (nonterm, listtokens(tokens[:numtokens])), node)
-                        break       # success
+                        tokens = self.tokens[start:][:numtokens]
+                        log(4, '%s: %s' % (nonterm, listtokens(tokens)), node)
+                        break
         if failure:
             numtokens = maxtokens
             if isinstance(failure, grammar.Nonterminal):
@@ -144,15 +146,15 @@ class SyntaxParser:
         return token.text in prefixes or token.name in prefixes
         
     
-    def parse_alt(self, tokens, alternate, node):
-        """ Parse tokens using syntax of alternate; store parse tree in node. 
+    def parse_alt(self, start, alternate, node):
+        """ Parse tokens from index start using syntax of alternate; store parse tree in node. 
             Return parse item that failed (or None), number of tokens parsed.
             (Quantifiers handled here.)
         """
         numtokens = 0           # number of tokens matching syntax
         failure = None
         for item in alternate.items:
-            failure, nt = self.parse_item(tokens[numtokens:], item, node)
+            failure, nt = self.parse_item(start + numtokens, item, node)
             if failure:                     # wrong item
                 if item.quantifier in '?*':     # zero repetitions allowed
                     failure = None                  # no failure, continue parsing alternate
@@ -163,8 +165,8 @@ class SyntaxParser:
             else:                           # one item parsed successfully
                 numtokens += nt
                 if item.quantifier in '+*':     # more than one repetition allowed
-                    while numtokens < len(tokens):
-                        failure, nt = self.parse_item(tokens[numtokens:], item, node)
+                    while numtokens < len(self.tokens):
+                        failure, nt = self.parse_item(start + numtokens, item, node)
                         if failure:                 # no more repetitions of item
                             failure = None              # not a failure, repetition optional
                             break
@@ -173,12 +175,12 @@ class SyntaxParser:
         return failure, numtokens
     
     
-    def parse_item(self, tokens, item, node):
-        """ Parse tokens using syntax of item; store parse tree in node. 
+    def parse_item(self, start, item, node):
+        """ Parse tokens from index start using syntax of item; store parse tree in node. 
             Return parse item that failed (or None), number of tokens parsed.
         """
         numtokens = 0           # number of tokens matching syntax
-        token = tokens[0]
+        token = self.tokens[start]
         if item.isterminal():
             # literal item matches token text; tokenkind matches token name
             match_text = token.text if item.isliteral() else token.name
@@ -198,7 +200,7 @@ class SyntaxParser:
         else:   # nonterminal
             nonterm = self.syntax.nonterms[item.text()]
             nonterm_node = node.add_child(nonterm.name)
-            failure, numtokens = self.parse_nonterm(tokens, nonterm, nonterm_node)
+            failure, numtokens = self.parse_nonterm(start, nonterm, nonterm_node)
             if failure:
                 node.remove_child()
         return failure, numtokens
