@@ -88,10 +88,12 @@ class SyntaxParser:
         if self.tokens:
             self.newtoken = True
             failure, numtokens = self.parse_nonterm(0, nonterm, parse_tree)
-            print '\n\nParsed %d tokens of %d total.' % (numtokens, len(self.tokens))
             if numtokens < len(self.tokens):
+                print '\n\nParsed %d tokens of %d total.' % (self.maxtokens, len(self.tokens))
                 token = self.tokens[self.maxtokens]
                 self.syntax_error(token, self.expected)
+            else:
+                print '\n\n%s parsed successfully (%d tokens)' % (filename, len(self.tokens))
         return parse_tree
 
 
