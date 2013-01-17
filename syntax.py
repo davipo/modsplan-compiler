@@ -56,6 +56,8 @@ class SyntaxParser:
         self.tokenizer = tokenize.Tokenizer(langname + '.tokens')
         self.syntax = SyntaxGrammar(langname + '.syntax')
         self.source_filename = None
+        self.maxtokens = 0          # greatest number of tokens parsed before a parse failure
+        self.expected = None        # grammar item expected at furthest failure
         self.tokens = None          # list of tokens in source file
         self.err = None             # Error instance for reporting, set in parse()
         self.newtoken = False       # True when new token will be parsed (for trace display)
@@ -88,8 +90,8 @@ class SyntaxParser:
             failure, numtokens = self.parse_nonterm(0, nonterm, parse_tree)
             print '\n\nParsed %d tokens of %d total.' % (numtokens, len(self.tokens))
             if numtokens < len(self.tokens):
-                token = self.tokens[numtokens]
-                self.syntax_error(token, failure)
+                token = self.tokens[self.maxtokens]
+                self.syntax_error(token, self.expected)
         return parse_tree
 
 
@@ -131,6 +133,9 @@ class SyntaxParser:
                         break
         if failure:
             numtokens = maxtokens
+            if start + maxtokens > self.maxtokens:
+                self.maxtokens = start + maxtokens      # record furthest failure
+                self.expected = failure
             if isinstance(failure, grammar.Nonterminal):
                 log(4, '%s failed: expected one of ' % nonterm, node)
                 log(4, '    %s' % list(failure.prefixes), node)
