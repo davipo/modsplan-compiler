@@ -69,8 +69,7 @@ class SyntaxParser:
         """
         self.source_filename = filename
         self.err =  tokenize.Error(filename)    #  to report errors by token line & column 
-        tokengen = self.tokenizer.token_generator(filename)
-        self.tokens = list(tokengen)
+        self.tokens = self.tokenizer.get_tokens(filename)
         if 'o' in debug:
             print '\nTokens from ' + filename + ':\n'
             for tkn in self.tokens:

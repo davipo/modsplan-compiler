@@ -99,8 +99,9 @@ class Tokenizer:
             If grammar contains 'use' directives, import all needed files.
             To use multiple grammar files, create one file of 'use' directives.
         """
-        self.source_filename = None                     # set in token_generator
         self.tokendef = TokenGrammar(grammar_filename)  # load token definitions
+        self.source_filename = None                     # set in get_tokens()
+        self.err = None                     # source error reporter, set in get_tokens()
 
                     
     def names(self):
@@ -114,41 +115,31 @@ class Tokenizer:
             text += '%s: %s\n' % (kind.name, list(kind.prefixes))
         return text + '\n'
 
-    def token_generator(self, filename, tabsize=4):
-        """ A generator method, returns an iterator of Token from given source file.
-            tabsize is # of spaces indent per tab char, to produce accurate column #s.
+    def get_tokens(self, filename, tabsize=4):
+        """ Tokenize source from filename, return a list of Token.
+            tabsize is # of spaces per tab char, to report accurate column #s.
         """
         self.source_filename = filename
-        err = Error(filename)
+        self.err = Error(filename)
         try:
             source = open(filename).read()
         except IOError, exc:
-            raise err.msg('Error loading file ' + filename + '\n' + str(exc))
+            raise self.err.msg('Error loading file ' + filename + '\n' + str(exc))
         lines = source.splitlines()
 
         # First nonblank line beginning with \t or space sets tab.
-        tab = first_indent(lines)
-        if tab[:1] == ' ':
+        tab = first_indent(lines)       # '\t' or a string of spaces
+        if ' ' in tab:
             tabsize = len(tab)
         
         # Read lines from top, tokenize
+        tokens = []
         lineno = 0              # line number
         indentlevel = 0
         for line in lines:
             lineno += 1             # first line is line 1
-
-            # Check indentation level
-            # Only if language is indentation-sensitive? (like python)
-            level, extra = indentation(line, tab)
-            if extra:               # extra spaces
-                raise err.msg('Inconsistent indentation', lineno)
-            if level == indentlevel + 1:
-                indentlevel += 1
-                yield(Token('INDENT', '', lineno, 1 + tabsize * indentlevel))
-            else:
-                while indentlevel > level:
-                    indentlevel -= 1
-                    yield(Token('DEDENT', '', lineno, 1 + tabsize * indentlevel))
+            
+            indentlevel = self.process_indents(line, lineno, indentlevel, tab, tabsize, tokens)
 
             col = 0             # column of line
             viewcol = 1         # column as viewed in source (1-origin, expand tabs)
@@ -160,19 +151,37 @@ class Tokenizer:
                     length = self.match(line[col:], kind)
                     if length > 0:
                         # match found, length is number of chars matched
-                        yield(Token(kind.name, line[col:col + length], lineno, viewcol))
+                        text = line[col:col + length]
+                        tokens.append(Token(kind.name, text, lineno, viewcol))
                         col += length
                         viewcol += length
                         break           # look for next token
                 else:  # no match found for any kind starting with char
                     if char not in ' \t':       # skip space, tab
-                        yield(Token('', char, lineno, viewcol))     # operator, punctuation
+                        tokens.append(Token('', char, lineno, viewcol))     # punctuation
                     col += 1
                     viewcol += tabsize if char == '\t' else 1
-            yield(Token('NEWLINE', '', lineno, viewcol))        # mark end of line
-        while indentlevel > 0:        # close indented blocks
-            indentlevel -= 1
-            yield(Token('DEDENT', '', lineno + 1, 1 + tabsize * indentlevel))
+            tokens.append(Token('NEWLINE', '', lineno, viewcol))    # mark end of line
+
+        # close indented blocks
+        self.process_indents('', lineno + 1, indentlevel, tab, tabsize, tokens)
+        return tokens
+
+
+    def process_indents(self, line, lineno, indentlevel, tab, tabsize, tokens):
+        """ Check indentation level, append indent & dedents to tokens."""
+        ### Only if language is indentation-sensitive? (like Python)
+        level, extra = divmod( lcount(line, tab[0]), len(tab) )
+        if extra:               # extra spaces
+            raise self.err.msg('Inconsistent indentation', lineno)
+        if level == indentlevel + 1:
+            indentlevel += 1
+            tokens.append(Token('INDENT', '', lineno, 1 + tabsize * indentlevel))
+        else:
+            while indentlevel > level:
+                indentlevel -= 1
+                tokens.append(Token('DEDENT', '', lineno, 1 + tabsize * indentlevel))
+        return indentlevel
 
 
     def match(self, text, nonterm):
@@ -210,7 +219,6 @@ class Tokenizer:
         if debug > 2:
             print '   match_item %s with "%s"' % (item, text)
         col = 0
-        err = Error(self.tokendef.filename)
         quant = item.quantifier
         item_text = item.text()
 
@@ -218,7 +226,7 @@ class Tokenizer:
             # last item was character class P*, so match any chars before this item
             if not item.isliteral():
                 message = 'Terminal literal or EOL must follow character class P*'
-                raise err.msg(message, alt.linenum)
+                raise self.tokendef.err.msg(message, alt.linenum)
             col = text.find(item_text)
             if col == -1:       # item not found; but it may have zero occurrences, so
                 col = 0         #   don't fail, just no progress (try next item)
@@ -266,27 +274,21 @@ def charclass(char):
 
 def first_indent(lines):
     """ Scan list of text lines, return first indent found (tab or spaces). """
-    ### Check for mixed tabs and spaces, give error
+    ### To do: Check for mixed tabs and spaces, give error?
     for line in lines:
         if line.strip() == '':
             continue                        # skip blank line
         if line.startswith('\t'):
             return '\t'
         elif line.startswith(' '):
-            numspaces = len(line) - len(line.lstrip(' '))
+            numspaces = lcount(line, ' ')
             return ' ' * numspaces          # tab is some spaces
-    return ''
+    return ' '      # if no indentation found
 
 def lcount(line, chars):
     """ Count the number of consecutive characters in chars at beginning of line."""
     return len(line) - len(line.lstrip(chars))
 
-def indentation(line, tab):
-    """ Return (indentation level, remainder) of line, using tab string as indent. """
-    if tab:
-        return divmod( lcount(line, tab[0]), len(tab) )
-    else:
-        return 0, 0
     
 ## (Use a utility program to clean up indents in files?)
                 
@@ -328,7 +330,7 @@ def reassemble(tokens):
 
 def test(filename):
     global t
-    tokens = t.token_generator(filename)
+    tokens = t.get_tokens(filename)
     print 'Tokens from ' + filename + ':\n'
     for tkn in tokens:
         print tkn
@@ -357,8 +359,7 @@ if __name__ == '__main__':
     
     fn = 'sample source/' + fn
     
-    tokens = t.token_generator(fn)
-    tokens = list(tokens)
+    tokens = t.get_tokens(fn)
     if debug == 1:
         print 'Tokens from ' + fn + ':\n'
         for tkn in tokens:
