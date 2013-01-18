@@ -47,7 +47,7 @@ class NonterminalNode(BaseNode):
     """ A nonterminal node of the parse tree; contains a list of child nodes."""
     def __init__(self, name):
         BaseNode.__init__(self, name)
-        self.children = list()          # new list of child nodes ([] would be reused)
+        self.children = []
 
 
     def isterminal(self):
