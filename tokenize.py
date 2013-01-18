@@ -36,22 +36,18 @@ class TokenGrammar(grammar.Grammar):
             Compute prefixes, and possible token kinds for each prefix.
         """
         grammar.Grammar.__init__(self, filename, TokenItem)
-        self.kinds = []                 # list of token Nonterminals
-        self.prefix_map = dict()        # maps prefix to list of kind.name
         
-        for name, nonterm in self.nonterms.items():
-            if name.isupper():          # uppercase name is a token kind
-                self.kinds.append(nonterm)
-        
+        # nonterminals with uppercase names specify a kind of token
+        self.kinds = [nonterm for name, nonterm in self.nonterms.items() if name.isupper()]
+                        
         # Compute possible prefix chars for each kind of token
+        #   prefix_map[char] is a list of kinds that can start with char
+        self.prefix_map = dict()
         for kind in self.kinds:
             kind.find_prefixes(self.nonterms)       # stores prefixes in kind
-            # Compute possible token kinds for each prefix.
+            # Compute possible token kinds for each single character prefix.
             for prefix in kind.prefixes:
-                first_char = prefix[0]      # tokenizer uses one char prefix
-                if first_char not in self.prefix_map:
-                    self.prefix_map[first_char] = []
-                self.prefix_map[first_char].append(kind.name)
+                self.prefix_map.setdefault(prefix[0], []).append(kind)
     
 
     def check_item(self, item, quantifier, alt):
@@ -71,6 +67,7 @@ class TokenItem(grammar.Item):
         grammar.Item.__init__(self, elem, quant)
         
     def ischarclass(self):
+        """ Is item a character class specifier (one uppercase letter)?"""
         return len(self.element) == 1 and self.element.isupper()
 
     def isterminal(self):
@@ -158,13 +155,12 @@ class Tokenizer:
             while col < len(line):
                 char = line[col]
                 chclass = charclass(char)
-                kindnames = self.tokendef.prefix_map.get(chclass, [])   # empty if not found
-                for kindname in kindnames:
-                    kind = self.tokendef.nonterms[kindname]
+                # search for match among tokenkinds that can begin with this char class
+                for kind in self.tokendef.prefix_map.get(chclass, []):   # empty list if none
                     length = self.match(line[col:], kind)
                     if length > 0:
                         # match found, length is number of chars matched
-                        yield(Token(kindname, line[col:col + length], lineno, viewcol))
+                        yield(Token(kind.name, line[col:col + length], lineno, viewcol))
                         col += length
                         viewcol += length
                         break           # look for next token
@@ -345,8 +341,8 @@ debug = 1
 if __name__ == '__main__':
     t = Tokenizer('grammars/L0.tokens')
     print t.prefixes(),
-    for p, tn in sorted(t.tokendef.prefix_map.items()):
-        print '%3s: %s' % (p, tn)
+    for prefix, kind in sorted(t.tokendef.prefix_map.items()):
+        print '%3s: %s' % (prefix, kind.name)
     print
     
     nts = t.tokendef.nonterms
@@ -356,8 +352,8 @@ if __name__ == '__main__':
     
     ##print t.match('< 3', nts["RELATION"])
     
-    fn = 'sample.lang'
-    # fn = 'snape.lang'
+    fn = 'sample.L0'
+    # fn = 'snape.L0'
     ##fn = 'sample.py'
     ##fn = 'reassemble.py'
     
