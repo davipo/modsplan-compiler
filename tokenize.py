@@ -266,18 +266,16 @@ def charclass(char):
 
 def first_indent(lines):
     """ Scan list of text lines, return first indent found (tab or spaces). """
-    tab = ''
+    ### Check for mixed tabs and spaces, give error
     for line in lines:
         if line.strip() == '':
             continue                        # skip blank line
         if line.startswith('\t'):
-            tab = '\t'
-            break
+            return '\t'
         elif line.startswith(' '):
-            numspaces = lcount(line, ' ')
-            tab = ' ' * numspaces           # tab is some spaces
-            break
-    return tab
+            numspaces = len(line) - len(line.lstrip(' '))
+            return ' ' * numspaces          # tab is some spaces
+    return ''
 
 def lcount(line, chars):
     """ Count the number of consecutive characters in chars at beginning of line."""
