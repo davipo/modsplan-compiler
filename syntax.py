@@ -143,7 +143,6 @@ class SyntaxParser:
                 log(4, '    %s' % list(failure.prefixes), node)
             else:
                 log(4, '%s failed: expected %s' % (nonterm, failure), node)
-        log(5, 'numtokens = %d' % numtokens)
         return failure, numtokens
 
 
