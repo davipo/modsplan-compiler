@@ -193,8 +193,8 @@ class Tokenizer:
         """
         if debug > 2:
             print 'match nonterm %s with "%s":' % (nonterm.name, text)
-        col = 0             # index to text
         for alt in nonterm.alternates:
+            col = 0             # index to text
             skip = False
             for item in alt.items:
                 if item.ischarclass() and item.text() == 'P':       # assumes P*
@@ -202,7 +202,6 @@ class Tokenizer:
                     continue            # on to next item
                 length = self.match_item(text[col:], item, skip, alt)
                 if length == -1:        # if item fails to match
-                    col = 0                 # reset column
                     break                   # try next alternate
                 skip &= (length == 0)   # skip until we match a terminal literal
                 col += length
@@ -322,7 +321,7 @@ def reassemble(tokens):
             elif kind in ('ASSIGN', 'RELATION') or kind.endswith('_OP'):
                 result += ' ' + string + ' '
             else:
-                if kind == 'NAME' and lastkind == 'NAME':
+                if kind == 'NAME' and lastkind == 'KEYWORD':
                     result += ' '
                 result += string
                 result += ' ' * (string in ',')     # add a space after comma
@@ -359,7 +358,7 @@ if __name__ == '__main__':
     print 'prefix_map:'
     for prefix, kinds in sorted(t.tokendef.prefix_map.items()):
         kindnames = [kind.name for kind in kinds]
-        print '%3s: %s' % (prefix, str(kindnames).replace("'", ""))
+        print '%3s: %s' % (prefix, ' '.join(kindnames))
     print
         
     tokens = t.get_tokens(source_filepath)
@@ -369,4 +368,5 @@ if __name__ == '__main__':
             print tkn   
     ra = reassemble(tokens)
     print ra
+    print
 

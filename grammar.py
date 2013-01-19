@@ -175,7 +175,7 @@ class Grammar:
         """ Return text table of prefixes of all nonterms."""
         text = '\nPrefixes:\n'
         for name, nonterm in sorted(self.nonterms.items()):
-            text += '%s: %s\n' % (name, list(nonterm.prefixes))
+            text += '%s: %s\n' % (name, ' '.join(nonterm.prefixes))
         return text + '\n'
     
     
