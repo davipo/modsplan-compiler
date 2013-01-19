@@ -40,16 +40,20 @@ class TokenGrammar(grammar.Grammar):
         # nonterminals with uppercase names specify a kind of token
         self.kinds = [nonterm for name, nonterm in self.nonterms.items() if name.isupper()]
                         
-        # Compute possible prefix character classes for each kind of token
-        #   prefix_map[char_class] is a set of kinds that can start with a character class
+        # Compute possible prefix character classes for each kind of token.
+        #   prefix_map[char_class] is a list of kinds that can start with the character class.
+        #   These lists preserve the order of tokenkinds in .tokens specification.
         self.prefix_map = dict()
         for kind in self.kinds:
             kind.find_prefixes(self.nonterms)       # stores prefixes in kind
-            # Compute set of possible token kinds for each prefix's character class
+            # Compute list of possible token kinds for each prefix's character class
             for prefix in kind.prefixes:
-                # (if prefix is a character class (1 uppercase letter) don't convert it)
+                # if prefix is already a character class (1 uppercase letter) just use it
                 chrclass = prefix if TokenItem(prefix).ischarclass() else charclass(prefix[0])
-                self.prefix_map.setdefault(chrclass, set()).add(kind)
+                # Keep lists of kinds ordered as in token grammar
+                chrclass_kinds = self.prefix_map.setdefault(chrclass, [])   # new list if none
+                if kind not in chrclass_kinds:
+                    chrclass_kinds.append(kind)
     
 
     def check_item(self, item, quantifier, alt):

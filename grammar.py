@@ -155,7 +155,7 @@ class Grammar:
 #                                   #   (start with current file to avoid import loops)
         
         self.nonterms = OrderedDict()   # dictionary of Nonterminals, keyed by name
-            # ordered just to make show() output easier to read
+                                        #   order is preserved for tokenizing, & show()
         self.root = None                # last Nonterminal with a .root flag, if any
         self.err = Error(filename)      # set filename for error reporting
         self.make_item = make_item      # item constructor (extendable by subclasses)
