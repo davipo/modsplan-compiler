@@ -330,29 +330,15 @@ def reassemble(tokens):
 
 
 
-def test(filename):
-    global t
-    tokens = t.get_tokens(filename)
-    print 'Tokens from ' + filename + ':\n'
-    for tkn in tokens:
-        print tkn
-
-
 debug = 1
 
-import sys
+def test(source_filepath):
+    global t
 
-if __name__ == '__main__':
-
-    if len(sys.argv) != 2:
-        print 'Usage: %s <source_filepath>' % sys.argv[0]
-        exit(0)
-    
-    source_filepath = sys.argv[1]
     language = source_filepath.rpartition('.')[-1]
-    token_grammar = 'grammars/%s.tokens' % language
+    tokenspec = 'grammars/%s.tokens' % language
     
-    t = Tokenizer(token_grammar)
+    t = Tokenizer(tokenspec)
     print t.prefixes(),
     
     print 'prefix_map:'
@@ -369,4 +355,15 @@ if __name__ == '__main__':
     ra = reassemble(tokens)
     print ra
     print
+
+
+import sys
+
+if __name__ == '__main__':
+
+    if len(sys.argv) != 2:
+        print 'Usage: %s <source_filepath>' % sys.argv[0]
+    else:    
+        source_filepath = sys.argv[1]
+        test(source_filepath)
 
