@@ -23,7 +23,7 @@ class Nonterminal:
     
     def show(self):
         """ Return string showing name with list of alternates."""
-        result = self.name + ': '
+        result = self.name + ' => '
         indent = ' ' * len(result)
         return result + ('\n' + indent).join(map(str, self.alternates)) + '\n'
 
@@ -164,11 +164,10 @@ class Grammar:
     
     def show(self):
         """ Display grammar. """
-        if self.root:
-            print('root is:')
-            print(self.root.show())
-            print('---------------\n')
+        print()
         for nonterm in self.nonterms.values():
+            if nonterm == self.root:
+                print('(root:)')
             print(nonterm.show())
 
 
