@@ -1,6 +1,6 @@
 # tokenize.py
 # Modsplan tokenizer
-# Copyright 2011-2012 by David H Post, DaviWorks.com.
+# Copyright 2011-2013 by David H Post, DaviWorks.com.
 
 
 from collections import namedtuple
@@ -40,14 +40,16 @@ class TokenGrammar(grammar.Grammar):
         # nonterminals with uppercase names specify a kind of token
         self.kinds = [nonterm for name, nonterm in self.nonterms.items() if name.isupper()]
                         
-        # Compute possible prefix chars for each kind of token
-        #   prefix_map[char] is a list of kinds that can start with char
+        # Compute possible prefix character classes for each kind of token
+        #   prefix_map[char_class] is a set of kinds that can start with a character class
         self.prefix_map = dict()
         for kind in self.kinds:
             kind.find_prefixes(self.nonterms)       # stores prefixes in kind
-            # Compute possible token kinds for each single character prefix.
+            # Compute set of possible token kinds for each prefix's character class
             for prefix in kind.prefixes:
-                self.prefix_map.setdefault(prefix[0], []).append(kind)
+                # (if prefix is a character class (1 uppercase letter) don't convert it)
+                chrclass = prefix if TokenItem(prefix).ischarclass() else charclass(prefix[0])
+                self.prefix_map.setdefault(chrclass, set()).add(kind)
     
 
     def check_item(self, item, quantifier, alt):
@@ -147,7 +149,8 @@ class Tokenizer:
                 char = line[col]
                 chclass = charclass(char)
                 # search for match among tokenkinds that can begin with this char class
-                for kind in self.tokendef.prefix_map.get(chclass, []):   # empty list if none
+                kinds = self.tokendef.prefix_map.get(chclass, [])   # empty list if none
+                for kind in kinds:
                     length = self.match(line[col:], kind)
                     if length > 0:
                         # match found, length is number of chars matched
@@ -356,7 +359,7 @@ if __name__ == '__main__':
     print 'prefix_map:'
     for prefix, kinds in sorted(t.tokendef.prefix_map.items()):
         kindnames = [kind.name for kind in kinds]
-        print '%3s: %s' % (prefix, kindnames)
+        print '%3s: %s' % (prefix, str(kindnames).replace("'", ""))
     print
         
     tokens = t.get_tokens(source_filepath)
