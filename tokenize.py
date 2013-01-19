@@ -338,30 +338,30 @@ def test(filename):
 
 debug = 1
 
+import sys
+
 if __name__ == '__main__':
-    t = Tokenizer('grammars/L0.tokens')
+
+    if len(sys.argv) != 2:
+        print 'Usage: %s <source_filepath>' % sys.argv[0]
+        exit(0)
+    
+    source_filepath = sys.argv[1]
+    language = source_filepath.rpartition('.')[-1]
+    token_grammar = 'grammars/%s.tokens' % language
+    
+    t = Tokenizer(token_grammar)
     print t.prefixes(),
-    for prefix, kind in sorted(t.tokendef.prefix_map.items()):
-        print '%3s: %s' % (prefix, kind.name)
+    
+    print 'prefix_map:'
+    for prefix, kinds in sorted(t.tokendef.prefix_map.items()):
+        kindnames = [kind.name for kind in kinds]
+        print '%3s: %s' % (prefix, kindnames)
     print
-    
-    nts = t.tokendef.nonterms
-    kname = nts['NAME']
-    
-    kinds = t.tokendef.kinds
-    
-    ##print t.match('< 3', nts["RELATION"])
-    
-    fn = 'sample.L0'
-    # fn = 'snape.L0'
-    ##fn = 'sample.py'
-    ##fn = 'reassemble.py'
-    
-    fn = 'sample source/' + fn
-    
-    tokens = t.get_tokens(fn)
+        
+    tokens = t.get_tokens(source_filepath)
     if debug == 1:
-        print 'Tokens from ' + fn + ':\n'
+        print 'Tokens from ' + source_filepath + ':\n'
         for tkn in tokens:
             print tkn   
     ra = reassemble(tokens)
