@@ -11,12 +11,51 @@
 ### Enable directive not implemented, these are enabled by default now.
 
 
-## (not yet implemented)
-## When implemented, move most of this to base.tokens
-## use grammars/base.tokens
+## (not yet implemented) When implemented, move most of this file to base.tokens
+# use grammars/base.tokens
 
 
+STRING => '"' P* '"'
+STRING => "'" P* "'"
 
+COMMENT => '#' P*
+
+# P* = any printable characters, must be followed by terminal or end of line.
+# (P may be used only with *)
+# (See base.metagrammar)
+
+
+# These are here to expedite parsing (that is, make parse trace easier to read :-)
+KEYWORD => 'if'
+KEYWORD => 'else'
+KEYWORD => 'while'
+KEYWORD => 'declare'
+KEYWORD => 'external'
+
+RELATION => '=='
+RELATION => '!='
+RELATION => inequality '='?
+
+inequality => '<'
+inequality => '>'
+
+ASSIGN => '='
+ASSIGN => '+='
+ASSIGN => '-='
+
+ADD_OP => '+'
+ADD_OP => '-'
+
+MUL_OP => '*'
+MUL_OP => '//' 		# integer division (no FLOAT yet)
+## MUL_OP => '/'
+
+BOOL_OP => 'and'
+BOOL_OP => 'or'
+BOOL_OP => 'not'
+
+
+# Put this last to recognize keywords, bool_ops
 NAME => letter alphanum*
 
 alphanum => letter
@@ -46,35 +85,3 @@ digit => D		# digit character class, matches any digit
 
 ## May need to make E a separate character class.
 
-
-STRING => '"' P* '"'
-STRING => "'" P* "'"
-
-COMMENT => '#' P*
-
-# P* = any printable characters, must be followed by terminal or end of line.
-# (P may be used only with *)
-# (See base.metagrammar)
-
-
-RELATION => '=='
-RELATION => '!='
-RELATION => inequality '='?
-
-inequality => '<'
-inequality => '>'
-
-ASSIGN => '='
-ASSIGN => '+='
-ASSIGN => '-='
-
-ADD_OP => '+'
-ADD_OP => '-'
-
-MUL_OP => '*'
-MUL_OP => '//' 		# integer division (no FLOAT yet)
-## MUL_OP => '/'
-
-BOOL_OP => 'and'
-BOOL_OP => 'or'
-BOOL_OP => 'not'
