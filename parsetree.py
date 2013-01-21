@@ -3,6 +3,9 @@
 # Copyright 2013 by David H Post, DaviWorks.com.
 
 
+from grammar import Error
+
+
 indentation = ' ' * 4       # string to display one level of indentation
 
 
@@ -23,6 +26,22 @@ class BaseNode:
         return indentation * self.level
 
 
+    def find(self, name):
+        """ Return self if name matches. Extended by subclass."""
+        if self.name == name:
+            return self
+        else:
+            return None
+
+
+    def findall(self, name):
+        """ Return a list of nodes with specified name. Extended by subclass."""
+        if self.name == name:
+            return [self]
+        else:
+            return []
+
+
 class TerminalNode(BaseNode):
     """ A terminal node of the parse tree; contains text."""
     def __init__(self, name, text):
@@ -41,6 +60,11 @@ class TerminalNode(BaseNode):
     def show(self):
         """ Return string to display node at its indent level."""
         return self.indent() + str(self) + '\n'
+
+
+    def findtext(self):
+        """ Return text of this terminal."""
+        return self.text
 
 
 class NonterminalNode(BaseNode):
@@ -86,3 +110,51 @@ class NonterminalNode(BaseNode):
             result += node.show()
         return result
 
+
+    def first(self):
+        """ Return first child; if none, raise error."""
+        if self.children:
+            return self.children[0]
+        else:
+            raise Error().msg('Node %s has no first child' % self.name)
+            
+
+    def find(self, name):
+        """ Return first node with name in preorder traversal from this node."""
+        if self.name == name:
+            return self
+        else:
+            result = None
+            for child in self.children:
+                result = child.find(name)
+                if result:
+                    break
+            return result
+
+    
+    def findtext(self):
+        """ Return text of first terminal found in preorder traversal from this node,
+            or None if none found."""
+        text = None
+        for child in self.children:
+            if child.isterminal():
+                text = child.text
+                break
+            else:
+                text = child.findtext()
+                if text:
+                    break
+        return text
+
+        
+    def findall(self, name):
+        """ Traverse tree from this node in preorder, 
+            return a list of all nodes with specified name. (Don't search below those.)"""
+        if self.name == name:
+            return [self]
+        else:
+            result = []
+            for child in self.children:
+                result.extend(child.findall(name))
+            return result
+        
