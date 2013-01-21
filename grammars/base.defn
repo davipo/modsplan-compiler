@@ -23,8 +23,8 @@ assignment(designator, ASSIGN, test)
 ASSIGN('=')
 	store
 	
-ASSIGN(+=)
-	add_in_place
+ASSIGN('+=')
+	add in_place
 
 
 if(test, suite)
