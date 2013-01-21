@@ -119,7 +119,7 @@ class SyntaxParser:
                     log(3, '%s => %s' % (nonterm, alt), node)
                     fail, numtokens = self.parse_alt(start, alt, node)
                     if fail:
-                        if numtokens > maxtokens:
+                        if numtokens >= maxtokens:      # (>= ensures failure gets set)
                             maxtokens = numtokens
                             failure = fail              # save maximum-token failure
                     else:       # success
