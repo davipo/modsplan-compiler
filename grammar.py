@@ -183,7 +183,7 @@ class Grammar:
         """ Load grammar file (format defined by base.metagrammar).
             Store productions in self.nonterms.
             If grammar contains 'use' directives, import all needed files.
-            Return the root Nonterminal, the last one loaded with a .root flag, or None.
+            Set self.root to last nonterminal found with a .root flag.
             (To use multiple grammar files, create one file of 'use' directives.)
         """ 
         lineno = 0                  # line number of file
