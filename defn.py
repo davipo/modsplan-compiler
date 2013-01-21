@@ -11,6 +11,7 @@ from grammar import Error
 class DefnNode:
     
     def __init__(self, content, instructions):
+#         self.name = name                    # name of node (nonterminal or terminal)
         self.text = None                    # text if terminal node
         self.args = None                    # list of arguments if nonterminal
         self.instructions = instructions    # list of code generation instructions
@@ -56,6 +57,7 @@ class Definitions:
                 content = signature.find('STRING').text
             elif sigkind.name == 'nonterm':
                 content = [arg.findtext() for arg in signature.findall('arg')]
+                ### need to record subtype and index
             else:
                 msg = 'Invalid signature type "%s" in %s definition' % (sigkind.name, name)
                 raise Error().msg(msg)
