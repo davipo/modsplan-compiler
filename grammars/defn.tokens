@@ -18,8 +18,6 @@ UPPERNAME => upper+
 upper => U
 upper => '_'
 
-DIGIT => D
-
 INTEGER => digits
 digits => D+
 

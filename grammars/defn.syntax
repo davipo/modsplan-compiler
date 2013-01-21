@@ -24,8 +24,8 @@ nextarg => ',' arg
 arg => nonterm
 arg => terminal
 
-### nonterm => qualident index?
-nonterm => identifier   ### simpler for testing
+nonterm => qualident index?
+# nonterm => identifier   ### simpler for testing
 
 qualident => identifier qualifier?
 
@@ -33,7 +33,7 @@ qualifier => '_' subtype
 
 subtype => identifier
 
-index => DIGIT 				# to distinguish multiple instances
+index => INTEGER 		    # to distinguish multiple instances
 
 identifier => LOWERNAME 	# lowercase letters only
 
