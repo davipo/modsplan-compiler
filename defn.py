@@ -21,6 +21,15 @@ class DefnNode:
             raise Error().msg('Invalid content for DefnNode %s' % name)
 
 
+    def __str__(self):
+        s = '<'
+        if self.text == None:
+            s += str(self.args)
+        else:
+            s += self.text
+        return s + '>'
+    
+
 class Definitions:
     """ Holds semantic definitions (used to generate code from syntax trees)."""
     
