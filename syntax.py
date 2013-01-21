@@ -241,10 +241,10 @@ def test(source_filename):
 # debugging output selectors: 
 #   o = tokens, p = prefixes, r = reassemble, s = syntax, t = tree, 
 #   3, 4, 5 = parse trace levels
-debug = 'or345t'  # default debugging output
-
+debug = ''
 
 if __name__ == '__main__':
+    debug = 'or345t'  # default debugging output
     
     if len(sys.argv) in (2, 3):
         if len(sys.argv) == 3:
