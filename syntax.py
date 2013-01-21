@@ -6,6 +6,7 @@
 
 
 import sys
+import os.path
 
 import grammar
 import tokenize
@@ -218,13 +219,14 @@ def log(msgtype, message, node=None):
 
 parser = None
 
-def test(source_filename):
+def test(source_filename, grammar_dir=None):
     global parser
+    grammar_dir = 'grammars/' if grammar_dir == None else grammar_dir
     srcname, sep, langname = source_filename.rpartition('.')
     tree = None
     try:
         print '\n Parsing %s ... \n' % source_filename
-        parser = SyntaxParser('grammars/' + langname)
+        parser = SyntaxParser(os.path.join(grammar_dir, langname))
         if 's' in debug:
             parser.syntax.show()
         if 'p' in debug:
@@ -246,12 +248,17 @@ def test(source_filename):
 debug = ''
 
 if __name__ == '__main__':
-    debug = 'or345t'  # default debugging output
+    debug = 't'     # default debugging output
     
-    if len(sys.argv) in (2, 3):
-        if len(sys.argv) == 3:
-            debug = sys.argv[2]
-        tree = test(sys.argv[1])
+    if 2 <= len(sys.argv) <= 4:
+        sourcepath = sys.argv[1]
+        grammar_dir = None              # use default if None
+        for arg in sys.argv[2:]:
+            if arg.startswith('-'):
+                debug = arg[1:]
+            else:
+                grammar_dir = arg
+        tree = test(sourcepath, grammar_dir)
     else:
-        print 'Usage: ./syntax.py <source_filename> [<debug_flags>]'
+        print 'Usage: ./syntax.py <source_filename> [<grammar_dir>] [-<debug_flags>]'
 
