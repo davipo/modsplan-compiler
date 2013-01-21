@@ -2,6 +2,7 @@
 # Modsplan .defn parser
 # Copyright 2011-2013 by David H Post, DaviWorks.com.
 
+import os.path
 
 import syntax
 from grammar import Error
@@ -33,16 +34,18 @@ class DefnNode:
 class Definitions:
     """ Holds semantic definitions (used to generate code from syntax trees)."""
     
-    def __init__(self):
+    def __init__(self, defn_grammar_dir='grammars/'):
+        """ Initialize defn parser to prepare for parsing .defn specs."""
+        defn_path = os.path.join(defn_grammar_dir, 'defn')      # defn.tokens, defn.syntax
+        self.defn_parser = syntax.SyntaxParser(defn_path)
         self.defns = dict()     # dictionary of definitions: key is itemname, 
                                 #   value is a list of DefnNode for this item
-        self.defn_parser = syntax.SyntaxParser('grammars/defn')
 
         
-    def load(self, langname):
-        """ Load definitions from langname.defn file."""
+    def load(self, langpath):
+        """ Load definitions from langpath.defn file."""
         # Use a SyntaxParser to load definitions into a parse tree.
-        self.defn_tree = self.defn_parser.parse(langname + '.defn')
+        self.defn_tree = self.defn_parser.parse(langpath + '.defn')
 
         # Extract definitions from tree
         for definition in self.defn_tree.findall('definition'):
@@ -62,13 +65,12 @@ class Definitions:
 
         
         
-        
+if __name__ == '__main__':
+    defs = Definitions()
 
-defs = Definitions()
-
-lang = 'grammars/smaller'
-defs.load(lang)
-print defs.defns
+    lang = 'grammars/smaller'
+    defs.load(lang)
+    print defs.defns
 
 
 

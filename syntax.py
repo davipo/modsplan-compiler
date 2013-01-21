@@ -38,14 +38,18 @@ class SyntaxParser:
     """ Parse source code into syntax tree.
         Loads token and syntax grammars on initialization, to direct parsing.
     """
-    def __init__(self, langname):
-        """ Create parser by loading syntax grammar (langname.syntax) and 
-            token grammar (langname.tokens).
+    def __init__(self, langpath):
+        """ Create parser by loading syntax grammar (langpath.syntax) and 
+            token grammar (langpath.tokens).
             If grammars contain 'use' directives, import all needed files.
             To use multiple grammar files, create one file of 'use' directives.
         """
-        self.tokenizer = tokenize.Tokenizer(langname + '.tokens')
-        self.syntax = SyntaxGrammar(langname + '.syntax')
+        self.tokenizer = tokenize.Tokenizer(langpath + '.tokens')
+        if debug:
+            print 'Tokens loaded from ' + self.tokenizer.tokendef.filename
+        self.syntax = SyntaxGrammar(langpath + '.syntax')
+        if debug:
+            print 'Syntax loaded from ' + self.syntax.filename
         self.source_filename = None
         self.maxtokens = 0          # greatest number of tokens parsed before a parse failure
         self.expected = None        # grammar item expected at furthest failure
@@ -221,8 +225,6 @@ def test(source_filename):
     try:
         print '\n Parsing %s ... \n' % source_filename
         parser = SyntaxParser('grammars/' + langname)
-        print 'Tokens loaded from ' + parser.tokenizer.tokendef.filename
-        print 'Syntax loaded from ' + parser.syntax.filename
         if 's' in debug:
             parser.syntax.show()
         if 'p' in debug:
