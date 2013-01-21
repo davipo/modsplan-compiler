@@ -50,8 +50,43 @@ class Compiler:
             Return list of instructions (strings)."""
         code = []
         # Process source tree, looking up definitions, emitting code
-        
-        
+        # Follow first child until we find an item for which we have some definitions
+        item = source_tree
+        while item.name not in self.defs.defns:
+            item = item.first()         # will raise error if no children
+            
+        definitions = self.defs.defns[item.name]
+        for defn in definitions:
+            # Does defn match item?
+            if item.isterminal():
+                match = (defn.text == item.text)
+            else:  # item is nonterminal
+                # Does defn match item args?
+                match = (defn.args == [child.name for child in item.children])
+            if match:
+                # we have a match, generate instructions
+                code.extend(gen_instructions(item, defn.instructions))
+        return code
+            
+            
+            
+    def gen_instructions(self, item, instructions):
+        """ Generate instructions code for item."""        
+        for instr in defn.instructions:
+            if instr.isdirective():
+                if instr.prefix == '&':                 # expansion
+                    code.extend(codegen(instr.arg))
+                elif instr.prefix == '.':               # compiler directive
+                    pass
+                elif instr.prefix == '=':               # rewrite
+                    pass
+            elif instr.islabel():
+                code.append(instr.label + ':')
+                code.extend(gen_instructions(item, instr.instructions))
+            else:   # operation
+                # process iargs
+                argstr = gen_args(instr)
+                code.append(instr.operation.identifier + ' \t' + argstr)
         return code
             
             
