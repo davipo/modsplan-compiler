@@ -6,10 +6,10 @@
 
 
 
-defn_file.root => defn*
+defn_file.root => piece*
 
-defn => endline
-defn => definition
+piece => endline
+piece => definition
 
 endline => COMMENT? NEWLINE
 
