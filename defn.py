@@ -35,7 +35,7 @@ class DefnNode:
 class Definitions:
     """ Holds semantic definitions (used to generate code from syntax trees)."""
     
-    def __init__(self, defn_grammar_dir='grammars/'):
+    def __init__(self, defn_grammar_dir='defn_grammar/'):
         """ Initialize defn parser to prepare for parsing .defn specs."""
         defn_path = os.path.join(defn_grammar_dir, 'defn')      # defn.tokens, defn.syntax
         self.defn_parser = syntax.SyntaxParser(defn_path)
