@@ -2,12 +2,12 @@
 # Smaller sample defn file
 
 
-declaration(attributes, variable)
+declaration(attributes variable)
 	# provides for external functions (for I/O, etc.) and variables
 	.addsymbol(variable, attributes)
 
 
-assignment(designator, ASSIGN, test)
+assignment(designator ASSIGN test)
 	&designator
 	&test
 	&ASSIGN

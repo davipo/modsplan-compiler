@@ -13,24 +13,21 @@ endline => COMMENT? NEWLINE
 
 definition => signature endline instructions
 
-signature => nonterm '(' arglist? ')'
-signature => terminal '(' STRING ')' 	# matches when terminal text = string
+signature => nonterm '(' child* ')'     # match a node with these children
+signature => terminal '(' STRING ')'    # match when terminal text = string
 
-arglist => item nextarg*
-nextarg => ',' item
-
-item => nonterm
-item => terminal
+child => nonterm
+child => terminal
 
 ## Implement qualident later; may not need index
 # nonterm => qualident index?
-# index => INTEGER 		    # to distinguish multiple instances
+# index => INTEGER                      # to distinguish multiple instances
 
 nonterm => identifier       ## simpler for now
 
-identifier => LOWERNAME 	# lowercase letters only
+identifier => LOWERNAME     # lowercase letters only
 
-terminal => UPPERNAME 		# uppercase letters and '_'
+terminal => UPPERNAME       # uppercase letters and '_'
 
 
 instructions => INDENT instruction+ DEDENT
@@ -46,12 +43,9 @@ qualident => identifier qualifier?
 qualifier => '_' subtype
 subtype => identifier
 
-directive => '.' identifier '(' cargs? ')' 		# compiler directive
-directive => '&' item 							# expand item
-directive => '=' signature						# rewrite
-
-# use '=' also for expand?
-# directive => '=' item 						  # expand item
+directive => '.' identifier '(' cargs? ')'      # compiler directive
+directive => '&' child                          # generate code for child node
+directive => '=' signature                      # rewrite
 
 # compiler directive args
 cargs => carg next_carg*

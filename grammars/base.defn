@@ -6,16 +6,16 @@
 # See defn.metagrammar for syntax of .defn files
 
 
-### Specify only nonterms which generate code?
-### 	Compiler traverses tree depth-first, matching these, generating as it goes.
+##  Specify only nonterms which generate code
+##     Compiler traverses tree depth-first, matching these, generating as it goes.
 
 
-declaration(attributes, variable)
+declaration(attributes variable)
 	# provides for external functions (for I/O, etc.) and variables
 	.addsymbol(variable, attributes)
 
 
-assignment(designator, ASSIGN, test)
+assignment(designator ASSIGN test)
 	&designator
 	&test
 	&ASSIGN
@@ -27,7 +27,7 @@ ASSIGN('+=')
 	add in_place
 
 
-if(test, suite)
+if(test suite)
 	&test
 	branch if_true, if_false
 	if_true:
@@ -35,19 +35,19 @@ if(test, suite)
 	if_false:
 
 
-if(test, suite, suite2)
+if(test suite suite)
 	&test
 	branch if_true, if_false
 	if_true:
 		&suite
 		jump if_end
 	if_false:
-		&suite2
+		&suite
 	if_end:
 
 
 
-while(test, suite)
+while(test suite)
 	while:
 		&test
 		branch if_true, if_false
@@ -64,15 +64,14 @@ designator(variable)
 	getptr
 
 # When sequences added:
-# subscript(variable_seq, expr_int)
+# subscript(variable_seq expr_int)
 #	&variable_seq
 #	&expr_int
 #	getptr
 
 
-compare(expr, RELATION, expr2)
+comparison(RELATION expr)
 	&expr
-	&expr2
 	&RELATION
 
 RELATION('==')
@@ -94,9 +93,8 @@ RELATION('<=')
 	cmp le
 
 
-add(term, ADD_OP, term2)
+addition(ADD_OP term)
 	&term
-	&term2
 	&ADD_OP
 
 ADD_OP('+')
@@ -106,7 +104,7 @@ ADD_OP('-')
 	sub
 
 
-call(variable, arglist) 		# function call
+call(variable arglist) 		    # function call
 	&arglist
 	&variable
 	call
