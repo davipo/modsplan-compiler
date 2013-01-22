@@ -35,14 +35,14 @@ if(test, suite)
 	if_false:
 
 
-if(test, suite, suite2)
+if(test, suite, suite)
 	&test
 	branch if_true, if_false
 	if_true:
 		&suite
 		jump if_end
 	if_false:
-		&suite2
+		&suite
 	if_end:
 
 
@@ -70,9 +70,8 @@ designator(variable)
 #	getptr
 
 
-compare(expr, RELATION, expr2)
+comparison(RELATION, expr)
 	&expr
-	&expr2
 	&RELATION
 
 RELATION('==')
@@ -94,9 +93,8 @@ RELATION('<=')
 	cmp le
 
 
-add(term, ADD_OP, term2)
+add(ADD_OP, term)
 	&term
-	&term2
 	&ADD_OP
 
 ADD_OP('+')
