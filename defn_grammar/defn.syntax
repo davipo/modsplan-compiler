@@ -1,7 +1,9 @@
 # defn.syntax
 # This is the syntax for .defn specifications.
 
-# Copyright 2011-2013 by David H Post, DaviWorks.com.
+# Created September 2011.
+# Copyright (c) 2011 David H. Post. All rights reserved.
+
 
 
 defn_file.root => piece*
@@ -16,17 +18,22 @@ definition => signature endline instructions
 signature => nonterm '(' arglist? ')'
 signature => terminal '(' STRING ')' 	# matches when terminal text = string
 
-arglist => item nextarg*
-nextarg => ',' item
+arglist => arg nextarg*
+nextarg => ',' arg
 
-item => nonterm
-item => terminal
+arg => nonterm
+arg => terminal
 
-## Implement qualident later; may not need index
-# nonterm => qualident index?
-# index => INTEGER 		    # to distinguish multiple instances
+nonterm => qualident index?
+# nonterm => identifier   ### simpler for testing
 
-nonterm => identifier       ## simpler for now
+qualident => identifier qualifier?
+
+qualifier => '_' subtype
+
+subtype => identifier
+
+index => INTEGER 		    # to distinguish multiple instances
 
 identifier => LOWERNAME 	# lowercase letters only
 
@@ -42,30 +49,33 @@ instruction => label ':' endline instructions?
 
 label => qualident
 
+qualident => identifier qualifier?
+qualifier => '_' subtype
+subtype => identifier
+
 directive => '.' identifier '(' cargs? ')' 		# compiler directive
-directive => '&' arg 							# expand arg
+directive => '&' item 							# expand item
 directive => '=' signature						# rewrite
 
 # use '=' also for expand?
-# directive => '=' arg 							# expand arg
+# directive => '=' item 						  # expand item
 
+# compiler directive args
 cargs => carg next_carg*
 next_carg => ',' carg
-
 carg => nonterm
 carg => terminal
 carg => constant
 
+operation => identifier opargs?
 
-operation => identifier iargs?
-
-iargs => iarg next_iarg*
-next_iarg => ',' iarg
-
-iarg => constant
-iarg => label
-iarg => terminal 			# substitutes text of terminal
-iarg => directive
+# operation args
+opargs => oparg next_oparg*
+next_oparg => ',' oparg
+oparg => constant
+oparg => label
+oparg => terminal       # substitutes text of terminal
+oparg => directive
 
 constant => number
 constant => STRING
