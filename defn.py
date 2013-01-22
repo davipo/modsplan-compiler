@@ -56,7 +56,7 @@ class Definitions:
             if sigkind.name == 'terminal':
                 content = signature.find('STRING').text
             elif sigkind.name == 'nonterm':
-                content = [arg.findtext() for arg in signature.findall('arg')]
+                content = [arg.findtext() for arg in signature.findall('child')]
                 ### need to record subtype and index
             else:
                 msg = 'Invalid signature type "%s" in %s definition' % (sigkind.name, name)

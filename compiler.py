@@ -81,7 +81,7 @@ class Compiler:
                 direc = instr.first()
                 if direc.name == 'identifier':          # compiler directive
                     pass
-                elif direc.name == 'item':              # expansion
+                elif direc.name == 'child':             # expansion
                     code.extend(self.codegen(direc))
                 elif direc.name == 'signature':         # rewrite
                     pass
