@@ -18,6 +18,7 @@ class Compiler:
     def __init__(self, langname, grammar_dir='grammars/'):
         """ Load language specs for langname."""
         langpath = os.path.join(grammar_dir, langname)
+        self.source_err = None      # set in compile(), for reporting errors in source
         try:
             self.parser = syntax.SyntaxParser(langpath)   # load langname.{tokens, syntax}
             if 's' in debug:
@@ -39,6 +40,7 @@ class Compiler:
             if 't' in debug:
                 print '\n\nTree:\n'
                 print source_tree.show()
+            self.source_err = Error(source_filepath)
             code = self.codegen(source_tree)
         except Error as exc:
             print exc
@@ -47,7 +49,7 @@ class Compiler:
 
     def codegen(self, source_tree):
         """ Generate code from source_tree, using definitions loaded for language.
-            Return list of instructions (strings)."""
+            Return list of target code instructions (strings)."""
         code = []
         # Process source tree, looking up definitions, emitting code
         # Follow first child until we find an item for which we have some definitions
@@ -66,30 +68,45 @@ class Compiler:
             if match:
                 # we have a match, generate instructions
                 code.extend(gen_instructions(item, defn.instructions))
+                break
         return code
             
             
             
     def gen_instructions(self, item, instructions):
-        """ Generate instructions code for item."""        
-        for instr in defn.instructions:
-            if instr.isdirective():
-                if instr.prefix == '&':                 # expansion
-                    code.extend(codegen(instr.arg))
-                elif instr.prefix == '.':               # compiler directive
+        """ Given instructions tree for item, generate list of target instruction code."""        
+        for instruction in defn.instructions:
+            instr = instruction.first()
+            if instr.name == 'directive':
+                direc = instr.first()
+                if direc.name == 'identifier':          # compiler directive
                     pass
-                elif instr.prefix == '=':               # rewrite
+                elif direc.name == 'item':              # expansion
+                    code.extend(self.codegen(direc))
+                elif direc.name == 'signature':         # rewrite
                     pass
-            elif instr.islabel():
+            elif instr.name == 'label':
                 code.append(instr.label + ':')
-                code.extend(gen_instructions(item, instr.instructions))
-            else:   # operation
-                # process iargs
-                argstr = gen_args(instr)
-                code.append(instr.operation.identifier + ' \t' + argstr)
+                code.extend(self.gen_instructions(item, instr.instructions))
+            elif instr.name == 'operation':
+                code.append(self.gen_operation(instr))
+            elif instr.name == 'endline':
+                pass        # end of instructions for this defn
+            else:
+                message = 'Unrecognized instruction %s' % instr.name
+                ### which file is this an error in?  :-)
+                raise Error().msg(message)
         return code
             
-            
+      
+    def gen_operation(self, operation):
+        """ Generate code for an operation instruction."""
+        
+        argstring = ''
+        opcode = operation.findtext()
+        return opcode + ' \t' + argstring
+        
+        
 
 if __name__ == '__main__':
     debug = '.'              # default debugging output
