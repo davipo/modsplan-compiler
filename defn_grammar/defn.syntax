@@ -1,9 +1,7 @@
 # defn.syntax
 # This is the syntax for .defn specifications.
 
-# Created September 2011.
-# Copyright (c) 2011 David H. Post. All rights reserved.
-
+# Copyright 2011-2013 by David H Post, DaviWorks.com.
 
 
 defn_file.root => piece*
@@ -18,22 +16,17 @@ definition => signature endline instructions
 signature => nonterm '(' arglist? ')'
 signature => terminal '(' STRING ')' 	# matches when terminal text = string
 
-arglist => arg nextarg*
-nextarg => ',' arg
+arglist => item nextarg*
+nextarg => ',' item
 
-arg => nonterm
-arg => terminal
+item => nonterm
+item => terminal
 
-nonterm => qualident index?
-# nonterm => identifier   ### simpler for testing
+## Implement qualident later; may not need index
+# nonterm => qualident index?
+# index => INTEGER 		    # to distinguish multiple instances
 
-qualident => identifier qualifier?
-
-qualifier => '_' subtype
-
-subtype => identifier
-
-index => INTEGER 		    # to distinguish multiple instances
+nonterm => identifier       ## simpler for now
 
 identifier => LOWERNAME 	# lowercase letters only
 
