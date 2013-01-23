@@ -36,15 +36,17 @@ terminal => UPPERNAME       # uppercase letters and '_'
 instructions => INDENT instruction+ DEDENT
 
 instruction => endline
-instruction => label ':' endline instructions?
 instruction => directive endline
+instruction => expansion endline
+instruction => rewrite endline
+instruction => label ':' endline instructions?
 instruction => operation endline
 
-label => LOWERNAME
-
 directive => '.' identifier '(' cargs? ')'      # compiler directive
-directive => '&' child                          # generate code for child node
-directive => '=' signature                      # rewrite
+expansion => '&' child                          # generate code for child node
+rewrite => '=' signature
+
+label => LOWERNAME
 
 # compiler directive args
 cargs => carg next_carg*
