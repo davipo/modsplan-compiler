@@ -16,15 +16,15 @@ ASSIGN('=')
 	store
 	
 ASSIGN('+=')
-	add in_place
+	add 'in place'
 
 
 if(test suite)
 	&test
-	branch if_true, if_false
-	if_true:
+	branch iftrue, iffalse
+	iftrue:
 		&suite
-	if_false:
+	iffalse:
 
 
 ADD_OP('+')
