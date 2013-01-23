@@ -29,32 +29,32 @@ ASSIGN('+=')
 
 if(test suite)
 	&test
-	branch if_true, if_false
-	if_true:
+	branch iftrue, iffalse
+	iftrue:
 		&suite
-	if_false:
+	iffalse:
 
 
 if(test suite suite)
 	&test
-	branch if_true, if_false
-	if_true:
+	branch iftrue, iffalse
+	iftrue:
 		&suite
-		jump if_end
-	if_false:
+		jump ifend
+	iffalse:
 		&suite
-	if_end:
+	ifend:
 
 
 
 while(test suite)
 	while:
 		&test
-		branch if_true, if_false
-		if_true:
+		branch iftrue, iffalse
+		iftrue:
 			&suite
 			jump while
-		if_false:
+		iffalse:
 
 
 designator(variable)

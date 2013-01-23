@@ -21,6 +21,9 @@ child => terminal
 
 ## Implement qualident later; may not need index
 # nonterm => qualident index?
+# qualident => identifier qualifier?
+# qualifier => '_' subtype
+# subtype => identifier
 # index => INTEGER                      # to distinguish multiple instances
 
 nonterm => identifier       ## simpler for now
@@ -33,15 +36,11 @@ terminal => UPPERNAME       # uppercase letters and '_'
 instructions => INDENT instruction+ DEDENT
 
 instruction => endline
+instruction => label ':' endline instructions?
 instruction => directive endline
 instruction => operation endline
-instruction => label ':' endline instructions?
 
-label => qualident
-
-qualident => identifier qualifier?
-qualifier => '_' subtype
-subtype => identifier
+label => LOWERNAME
 
 directive => '.' identifier '(' cargs? ')'      # compiler directive
 directive => '&' child                          # generate code for child node

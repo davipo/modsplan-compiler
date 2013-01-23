@@ -14,7 +14,7 @@
 
 LOWERNAME => L+     # '_' not allowed (used to append subtype)
 
-UPPERNAME => upper+
+UPPERNAME => U upper+   # must be more than one char (otherwise is character class)
 upper => U
 upper => '_'
 
