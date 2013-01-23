@@ -39,17 +39,19 @@ class SyntaxParser:
     """ Parse source code into syntax tree.
         Loads token and syntax grammars on initialization, to direct parsing.
     """
-    def __init__(self, langpath):
+    def __init__(self, langpath, debug=''):
         """ Create parser by loading syntax grammar (langpath.syntax) and 
             token grammar (langpath.tokens).
             If grammars contain 'use' directives, import all needed files.
             To use multiple grammar files, create one file of 'use' directives.
+            Optional debugging flags.
         """
+        self.debug = debug          # debugging flags
         self.tokenizer = tokenize.Tokenizer(langpath + '.tokens')
-        if debug:
+        if self.debug:
             print 'Tokens loaded from ' + self.tokenizer.tokendef.filename
         self.syntax = SyntaxGrammar(langpath + '.syntax')
-        if debug:
+        if self.debug:
             print 'Syntax loaded from ' + self.syntax.filename
         self.source_filename = None
         self.maxtokens = 0          # greatest number of tokens parsed before a parse failure
@@ -66,12 +68,12 @@ class SyntaxParser:
         self.source_filename = filename
         self.err =  tokenize.Error(filename)    #  to report errors by token line & column 
         self.tokens = self.tokenizer.get_tokens(filename)
-        if 'o' in debug:
+        if 'o' in self.debug:
             print '\nTokens from ' + filename + ':\n'
             for tkn in self.tokens:
                 print tkn
             print
-        if 'r' in debug:
+        if 'r' in self.debug:
             print '\nReassembled source from tokens:'
             print tokenize.reassemble(self.tokens)
             
@@ -79,12 +81,12 @@ class SyntaxParser:
         # Build parse tree depth-first, climbing syntax to classify nodes.
         nonterm = self.syntax.root
         parse_tree = parsetree.new(nonterm.name)    # root of parse tree
-        log(3, '\n\nParse trace:\n')
+        self.log(3, '\n\nParse trace:\n')
         if self.tokens:
             self.newtoken = True
             failure, numtokens = self.parse_nonterm(0, nonterm, parse_tree)
             if numtokens < len(self.tokens):
-                print '\n\nParsed %d tokens of %d total.' % (self.maxtokens, len(self.tokens))
+                print '\n\nParsed %d tokens of %d total' % (self.maxtokens, len(self.tokens))
                 token = self.tokens[self.maxtokens]
                 self.syntax_error(token, self.expected)
             else:
@@ -109,7 +111,7 @@ class SyntaxParser:
         maxtokens = 0           # max number of tokens parsed among failed alternates
         token = self.tokens[start]
         if self.newtoken:
-            log(3, token)           # display new token once
+            self.log(3, token)      # display new token once
             self.newtoken = False
         if not self.inprefixes(token, nonterm.prefixes):
             failure = nonterm       # fail, nonterm not possible with this token
@@ -117,7 +119,7 @@ class SyntaxParser:
             # token must be in prefixes of some alternate
             for alt in nonterm.alternates:
                 if self.inprefixes(token, alt.prefixes):    # this alternate may match
-                    log(3, '%s => %s' % (nonterm, alt), node)
+                    self.log(3, '%s => %s' % (nonterm, alt), node)
                     fail, numtokens = self.parse_alt(start, alt, node)
                     if fail:
                         if numtokens >= maxtokens:      # (>= ensures failure gets set)
@@ -126,7 +128,7 @@ class SyntaxParser:
                     else:       # success
                         failure = None
                         tokens = self.tokens[start:][:numtokens]
-                        log(4, '%s: %s' % (nonterm, listtokens(tokens)), node)
+                        self.log(4, '%s: %s' % (nonterm, listtokens(tokens)), node)
                         break
         if failure:
             numtokens = maxtokens
@@ -134,10 +136,10 @@ class SyntaxParser:
                 self.maxtokens = start + maxtokens      # record furthest failure
                 self.expected = failure
             if isinstance(failure, grammar.Nonterminal):
-                log(4, '%s failed: expected one of ' % nonterm, node)
-                log(4, '    %s' % list(failure.prefixes), node)
+                self.log(4, '%s failed: expected one of ' % nonterm, node)
+                self.log(4, '    %s' % list(failure.prefixes), node)
             else:
-                log(4, '%s failed: expected %s' % (nonterm, failure), node)
+                self.log(4, '%s failed: expected %s' % (nonterm, failure), node)
         return failure, numtokens
 
 
@@ -192,11 +194,11 @@ class SyntaxParser:
                     # don't output NEWLINE, INDENT, DEDENT, or literals
                     node.add_child(token.name, token.text)      # terminal node
                 if self.newtoken:
-                    log(3, token)           # if token display pending, show this one
-                log(5, '    %s found' % item, node)
+                    self.log(3, token)      # if token display pending, show this one
+                self.log(5, '    %s found' % item, node)
                 self.newtoken = True    # show next token in trace
             else:
-                log(5, '    %s not found' % item, node)
+                self.log(5, '    %s not found' % item, node)
                 failure = item      # item not found
         else:   # nonterminal
             nonterm = self.syntax.nonterms[item.text()]
@@ -206,27 +208,28 @@ class SyntaxParser:
                 node.remove_child()
         return failure, numtokens
 
+
+    def log(self, msgtype, message, node=None):
+        if str(msgtype) in self.debug:
+            indent = node.indent() if node else ''
+            print indent + str(message)
+
         
 def listtokens(tokens):
     return ' '.join(map(str, tokens))
 
 
-def log(msgtype, message, node=None):
-    if str(msgtype) in debug:
-        indent = node.indent() if node else ''
-        print indent + str(message)
-
-
 parser = None
 
-def test(source_filename, grammar_dir=None):
+def test(source_filename, grammar_dir=None, debug=''):
     global parser
-    grammar_dir = 'modspecs/' if grammar_dir == None else grammar_dir
+    if grammar_dir == None:
+        grammar_dir = 'modspecs/'
     srcname, sep, langname = source_filename.rpartition('.')
     tree = None
     try:
-        print '\n Parsing %s ... \n' % source_filename
-        parser = SyntaxParser(os.path.join(grammar_dir, langname))
+        print '\nParsing %s ... \n' % source_filename
+        parser = SyntaxParser(os.path.join(grammar_dir, langname), debug)
         if 's' in debug:
             parser.syntax.show()
         if 'p' in debug:
@@ -235,7 +238,7 @@ def test(source_filename, grammar_dir=None):
         if 't' in debug:
             print '\n\nTree:\n'
             print tree.show()
-        print "\n\n**** Syntax test done ****"
+        print "\n**** Syntax test done ****"
     except grammar.Error as exc:
         print exc
     print
@@ -245,7 +248,6 @@ def test(source_filename, grammar_dir=None):
 # debugging output selectors: 
 #   o = tokens, p = prefixes, r = reassemble, s = syntax, t = tree, 
 #   3, 4, 5 = parse trace levels
-debug = ''
 
 if __name__ == '__main__':
     debug = 't'     # default debugging output
@@ -258,7 +260,7 @@ if __name__ == '__main__':
                 debug = arg[1:]
             else:
                 grammar_dir = arg
-        tree = test(sourcepath, grammar_dir)
+        tree = test(sourcepath, grammar_dir, debug)
     else:
         print 'Usage: ./syntax.py <source_filename> [<grammar_dir>] [-<debug_flags>]'
 

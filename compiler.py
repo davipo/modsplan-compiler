@@ -18,20 +18,22 @@ default_spec_dir = 'modspecs/'          # default location for language specific
 class Compiler:
     """ Universal compiler: reads language specs, compiles specified language."""
     
-    def __init__(self, langname, spec_dir=None):
-        """ Load language specs for langname."""
+    def __init__(self, langname, spec_dir=None, debug=''):
+        """ Load language specs for langname.
+            Optional specification directory, debugging flags."""
         self.langname = langname
+        self.debug = debug          # debugging flags
         self.source_path = ''       # filepath of last source compiled
         self.source_tree = None     # last tree parsed from source
         self.source_err = None      # set in compile(), for reporting errors in source
         if spec_dir == None:
             spec_dir = default_spec_dir
-        langpath = os.path.join(grammar_dir, langname)
+        langpath = os.path.join(spec_dir, langname)
         try:
             self.parser = syntax.SyntaxParser(langpath)   # load langname.{tokens, syntax}
-            if 's' in debug:
+            if 's' in self.debug:
                 self.parser.syntax.show()
-            if 'p' in debug:
+            if 'p' in self.debug:
                 print self.parser.syntax.show_prefixes()
             self.defs = defn.Definitions()                # initialize defn parser
             self.defs.load(langpath)                      # load semantics from langname.defn
@@ -44,16 +46,13 @@ class Compiler:
             return list of target code instructions (strings)."""
         self.source_path = source_filepath
         code = []
-        try:
-            print '\n Parsing %s ... \n' % source_filepath
-            self.source_tree = self.parser.parse(source_filepath)
-            if 't' in debug:
-                print '\n\nTree:\n'
-                print self.source_tree.show()
-            self.source_err = Error(source_filepath)
-            code = self.codegen(self.source_tree)
-        except Error as exc:
-            print exc
+        print '\nParsing %s ...' % source_filepath
+        self.source_tree = self.parser.parse(source_filepath)
+        if 't' in self.debug:
+            print '\n\nTree:\n'
+            print self.source_tree.show()
+        self.source_err = Error(source_filepath)
+        code = self.codegen(self.source_tree)
         return code
 
 
@@ -108,9 +107,7 @@ class Compiler:
         
 
 if __name__ == '__main__':
-    debug = '.'              # default debugging output
-#     debug = 'or345t'
-
+    debug = 't'              # default debugging output
     if 2 <= len(sys.argv) <= 4:
         sourcepath = sys.argv[1]
         spec_dir = None                 # specifications directory, use default if None
@@ -119,11 +116,13 @@ if __name__ == '__main__':
                 debug = arg[1:]
             else:
                 spec_dir = arg
-    
-        discard, sep, langname = sourcepath.rpartition('.')
-        compiler = Compiler(langname, spec_dir)     # initialize compiler for langname
-        code = compiler.compile(sourcepath)         # compile source
-        print code
+        langname = sourcepath.rpartition('.')[-1]
+        try:
+            compiler = Compiler(langname, spec_dir, debug)      # initialize for langname
+            code = compiler.compile(sourcepath)                 # compile source
+            print code
+        except Error as exc:
+            print exc
     else:
         print 'Usage: ./compiler.py <source_filename> [<specification_directory>] [-<debug_flags>]'
 
