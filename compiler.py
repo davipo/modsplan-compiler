@@ -11,7 +11,7 @@ from grammar import Error
 import syntax
 import defn
 
-        
+
 default_spec_dir = 'modspecs/'          # default location for language specifications
 
         
@@ -40,47 +40,38 @@ class Compiler:
 
 
     def compile(self, source_filepath):
-        """ Compile source code for selected language, return instruction code."""
-        code = None
+        """ Compile source code for initialized language, 
+            return list of target code instructions (strings)."""
+        self.source_path = source_filepath
+        code = []
         try:
             print '\n Parsing %s ... \n' % source_filepath
-            source_tree = self.parser.parse(source_filepath)
+            self.source_tree = self.parser.parse(source_filepath)
             if 't' in debug:
                 print '\n\nTree:\n'
-                print source_tree.show()
+                print self.source_tree.show()
             self.source_err = Error(source_filepath)
-            code = self.codegen(source_tree)
+            code = self.codegen(self.source_tree)
         except Error as exc:
             print exc
         return code
 
 
-    def codegen(self, source_tree):
-        """ Generate code from source_tree, using definitions loaded for language.
+    def codegen(self, source_node):
+        """ Generate code from source_node, using definitions loaded for language.
             Return list of target code instructions (strings)."""
         code = []
-        # Process source tree, looking up definitions, emitting code
-        # Follow first child until we find an item for which we have some definitions
-        item = source_tree
-        while item.name not in self.defs.defns:
-            item = item.first()         # will raise error if no children
-            
-        definitions = self.defs.defns[item.name]
-        for defn in definitions:
-            # Does defn match item?
-            if item.isterminal():
-                match = (defn.text == item.text)
-            else:  # item is nonterminal
-                # Does defn match item args?
-                match = (defn.args == [child.name for child in item.children])
-            if match:
-                # we have a match, generate instructions
-                code.extend(gen_instructions(item, defn.instructions))
-                break
+        # Traverse in preorder, generating code for any defns found
+        defn = self.defs.find(source_node)      # find a definition matching this node
+        if defn:
+            code.extend(gen_instructions(source_node, defn.instructions))
+        else:   # no definition found; generate code for any children
+            if not source_node.isterminal():
+                for child in source_node.children:
+                    code.extend(self.codegen(child))
         return code
-            
-            
-            
+
+
     def gen_instructions(self, item, instructions):
         """ Given instructions tree for item, generate list of target instruction code."""        
         for instruction in defn.instructions:
@@ -119,7 +110,7 @@ class Compiler:
 if __name__ == '__main__':
     debug = '.'              # default debugging output
 #     debug = 'or345t'
-    
+
     if 2 <= len(sys.argv) <= 4:
         sourcepath = sys.argv[1]
         spec_dir = None                 # specifications directory, use default if None
