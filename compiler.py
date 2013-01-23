@@ -12,13 +12,21 @@ import syntax
 import defn
 
         
+default_spec_dir = 'modspecs/'          # default location for language specifications
+
+        
 class Compiler:
     """ Universal compiler: reads language specs, compiles specified language."""
     
-    def __init__(self, langname, grammar_dir='grammars/'):
+    def __init__(self, langname, spec_dir=None):
         """ Load language specs for langname."""
-        langpath = os.path.join(grammar_dir, langname)
+        self.langname = langname
+        self.source_path = ''       # filepath of last source compiled
+        self.source_tree = None     # last tree parsed from source
         self.source_err = None      # set in compile(), for reporting errors in source
+        if spec_dir == None:
+            spec_dir = default_spec_dir
+        langpath = os.path.join(grammar_dir, langname)
         try:
             self.parser = syntax.SyntaxParser(langpath)   # load langname.{tokens, syntax}
             if 's' in debug:
@@ -112,14 +120,19 @@ if __name__ == '__main__':
     debug = '.'              # default debugging output
 #     debug = 'or345t'
     
-    if len(sys.argv) in (2, 3):
-        if len(sys.argv) == 3:
-            debug = sys.argv[2]
-        source_filepath = sys.argv[1]
-        discard, sep, langname = source_filepath.rpartition('.')
-        compiler = Compiler(langname)                   # initialize compiler for langname
-        code = compiler.compile(source_filepath)        # compile source
+    if 2 <= len(sys.argv) <= 4:
+        sourcepath = sys.argv[1]
+        spec_dir = None                 # specifications directory, use default if None
+        for arg in sys.argv[2:]:
+            if arg.startswith('-'):
+                debug = arg[1:]
+            else:
+                spec_dir = arg
+    
+        discard, sep, langname = sourcepath.rpartition('.')
+        compiler = Compiler(langname, spec_dir)     # initialize compiler for langname
+        code = compiler.compile(sourcepath)         # compile source
         print code
     else:
-        print 'Usage: ./compiler.py <source_filename> [<debug_flags>]'
+        print 'Usage: ./compiler.py <source_filename> [<specification_directory>] [-<debug_flags>]'
 
