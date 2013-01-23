@@ -23,28 +23,19 @@ class Compiler:
             Optional specification directory, debugging flags."""
         self.langname = langname
         self.debug = debug          # debugging flags
-        self.source_path = ''       # filepath of last source compiled
         self.source_tree = None     # last tree parsed from source
         self.source_err = None      # set in compile(), for reporting errors in source
         if spec_dir == None:
             spec_dir = default_spec_dir
         langpath = os.path.join(spec_dir, langname)
-        try:
-            self.parser = syntax.SyntaxParser(langpath)   # load langname.{tokens, syntax}
-            if 's' in self.debug:
-                self.parser.syntax.show()
-            if 'p' in self.debug:
-                print self.parser.syntax.show_prefixes()
-            self.defs = defn.Definitions()                # initialize defn parser
-            self.defs.load(langpath)                      # load semantics from langname.defn
-        except Error as exc:
-            print exc
+        self.parser = syntax.SyntaxParser(langpath, debug)  # load langname.{tokens, syntax}
+        self.defs = defn.Definitions()                # initialize defn parser
+        self.defs.load(langpath)                      # load semantics from langname.defn
 
 
     def compile(self, source_filepath):
         """ Compile source code for initialized language, 
             return list of target code instructions (strings)."""
-        self.source_path = source_filepath
         code = []
         print '\nParsing %s ...' % source_filepath
         self.source_tree = self.parser.parse(source_filepath)

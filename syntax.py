@@ -49,11 +49,15 @@ class SyntaxParser:
         self.debug = debug          # debugging flags
         self.tokenizer = tokenize.Tokenizer(langpath + '.tokens')
         if self.debug:
-            print 'Tokens loaded from ' + self.tokenizer.tokendef.filename
+            print 'Token spec loaded from ' + self.tokenizer.tokendef.filename
         self.syntax = SyntaxGrammar(langpath + '.syntax')
         if self.debug:
-            print 'Syntax loaded from ' + self.syntax.filename
-        self.source_filename = None
+            print 'Syntax spec loaded from ' + self.syntax.filename
+        if 's' in self.debug:
+            self.syntax.show()
+        if 'p' in self.debug:
+            print self.syntax.show_prefixes()
+        self.source_path = ''       # last source file parsed
         self.maxtokens = 0          # greatest number of tokens parsed before a parse failure
         self.expected = None        # grammar item expected at furthest failure
         self.tokens = None          # list of tokens in source file
@@ -61,15 +65,15 @@ class SyntaxParser:
         self.newtoken = False       # True when new token will be parsed (for trace display)
 
         
-    def parse(self, filename):
+    def parse(self, filepath):
         """ Parse given source file, return root node of parse tree.
             Syntax error will raise Error exception.
         """
-        self.source_filename = filename
-        self.err =  tokenize.Error(filename)    #  to report errors by token line & column 
-        self.tokens = self.tokenizer.get_tokens(filename)
+        self.source_path = filepath
+        self.err =  tokenize.Error(filepath)    #  to report errors by token line & column 
+        self.tokens = self.tokenizer.get_tokens(filepath)
         if 'o' in self.debug:
-            print '\nTokens from ' + filename + ':\n'
+            print '\nTokens from ' + filepath + ':\n'
             for tkn in self.tokens:
                 print tkn
             print
