@@ -340,7 +340,7 @@ def test(source_filepath):
     global t
 
     language = source_filepath.rpartition('.')[-1]
-    tokenspec = 'grammars/%s.tokens' % language
+    tokenspec = 'modspecs/%s.tokens' % language
     
     t = Tokenizer(tokenspec)
     print t.prefixes(),

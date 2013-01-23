@@ -92,7 +92,7 @@ class Definitions:
 
 if __name__ == '__main__':
     defs = Definitions()
-    lang = 'grammars/L0'
+    lang = 'modspecs/L0'
     defs.load(lang)
     print defs.show()
 

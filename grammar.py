@@ -294,7 +294,7 @@ gr = None
 
 def test(gfn=gfn):
     global gr
-    gfn = 'grammars/' + gfn
+    gfn = 'modspecs/' + gfn
     gr = Grammar(gfn)
     gr.show()
 

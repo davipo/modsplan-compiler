@@ -221,7 +221,7 @@ parser = None
 
 def test(source_filename, grammar_dir=None):
     global parser
-    grammar_dir = 'grammars/' if grammar_dir == None else grammar_dir
+    grammar_dir = 'modspecs/' if grammar_dir == None else grammar_dir
     srcname, sep, langname = source_filename.rpartition('.')
     tree = None
     try:
