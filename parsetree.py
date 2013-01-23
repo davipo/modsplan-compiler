@@ -111,12 +111,23 @@ class NonterminalNode(BaseNode):
         return result
 
 
-    def first(self):
-        """ Return first child; if none, raise error."""
+    def first(self, name=None):
+        """ Return first child; if name, first matching name; if none, raise error."""
+        err = ''
+        i = 0               # first child
         if self.children:
-            return self.children[0]
+            if name:
+                try:
+                    i = self.children.index(name)
+                except ValueError:
+                    err = ' with name "%s"' % name
         else:
-            raise Error().msg('Node %s has no first child' % self.name)
+            err = ' '
+        if err:
+            message = 'Node %s has no first child' % self.name
+            raise Error().msg(message + err)
+        else:
+            return self.children[i]
             
 
     def find(self, name):
