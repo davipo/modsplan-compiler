@@ -24,7 +24,7 @@ ASSIGN('=')
 	store
 	
 ASSIGN('+=')
-	add in_place
+	add 'in place'
 
 
 if(test suite)
