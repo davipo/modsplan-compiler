@@ -19,6 +19,7 @@ class BaseNode:
     def __init__(self, name):
         self.name = name                # name of nonterminal or terminal
         self.level = 0                  # depth of node in tree
+        self.used = False               # to keep track of nodes already compiled
 
 
     def indent(self):
@@ -111,24 +112,29 @@ class NonterminalNode(BaseNode):
         return result
 
 
+    def next(self, name=None):
+        """ Return next unused child; if name, next matching name; if none, raise error."""
+        err = ''
+
+        for child in self.children:
+            if child.used or (name and child.name != name):
+                continue
+            else:
+                child.used = True
+                return child
+        # not found
+        message = 'Node %s has no unused child' % self.name
+        if name:
+            message += ' with name "%s"' % name
+        raise Error().msg(message + err)
+
+            
     def first(self, name=None):
         """ Return first child; if name, first matching name; if none, raise error."""
-        err = ''
-        i = 0               # first child
-        if self.children:
-            if name:
-                try:
-                    i = self.children.index(name)
-                except ValueError:
-                    err = ' with name "%s"' % name
-        else:
-            err = ' '
-        if err:
-            message = 'Node %s has no first child' % self.name
-            raise Error().msg(message + err)
-        else:
-            return self.children[i]
-            
+        next_child = self.next(name)
+        next_child.used = False
+        return next_child
+
 
     def find(self, name):
         """ Return first node with name in preorder traversal from this node."""
