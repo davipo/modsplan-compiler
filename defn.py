@@ -8,7 +8,7 @@ import syntax
 from grammar import Error
 
 
-class DefnNode:
+class DefnNode:  #### not used ####
     
     def __init__(self, instructions):
         self.instructions = instructions    # list of code generation instructions
@@ -47,7 +47,7 @@ class Definitions:
             ### need to get subtypes
             instructions = definition.first('instructions')
             ### decode instructions here?
-            self.defns[signature] = instructions.children
+            self.defns[tuple(signature)] = instructions.children
    
    
     def find(self, source_node):
@@ -57,7 +57,7 @@ class Definitions:
             signature += [source_node.text]
         else:           
             signature += [child.name for child in source_node.children]
-        return self.defns.get(signature)
+        return self.defns.get(tuple(signature))
     
     
     def show(self):
