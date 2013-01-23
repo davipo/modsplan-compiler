@@ -40,7 +40,8 @@ class Definitions:
         self.defn_parser = syntax.SyntaxParser(defn_path)   # use defn.tokens, defn.syntax
         self.defns = dict()     # dictionary of definitions: key is itemname, 
                                 #   value is a list of DefnNode for this item
-
+        self.defn_tree = None   # parse tree of last definitions loaded; set by load()
+        
         
     def load(self, langpath):
         """ Load definitions from langpath.defn file."""
@@ -67,7 +68,7 @@ class Definitions:
     
     def find(self, source_node):
         """ Return a definition (DefnNode) matching source_node, or None."""
-        definitions = self.defns[source_node.name]
+        definitions = self.defns.get(source_node.name, [])
         for defn in definitions:
             # Does defn match source_node?
             if source_node.isterminal():

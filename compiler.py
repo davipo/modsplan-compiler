@@ -29,22 +29,24 @@ class Compiler:
             spec_dir = default_spec_dir
         langpath = os.path.join(spec_dir, langname)
         self.parser = syntax.SyntaxParser(langpath, debug)  # load langname.{tokens, syntax}
-        self.defs = defn.Definitions()                # initialize defn parser
-        self.defs.load(langpath)                      # load semantics from langname.defn
+        self.defs = defn.Definitions()          # initialize defn parser
+        self.defs.load(langpath)                # load semantics from langname.defn
+        if 'e' in debug:
+            print self.defs.defn_tree.show()        # parse tree of language definitions
+        if 'd' in debug:
+            print self.defs.show()                  # definition signatures
 
 
     def compile(self, source_filepath):
         """ Compile source code for initialized language, 
             return list of target code instructions (strings)."""
-        code = []
         print '\nParsing %s ...' % source_filepath
         self.source_tree = self.parser.parse(source_filepath)
         if 't' in self.debug:
             print '\n\nTree:\n'
             print self.source_tree.show()
         self.source_err = Error(source_filepath)
-        code = self.codegen(self.source_tree)
-        return code
+        return self.codegen(self.source_tree)
 
 
     def codegen(self, source_node):
@@ -54,7 +56,7 @@ class Compiler:
         # Traverse in preorder, generating code for any defns found
         defn = self.defs.find(source_node)      # find a definition matching this node
         if defn:
-            code.extend(gen_instructions(source_node, defn.instructions))
+            code.extend(self.gen_instructions(source_node, defn.instructions))
         else:   # no definition found; generate code for any children
             if not source_node.isterminal():
                 for child in source_node.children:
@@ -62,9 +64,10 @@ class Compiler:
         return code
 
 
-    def gen_instructions(self, item, instructions):
-        """ Given instructions tree for item, generate list of target instruction code."""        
-        for instruction in defn.instructions:
+    def gen_instructions(self, source_node, instructions):
+        """ Generate list of target instruction codes from source node & instructions defns."""        
+        code = []
+        for instruction in instructions:
             instr = instruction.first()
             if instr.name == 'directive':
                 direc = instr.first()

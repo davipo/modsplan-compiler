@@ -94,7 +94,7 @@ class SyntaxParser:
                 token = self.tokens[self.maxtokens]
                 self.syntax_error(token, self.expected)
             else:
-                print '\n\n%s parsed successfully (%d tokens)' % (filename, len(self.tokens))
+                print '\n\n%s parsed successfully (%d tokens)' % (filepath, len(self.tokens))
         return parse_tree
 
 
