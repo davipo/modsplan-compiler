@@ -16,6 +16,10 @@ definition => signature endline instructions
 signature => nonterm '(' child* ')'     # match a node with these children
 signature => terminal '(' STRING ')'    # match when terminal text = string
 
+### use this instead, or in addition?
+# signature => terminal '(' P* ')'    # match when terminal text = string
+
+
 child => nonterm
 child => terminal
 
@@ -49,6 +53,7 @@ rewrite => '=' signature
 label => LOWERNAME
 
 # compiler directive args
+### Implement ',' qualifier, use "carg,*" above, eliminate next 2 lines
 cargs => carg next_carg*
 next_carg => ',' carg
 carg => nonterm
@@ -56,6 +61,8 @@ carg => terminal
 carg => constant
 
 operation => identifier opargs?
+### operation => identifier oparg,*
+
 
 # operation args
 opargs => oparg next_oparg*
