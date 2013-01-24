@@ -112,10 +112,8 @@ class NonterminalNode(BaseNode):
         return result
 
 
-    def next(self, name=None):
+    def nextchild(self, name=None):
         """ Return next unused child; if name, next matching name; if none, raise error."""
-        err = ''
-
         for child in self.children:
             if child.used or (name and child.name != name):
                 continue
@@ -126,14 +124,21 @@ class NonterminalNode(BaseNode):
         message = 'Node %s has no unused child' % self.name
         if name:
             message += ' with name "%s"' % name
-        raise Error().msg(message + err)
+        raise Error().msg(message)
 
             
-    def first(self, name=None):
+    def firstchild(self, name=None):
         """ Return first child; if name, first matching name; if none, raise error."""
-        next_child = self.next(name)
-        next_child.used = False
-        return next_child
+        for child in self.children:
+            if name and child.name != name:
+                continue
+            else:
+                return child
+        # not found
+        message = 'Node %s has no child' % self.name
+        if name:
+            message += ' with name "%s"' % name
+        raise Error().msg(message)
 
 
     def find(self, name):
