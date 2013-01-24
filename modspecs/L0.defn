@@ -7,122 +7,127 @@
 
 
 ##  Specify only nonterms which generate code
-##     Compiler traverses tree depth-first, matching these, generating as it goes.
+##      Compiler traverses tree depth-first, matching these, generating as it goes.
 
 
 declaration(attributes variable)
-	# provides for external functions (for I/O, etc.) and variables
-	.addsymbol(variable, attributes)
+    # provides for external functions (for I/O, etc.) and variables
+    .addsymbol(variable, attributes)
 
 
 assignment(designator ASSIGN test)
-	&designator
-	&test
-	&ASSIGN
-	
+    &designator
+    &test
+    &ASSIGN
+    
 ASSIGN('=')
-	store
-	
+    store
+    
 ASSIGN('+=')
-	add 'in place'
+    add 'in place'
 
 
 if(test suite)
-	&test
-	branch iftrue, iffalse
-	iftrue:
-		&suite
-	iffalse:
+    &test
+    branch iftrue, iffalse
+    iftrue:
+        &suite
+    iffalse:
 
 
 if(test suite suite)
-	&test
-	branch iftrue, iffalse
-	iftrue:
-		&suite
-		jump ifend
-	iffalse:
-		&suite
-	ifend:
+    &test
+    branch iftrue, iffalse
+    iftrue:
+        &suite
+        jump ifend
+    iffalse:
+        &suite
+    ifend:
 
 
 
 while(test suite)
-	while:
-		&test
-		branch iftrue, iffalse
-		iftrue:
-			&suite
-			jump while
-		iffalse:
+    while:
+        &test
+        branch iftrue, iffalse
+        iftrue:
+            &suite
+            jump while
+        iffalse:
 
 
 designator(variable)
-	.addsymbol(variable, 'local')
-	&variable
-	constant 0
-	getptr
+    .addsymbol(variable, 'local')
+    &variable
+    constant 0
+    getptr
+
+
+variable()
+    vget NAME
+
 
 # When sequences added:
 # subscript(variable_seq expr_int)
-#	&variable_seq
-#	&expr_int
-#	getptr
+#   &variable_seq
+#   &expr_int
+#   getptr
 
 
 comparison(RELATION expr)
-	&expr
-	&RELATION
+    &expr
+    &RELATION
 
 RELATION('==')
-	cmp eq
+    cmp eq
 
 RELATION('!=')
-	cmp ne
+    cmp ne
 
 RELATION('>')
-	cmp gt
+    cmp gt
 
 RELATION('>=')
-	cmp ge
+    cmp ge
 
 RELATION('<')
-	cmp lt
+    cmp lt
 
 RELATION('<=')
-	cmp le
+    cmp le
 
 
 addition(ADD_OP term)
-	&term
-	&ADD_OP
+    &term
+    &ADD_OP
 
 ADD_OP('+')
-	add
-	
+    add
+    
 ADD_OP('-')
-	sub
+    sub
 
 
-call(variable arglist) 		    # function call
-	&arglist
-	&variable
-	call
+call(variable arglist)      # function call
+    &arglist
+    &variable
+    call
 
 parentheses(test)
-	&test
+    &test
 
 # just "variable" instead of "atom(variable)"?
 atom(variable)
-	&variable
-	constant 0
-	getptr
-	load
+    &variable
+    constant 0
+    getptr
+    load
 
 
 identifier(NAME)
-	.getsymbol(NAME) 		# compile error if NAME undefined
-	
+    .getsymbol(NAME)        # compile error if NAME undefined
+    
 
 number(INTEGER)
-	const INTEGER
+    const INTEGER
