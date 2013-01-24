@@ -15,11 +15,7 @@ class DefnNode:  #### not used ####
         ### any other data? If not, we don't need this class.
 
     def __str__(self):
-        if self.text == None:   # nonterminal
-            display = ' '.join(self.args)
-        else:   # terminal
-            display = self.text
-        return '(' + display + ')'
+        return self.instructions.show()
     
 
 class Definitions:
@@ -60,14 +56,16 @@ class Definitions:
         return self.defns.get(tuple(signature))
     
     
-    def show(self):
-        """ Return string display of current definitions."""
-        display = ''
-        for name, defns in self.defns.items():
-            namestr = name + ': '
-            indent = ' ' * len(namestr)
-            display += namestr + ('\n' + indent).join(map(str, defns)) + '\n'
-        return display
+    def show(self, sigs_only=False):
+        """ Return string display of sorted definitions."""
+        display = '\n'
+        sigs = self.defns.keys()
+        sigs.sort()
+        for sig in sigs:
+            display += sig[0] + '(' + ' '.join(sig[1:]) + ')\n'
+            if not sigs_only:
+                display += '\n'.join([ instr.show() for instr in self.defns[sig] ]) + '\n'
+        return display + '\n'
     
 
 if __name__ == '__main__':

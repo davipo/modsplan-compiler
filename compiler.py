@@ -34,8 +34,10 @@ class Compiler:
         self.defn_err = Error(langpath)         # for reporting errors in langname.defn
         if 'e' in debug:
             print self.defs.defn_tree.show()        # parse tree of language definitions
+        if 'g' in debug:
+            print self.defs.show(sigs_only=True)    # definition signatures
         if 'd' in debug:
-            print self.defs.show()                  # definition signatures
+            print self.defs.show()                  # definition sigs with instructions
 
 
     def compile(self, source_filepath):
