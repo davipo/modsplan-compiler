@@ -39,24 +39,24 @@ class Definitions:
         # Extract definitions from tree
         self.defns.clear()
         for definition in self.defn_tree.findall('definition'):
-            signature = [node.findtext() for node in definition.first().children]
+            signature = [node.findtext() for node in definition.firstchild().children]
             ### need to get subtypes
-            instructions = definition.first('instructions')
+            instructions = definition.firstchild('instructions')
             ### decode instructions here?
             self.defns[tuple(signature)] = instructions.children
    
    
-    def find(self, source_node):
+    def get_defn(self, source_node):
         """ Return a list of instructions for the defn matching source_node, or None."""
         signature = [source_node.name]
         if source_node.isterminal():
-            signature += [source_node.text]
+            signature.append(repr(source_node.text))    ### add quotes -- not reliable!!
         else:           
             signature += [child.name for child in source_node.children]
         return self.defns.get(tuple(signature))
     
     
-    def show(self, sigs_only=False):
+    def show(self, sigs_only=True):
         """ Return string display of sorted definitions."""
         display = '\n'
         sigs = self.defns.keys()

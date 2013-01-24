@@ -35,9 +35,9 @@ class Compiler:
         if 'e' in debug:
             print self.defs.defn_tree.show()        # parse tree of language definitions
         if 'g' in debug:
-            print self.defs.show(sigs_only=True)    # definition signatures
+            print self.defs.show()                  # definition signatures
         if 'd' in debug:
-            print self.defs.show()                  # definition sigs with instructions
+            print self.defs.show(sigs_only=False)   # definition sigs with instructions
 
 
     def compile(self, source_filepath):
@@ -57,12 +57,12 @@ class Compiler:
             Return list of target code instructions (strings)."""
         code = []
         # Traverse in preorder, generating code for any defns found
-        defn = self.defs.find(source_node)      # find a definition matching this node
+        defn = self.defs.get_defn(source_node)      # find a definition matching this node
         if defn:
             code.extend(self.gen_instructions(source_node, defn))
         else:   # no definition found; generate code for any children
             if source_node.isterminal():
-                message = 'Reached terminal source node %s prematurely' % source_node.name
+                message = 'No definition found for terminal token %s' % source_node.name
                 raise Error().msg(message)
             else:
                 for child in source_node.children:
@@ -70,65 +70,83 @@ class Compiler:
         return code
 
 
-    def gen_instructions(self, source_node, instr_defn):
-        """ Generate list of target instruction codes from source node & instr_defn."""        
+    def gen_instructions(self, source_node, instruction_defs):
+        """ Generate list of target code instructions from source & instruction definitions."""        
         code = []
-        for instruction in instr_defn:
-            instr = instruction.first()
-            if instr.name == 'directive':
-                self.compiler_directive(source_node, instr)     ### discard return value?
-            elif instr.name == 'expansion':
+        for instruction in instruction_defs:
+            instr = instruction.firstchild()
+            
+            if instr.name == 'directive':   # compiler directive, generates single instruction
+                directive = instr.findtext()
+                arg_defs = instr.findall('carg')
+                code.append(self.compiler_directive(source_node, directive, arg_defs))
+                
+            elif instr.name == 'expansion':     # expand next unused child with this name
                 child_name = instr.findtext()
-                child = source_node.next(child_name)
+                child = source_node.nextchild(child_name)
                 code.extend(self.codegen(child))
+                
             elif instr.name == 'rewrite':
                 pass    ### implement later
-            elif instr.name == 'label':
-                code.append(instr.findtext() + ':')
-                ### display output instructions indented?
-                instructions_defn = instruction.first('instructions').children
-                code.extend(self.gen_instructions(source_node, instructions_defn))
-            elif instr.name == 'operation':
-                code.append(self.gen_operation(source_node, instr))     # single instruction
+                
+            elif instr.name == 'label':     # insert label, compile block below it
+                label = instr.findtext()
+                code.append(label + ':')
+                ### option to indent output instructions under label?
+                instruction_defs = instruction.firstchild('instructions').children
+                code.extend(self.gen_instructions(source_node, instruction_defs))
+                
+            elif instr.name == 'operation':     # generate single instruction
+                opcode = instr.findtext()
+                args_str = self.gen_args(source_node, instr.findall('oparg'))
+                code.append(opcode + ' \t' + args_str)
+                
             elif instr.name == 'endline':
                 pass
             else:
-                message = 'Unrecognized instruction %s' % instr.name
+                message = 'Unrecognized instruction "%s"' % instr.name
                 raise self.defn_err.msg(message)
+                
+        if 'i' in self.debug:
+            print '(%s:)' % source_node.name 
+            print '\n'.join(code) + '\n'
         return code
-            
-      
-    def gen_operation(self, source_node, operation):
-        """ Generate code (string) for operation instruction from source & operation defn."""
-        ### handle compiler directive also here?
-        ### factor out gen_args()
-        args = []
-        for oparg in operation.findall('oparg'):
-            argtype = oparg.first()
-            if argtype.name in ('constant', 'label'):
-                args.append(argtype.findtext())
-            elif argtype.name == 'terminal':
-                child_name = argtype.findtext()
-                child = source_node.next(child_name)
-                args.append(child.text)
-            elif argtype.name == 'directive':
-                args.append(self.compiler_directive(source_node, argtype))
-        opcode = operation.findtext()
-        return opcode + ' \t' + ', '.join(args)
-
-
-    def compiler_directive(self, source_node, instr):
-        """ Process compiler directive, using source data; return string for oparg."""
-        return ''
-
-
-    def gen_args(self, source_node, args):
-        """ Generate code for instruction args from source and args defn."""
-        return ''
         
 
+    def gen_args(self, source_node, arg_defs):
+        """ Generate string of code for instruction args from source and arg definitions."""
+        args = []
+        for argdef in arg_defs:
+            argtype = argdef.firstchild()
+            argtext = argtype.findtext()
+            
+            if argtype.name in ('constant', 'label', 'nonterm'):
+                args.append(argtext)
+                
+            elif argtype.name == 'terminal':
+                child = source_node.nextchild(argtext)      # argtext is tokenkind in source,
+                args.append(child.text)                     #   substitute token text
+                
+            elif argtype.name == 'directive':
+                arg_defs = instr.findall('carg')
+                args.append(self.compiler_directive(source_node, argtext, arg_defs))
+                
+            else:
+                message = 'Unrecognized argument "%s"' % argtype.name
+                raise self.defn_err.msg(message)
+        return ', '.join(args)
+        
+
+    def compiler_directive(self, source_node, directive, arg_defs):
+        """ Generate code per compiler directive, using source and arg definitions."""
+        if directive == 'getsymbol':
+            pass
+        ### temporary version
+        return '"' + directive + '" \t' + self.gen_args(source_node, arg_defs)
+
+
 if __name__ == '__main__':
-    debug = 't'              # default debugging output
+    debug = 'ti'                  # default debugging output
     if 2 <= len(sys.argv) <= 4:
         sourcepath = sys.argv[1]
         spec_dir = None                 # specifications directory, use default if None
@@ -141,7 +159,7 @@ if __name__ == '__main__':
         try:
             compiler = Compiler(langname, spec_dir, debug)      # initialize for langname
             code = compiler.compile(sourcepath)                 # compile source
-            print code
+            print '\n'.join(code) + '\n'
         except Error as exc:
             print exc
     else:
