@@ -38,6 +38,7 @@ class TokenGrammar(grammar.Grammar):
         grammar.Grammar.__init__(self, filename, TokenItem)
         
         # nonterminals with uppercase names specify a kind of token
+        # self.nonterms is an OrderedDict, so this preserves order of definition
         self.kinds = [nonterm for name, nonterm in self.nonterms.items() if name.isupper()]
                         
         # Compute possible prefix character classes for each kind of token.
@@ -47,8 +48,11 @@ class TokenGrammar(grammar.Grammar):
         for kind in self.kinds:
             kind.find_prefixes(self.nonterms)       # stores prefixes in kind
             # Compute list of possible token kinds for each prefix's character class
+            kind.prefixes.discard(None)     ## should not have None, but in case (give error?)
             for prefix in kind.prefixes:
                 # if prefix is already a character class (1 uppercase letter) just use it
+                #       (needed for keywords and bool_ops)
+                ###     Buggy if we have any uppercase keywords
                 chrclass = prefix if TokenItem(prefix).ischarclass() else charclass(prefix[0])
                 # Keep lists of kinds ordered as in token grammar
                 chrclass_kinds = self.prefix_map.setdefault(chrclass, [])   # new list if none
