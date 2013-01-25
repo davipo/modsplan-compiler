@@ -16,7 +16,13 @@ class DefnNode:  #### not used ####
 
     def __str__(self):
         return self.instructions.show()
-    
+
+
+def remove_quotes(text):
+    if text[0] in ('"', "'"):
+        text = text[1:-1]
+    return text
+
 
 class Definitions:
     """ Holds semantic definitions (used to generate code from syntax trees)."""
@@ -40,6 +46,7 @@ class Definitions:
         self.defns.clear()
         for definition in self.defn_tree.findall('definition'):
             signature = [node.findtext() for node in definition.firstchild().children]
+            signature = map(remove_quotes, signature)
             ### need to get subtypes
             instructions = definition.firstchild('instructions')
             ### decode instructions here?
@@ -50,7 +57,7 @@ class Definitions:
         """ Return a list of instructions for the defn matching source_node, or None."""
         signature = [source_node.name]
         if source_node.isterminal():
-            signature.append(repr(source_node.text))    ### add quotes -- not reliable!!
+            signature.append(source_node.text)
         else:           
             signature += [child.name for child in source_node.children]
         return self.defns.get(tuple(signature))

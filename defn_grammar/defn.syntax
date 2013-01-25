@@ -14,11 +14,7 @@ endline => COMMENT? NEWLINE
 definition => signature endline instructions
 
 signature => nonterm '(' child* ')'     # match a node with these children
-signature => terminal '(' STRING ')'    # match when terminal text = string
-
-### use this instead, or in addition?
-# signature => terminal '(' P* ')'    # match when terminal text = string
-
+signature => terminal '(' STRING ')'    # match when terminal text == string
 
 child => nonterm
 child => terminal
