@@ -21,6 +21,7 @@ STRING => "'" P* "'"
 COMMENT => '#' P*
 
 # P* = any printable characters, must be followed by terminal or end of line.
+# P* may not be the first item on the right side of a production.
 # (P may be used only with *)
 # (See base.metagrammar)
 
