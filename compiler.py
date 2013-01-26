@@ -126,9 +126,12 @@ class Compiler:
             argtype = argdef.firstchild()
             argtext = argtype.findtext()
             
-            if argtype.name in ('constant', 'label', 'nonterm'):
+            if argtype.name in ('constant', 'label'):
                 args.append(argtext)
                 
+            elif argtype.name == 'nonterm':         # for compiler directives
+                args.append(source_node.firstchild(argtext).findtext())
+            
             elif argtype.name == 'terminal':
                 child = source_node.nextchild(argtext)      # argtext is tokenkind in source,
                 args.append(child.text)                     #   substitute token text

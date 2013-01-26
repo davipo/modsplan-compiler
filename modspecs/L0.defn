@@ -64,10 +64,6 @@ designator(variable)
     getptr
 
 
-variable()
-    vget NAME
-
-
 # When sequences added:
 # subscript(variable_seq expr_int)
 #   &variable_seq
