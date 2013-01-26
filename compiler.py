@@ -57,9 +57,9 @@ class Compiler:
             Return list of target code instructions (strings)."""
         code = []
         # Traverse in preorder, generating code for any defns found
-        defn = self.defs.get_defn(source_node)      # find a definition matching this node
-        if defn:
-            code.extend(self.gen_instructions(source_node, defn))
+        definition = self.defs.get_defn(source_node)    # find definition matching this node
+        if definition:
+            code.extend(self.gen_instructions(source_node, definition))
         else:   # no definition found; generate code for any children
             if source_node.isterminal():
                 message = 'No definition found for terminal token %s' % source_node.name
@@ -86,15 +86,21 @@ class Compiler:
                 child = source_node.nextchild(child_name)
                 code.extend(self.codegen(child))
                 
-            elif instr.name == 'rewrite':
-                pass    ### implement later
+            elif instr.name == 'rewrite':       # use instructions from another signature
+                signature = self.defs.make_signature(instr.firstchild())
+                instructions = self.defs.defns.get(signature)
+                if instructions:
+                    code.extend(self.gen_instructions(source_node, instructions))
+                else:
+                    message = 'Rewrite signature "%s" not found' % defn.sig_str(signature)
+                    raise self.defn_err.msg(message)
                 
             elif instr.name == 'label':     # insert label, compile block below it
                 label = instr.findtext()
                 code.append(label + ':')
                 ### option to indent output instructions under label?
-                instruction_defs = instruction.firstchild('instructions').children
-                code.extend(self.gen_instructions(source_node, instruction_defs))
+                instructions = instruction.firstchild('instructions').children
+                code.extend(self.gen_instructions(source_node, instructions))
                 
             elif instr.name == 'operation':     # generate single instruction
                 opcode = instr.findtext()

@@ -45,14 +45,19 @@ class Definitions:
         # Extract definitions from tree
         self.defns.clear()
         for definition in self.defn_tree.findall('definition'):
-            signature = [node.findtext() for node in definition.firstchild().children]
-            signature = map(remove_quotes, signature)
-            ### need to get subtypes
+            signature = self.make_signature(definition.firstchild())
             instructions = definition.firstchild('instructions')
-            ### decode instructions here?
-            self.defns[tuple(signature)] = instructions.children
-   
-   
+            self.defns[signature] = instructions.children
+
+
+    def make_signature(self, signode):
+        ### move outside class? to parsetree?
+        signature = [node.findtext() for node in signode.children]
+        signature = map(remove_quotes, signature)
+        ### need to get subtypes
+        return tuple(signature)
+
+
     def get_defn(self, source_node):
         """ Return a list of instructions for the defn matching source_node, or None."""
         signature = [source_node.name]
@@ -69,11 +74,15 @@ class Definitions:
         sigs = self.defns.keys()
         sigs.sort()
         for sig in sigs:
-            display += sig[0] + '(' + ' '.join(sig[1:]) + ')\n'
+            display += sig_str(sig) + '\n'
             if not sigs_only:
                 display += '\n'.join([ instr.show() for instr in self.defns[sig] ]) + '\n'
         return display + '\n'
-    
+
+
+def sig_str(sig):
+    return sig[0] + '(' + ' '.join(sig[1:]) + ')'
+
 
 if __name__ == '__main__':
     defs = Definitions()

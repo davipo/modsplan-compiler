@@ -111,6 +111,9 @@ ADD_OP('-')
 
 call(variable arglist)      # function call
     &arglist
+    =call(variable)         # rewrite
+
+call(variable)
     &variable
     call
 
