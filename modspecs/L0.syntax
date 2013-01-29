@@ -45,6 +45,7 @@ term => factor multiplication*
 multiplication => MUL_OP factor
 
 factor => atom
+factor => ADD_OP atom
 
 atom => literal
 atom => parentheses

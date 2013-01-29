@@ -94,6 +94,10 @@ RELATION('<=')
     cmp le
 
 
+factor(ADD_OP atom)
+    push 0
+
+
 addition(ADD_OP term)
     &term
     &ADD_OP
