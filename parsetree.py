@@ -6,7 +6,10 @@
 from grammar import Error
 
 
-indentation = ' ' * 4       # string to display one level of indentation
+indentation = ' ' * 3       # string to display one level of indentation
+indentation1 = '|' + indentation[1:]
+indentation2 = indentation * 2
+indentation3 = indentation1 + indentation
 
 
 def new(name):
@@ -24,7 +27,10 @@ class BaseNode:
 
     def indent(self):
         """ Return string of indentation to level of node."""
-        return indentation * self.level
+        level2 = self.level // 2
+        indent2 = indentation2 * (level2 > 0) + indentation3 * (level2 - 1)
+        indent1 = indentation1 if level2 > 0 else indentation
+        return indent2 + indent1 * (self.level % 2)
 
 
     def find(self, name):
