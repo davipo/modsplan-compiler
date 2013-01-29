@@ -174,8 +174,10 @@ class SyntaxParser:
                     break
             else:                           # one item parsed successfully
                 numtokens += nt
+                if start + numtokens == len(self.tokens):
+                    break
                 if item.quantifier in '+*':     # more than one repetition allowed
-                    while numtokens < len(self.tokens):
+                    while start + numtokens < len(self.tokens):
                         failure, nt = self.parse_item(start + numtokens, item, node)
                         if failure:                 # no more repetitions of item
                             failure = None              # not a failure, repetition optional
