@@ -46,11 +46,10 @@ multiplication => MUL_OP factor
 
 factor => atom
 
-
-atom => variable
 atom => literal
 atom => parentheses
 atom => call
+atom => variable
 
 # function call
 call => variable '(' arglist? ')'
