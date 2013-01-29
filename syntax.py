@@ -90,11 +90,14 @@ class SyntaxParser:
             self.newtoken = True
             failure, numtokens = self.parse_nonterm(0, nonterm, parse_tree)
             if numtokens < len(self.tokens):
-                print '\n\nParsed %d tokens of %d total' % (self.maxtokens, len(self.tokens))
+                print '\nParsed %d tokens of %d total' % (self.maxtokens, len(self.tokens))
                 token = self.tokens[self.maxtokens]
                 self.syntax_error(token, self.expected)
             else:
-                print '\n\n%s parsed successfully (%d tokens)' % (filepath, len(self.tokens))
+                print '\n%s parsed successfully (%d tokens)' % (filepath, len(self.tokens))
+        if 't' in self.debug:
+            print '\nTree:\n'
+            print parse_tree.show()
         return parse_tree
 
 
@@ -234,14 +237,7 @@ def test(source_filename, grammar_dir=None, debug=''):
     try:
         print '\nParsing %s ... \n' % source_filename
         parser = SyntaxParser(os.path.join(grammar_dir, langname), debug)
-        if 's' in debug:
-            parser.syntax.show()
-        if 'p' in debug:
-            print parser.syntax.show_prefixes()
         tree = parser.parse(source_filename)
-        if 't' in debug:
-            print '\n\nTree:\n'
-            print tree.show()
         print "\n**** Syntax test done ****"
     except grammar.Error as exc:
         print exc

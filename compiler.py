@@ -45,9 +45,6 @@ class Compiler:
             return list of target code instructions (strings)."""
         print '\nParsing %s ...' % source_filepath
         self.source_tree = self.parser.parse(source_filepath)
-        if 't' in self.debug:
-            print '\n\nTree:\n'
-            print self.source_tree.show()
         self.source_err = Error(source_filepath)
         return self.codegen(self.source_tree)
 
