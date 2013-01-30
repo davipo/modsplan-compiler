@@ -13,7 +13,7 @@ import defn
 
 
 default_spec_dir = 'modspecs/'          # default location for language specifications
-
+instr_fmt = '\t%-12s %s'
         
 class Compiler:
     """ Universal compiler: reads language specs, compiles specified language."""
@@ -44,6 +44,7 @@ class Compiler:
         print '\nParsing %s ...' % source_filepath
         self.source_tree = self.parser.parse(source_filepath)
         return self.codegen(self.source_tree)
+#         return ['\t' * (':' not in line) + line for line in code]
 
 
     def codegen(self, source_node):
@@ -99,7 +100,7 @@ class Compiler:
             elif instr.name == 'operation':     # generate single instruction
                 opcode = instr.findtext()
                 args_str = self.gen_args(source_node, instr.findall('oparg'))
-                code.append(opcode + ' \t' + args_str)
+                code.append(instr_fmt % (opcode, args_str))
                 
             elif instr.name == 'endline':
                 pass
@@ -145,11 +146,12 @@ class Compiler:
         if directive == 'getsymbol':
             pass
         ### temporary version
-        return '"' + directive + '" \t' + self.gen_args(source_node, arg_defs)
+        args_str = self.gen_args(source_node, arg_defs)
+        return instr_fmt % ('.' + directive, args_str)
 
 
 if __name__ == '__main__':
-    debug = 'ti'                  # default debugging output
+    debug = ''                      # default debugging output
     if 2 <= len(sys.argv) <= 4:
         sourcepath = sys.argv[1]
         spec_dir = None                 # specifications directory, use default if None
