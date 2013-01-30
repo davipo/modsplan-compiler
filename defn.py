@@ -31,7 +31,8 @@ class Definitions:
         """ Initialize defn parser to prepare for parsing .defn specs."""
         defn_path = os.path.join(defn_grammar_dir, 'defn')
         self.defn_tree = None   # parse tree of last definitions loaded; set by load()
-        self.defn_parser = syntax.SyntaxParser(defn_path)   # use defn.tokens, defn.syntax
+        self.defn_parser = syntax.SyntaxParser(defn_path)   # uses defn.tokens, defn.syntax
+        self.err = self.defn_parser.err     # for convenient error reporting
         self.defns = dict()     # Dictionary of definitions: 
                                 #   key is signature (list of strings for name and args), 
                                 #   value is a list of instructions for this defn.

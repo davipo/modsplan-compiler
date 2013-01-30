@@ -24,14 +24,12 @@ class Compiler:
         self.langname = langname
         self.debug = debug          # debugging flags
         self.source_tree = None     # last tree parsed from source
-        self.source_err = None      # set in compile(), for reporting errors in source
         if spec_dir == None:
             spec_dir = default_spec_dir
         langpath = os.path.join(spec_dir, langname)
         self.parser = syntax.SyntaxParser(langpath, debug)  # load langname.{tokens, syntax}
         self.defs = defn.Definitions()          # initialize defn parser
         self.defs.load(langpath)                # load semantics from langname.defn
-        self.defn_err = Error(langpath)         # for reporting errors in langname.defn
         if 'e' in debug:
             print self.defs.defn_tree.show()        # parse tree of language definitions
         if 'g' in debug:
@@ -45,7 +43,6 @@ class Compiler:
             return list of target code instructions (strings)."""
         print '\nParsing %s ...' % source_filepath
         self.source_tree = self.parser.parse(source_filepath)
-        self.source_err = Error(source_filepath)
         return self.codegen(self.source_tree)
 
 
@@ -90,7 +87,7 @@ class Compiler:
                     code.extend(self.gen_instructions(source_node, instructions))
                 else:
                     message = 'Rewrite signature "%s" not found' % defn.sig_str(signature)
-                    raise self.defn_err.msg(message)
+                    raise self.defs.err.msg(message)
                 
             elif instr.name == 'label':     # insert label, compile block below it
                 label = instr.findtext()
@@ -108,7 +105,7 @@ class Compiler:
                 pass
             else:
                 message = 'Unrecognized instruction "%s"' % instr.name
-                raise self.defn_err.msg(message)
+                raise self.defs.err.msg(message)
                 
         if 'i' in self.debug:
             print '(%s:)' % source_node.name 
@@ -139,7 +136,7 @@ class Compiler:
                 
             else:
                 message = 'Unrecognized argument "%s"' % argtype.name
-                raise self.defn_err.msg(message)
+                raise self.defs.err.msg(message)
         return ', '.join(args)
         
 
