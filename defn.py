@@ -32,7 +32,7 @@ class Definitions:
         defn_path = os.path.join(defn_grammar_dir, 'defn')
         self.defn_tree = None   # parse tree of last definitions loaded; set by load()
         self.defn_parser = syntax.SyntaxParser(defn_path)   # uses defn.tokens, defn.syntax
-        self.err = self.defn_parser.err     # for convenient error reporting
+        self.err = None         # for convenient error reporting, set by load()
         self.defns = dict()     # Dictionary of definitions: 
                                 #   key is signature (list of strings for name and args), 
                                 #   value is a list of instructions for this defn.
@@ -42,6 +42,7 @@ class Definitions:
         """ Load definitions from langpath.defn file."""
         # Use a SyntaxParser to load definitions into a parse tree.
         self.defn_tree = self.defn_parser.parse(langpath + '.defn')
+        self.err = self.defn_parser.err
 
         # Extract definitions from tree
         self.defns.clear()

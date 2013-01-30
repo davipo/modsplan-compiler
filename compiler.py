@@ -57,7 +57,7 @@ class Compiler:
         else:   # no definition found; generate code for any children
             if source_node.isterminal():
                 message = 'No definition found for terminal token %s' % source_node.name
-                raise Error().msg(message)
+                raise self.defs.err.msg(message)
             else:
                 for child in source_node.children:
                     code.extend(self.codegen(child))
