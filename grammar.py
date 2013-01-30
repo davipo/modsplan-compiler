@@ -9,6 +9,7 @@ from collections import OrderedDict
 
 
 quote_chars = "'" + '"'
+separators = '.,;:/|\&-'    # may be used with quantifier to separate repeating items
 
 
 class Nonterminal:
@@ -78,8 +79,8 @@ class Alternate:
 class Item:
     """ One item of a production, includes quantifier. Extended by subclasses."""
     
-    def __init__(self, element=None, quantifier='1'):
-        """ Create item from element (string) and quantifier.
+    def __init__(self, element=None, quantifier='1', separator=''):
+        """ Create item from element (string), optional quantifier, separator.
             An element must be one of:
                 terminal:
                     literal: first and last char must be same quotechar (' or ")
@@ -88,8 +89,13 @@ class Item:
         """
         self.element = element
         self.quantifier = quantifier    # '1' (no quantifier), or '?', '+', '*'
+        self.separator = separator      # one of separators, or ''
 
     def __str__(self):
+        return str(self.element) + self.separator + self.quantifier.replace('1', '')
+
+    def strq(self):
+        """ Represent item as string with quantifier."""
         return str(self.element) + self.quantifier.replace('1', '')
 
     def text(self):
@@ -260,11 +266,15 @@ class Grammar:
                     if item.startswith('#'):    # rest of production is comment, discard
                         break                   #### (only found if space before #)
                     quantifier = '1'
-                    if item[-1] in '*+?':               # last char is a quantifier
+                    separator = ''
+                    if item[-1] in '*+?':           # last char is a quantifier
                         quantifier = item[-1]
                         item = item[:-1]                # remove quantifier
+                        if item[-1] in separators:
+                            separator = item[-1]
+                            item = item[:-1]                # remove separator
                     self.check_item(item, quantifier, alt)
-                    production.append(self.make_item(item, quantifier))
+                    production.append(self.make_item(item, quantifier, separator))
                 alt.items = production          # replace raw production with cooked
 
 

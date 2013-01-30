@@ -73,8 +73,8 @@ class TokenGrammar(grammar.Grammar):
 
 
 class TokenItem(grammar.Item):
-    def __init__(self, elem=None, quant='1'):
-        grammar.Item.__init__(self, elem, quant)
+    def __init__(self, elem=None, quant='1', sep=''):
+        grammar.Item.__init__(self, elem, quant, sep)
         
     def ischarclass(self):
         """ Is item a character class specifier (one uppercase letter)?"""
