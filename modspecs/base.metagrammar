@@ -27,7 +27,7 @@ comment => "#" P*
 
 production => nonterminal "=>" alternate
 
-nonterminal => nonterm
+nonterminal => nonterm      # "nonterminal" is left side only; "nonterm" may be on right
 
 nonterm => identifier
 
@@ -43,7 +43,6 @@ repeatflag => "?" 			# zero or one
 
 item => nonterm 
 item => literal
-item => charclass
 
 literal => "'" P* "'" 		# terminal
 literal => '"' P* '"' 		# terminal

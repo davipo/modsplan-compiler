@@ -13,3 +13,7 @@ upper => '_'
 tokenflag => '.' flag
 
 flag => L+
+
+
+item => charclass
+
