@@ -16,8 +16,9 @@ definition => signature endline instructions
 signature => nonterm '(' child* ')'     # match a node with these children
 signature => terminal '(' STRING ')'    # match when terminal text == string
 
-child => nonterm
-child => terminal
+child => nonterm QUANTIFIER?
+child => terminal QUANTIFIER?
+
 
 ## Implement qualident later; may not need index
 # nonterm => qualident index?

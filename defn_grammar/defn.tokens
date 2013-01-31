@@ -25,3 +25,8 @@ STRING => '"' P* '"'
 STRING => "'" P* "'"
 
 COMMENT => '#' P*
+
+QUANTIFIER => '?'
+QUANTIFIER => '*'
+QUANTIFIER => '+'
+

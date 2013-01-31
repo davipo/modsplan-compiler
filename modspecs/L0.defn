@@ -109,11 +109,16 @@ ADD_OP('-')
     sub
 
 
-call(variable arglist)      # function call
-    &arglist
-    =call(variable)         # rewrite
+multiplication(MUL_OP factor)
+    &factor
+    &MUL_OP
 
-call(variable)
+MUL_OP('*')
+    mul
+    
+
+call(variable arglist?)     # function call
+    &arglist?
     &variable
     call
 
@@ -122,10 +127,7 @@ parentheses(test)
 
 # just "variable" instead of "atom(variable)"?
 atom(variable)
-    &variable
-    constant 0
-    getptr
-    load
+    .load(variable)
 
 
 identifier(NAME)
