@@ -58,7 +58,7 @@ while(test suite)
 
 
 designator(variable)
-    .addsymbol(variable, 'local')
+    .addsymbol(variable)
     &variable
     constant 0
     getptr
@@ -94,8 +94,10 @@ RELATION('<=')
     cmp le
 
 
-factor(ADD_OP atom)
+factor(ADD_OP atom)     # handles unary '-' (and '+')
     push 0
+    &atom
+    &ADD_OP
 
 
 addition(ADD_OP term)
