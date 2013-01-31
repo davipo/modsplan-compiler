@@ -164,26 +164,39 @@ class SyntaxParser:
         numtokens = 0           # number of tokens matching syntax
         failure = None
         for item in alternate.items:
-            failure, nt = self.parse_item(start + numtokens, item, node)
-            if failure:                     # wrong item
-                if item.quantifier in '?*':     # zero repetitions allowed
-                    failure = None                  # no failure, continue parsing alternate
-                else:                           # item required, alternate fails
-                    numtokens += nt                 # location of failure
-                    node.remove_children()
-                    break
-            else:                           # one item parsed successfully
+            
+            if item.quantifier == '1':      # no quantifier
+                failure, nt = self.parse_item(start + numtokens, item, node)
                 numtokens += nt
-                if start + numtokens == len(self.tokens):
-                    break
-                if item.quantifier in '+*':     # more than one repetition allowed
-                    while start + numtokens < len(self.tokens):
-                        failure, nt = self.parse_item(start + numtokens, item, node)
-                        if failure:                 # no more repetitions of item
-                            failure = None              # not a failure, repetition optional
-                            break
-                        else:
-                            numtokens += nt             # another item parsed successfully
+            
+            else:       # quantified item: make cover node, occurrences are children of it
+                qnode = node.add_child(item.strq())     # name is item followed by quantifier
+                failure, nt = self.parse_item(start + numtokens, item, qnode)
+
+                if failure:     # wrong item
+                    if item.quantifier in '?*':     # zero repetitions allowed
+                        failure = None                  # no fail, continue parsing alternate
+                    else:                           # item required, alternate fails
+                        numtokens += nt                 # location of failure
+                
+                else:           # one item parsed successfully
+                    numtokens += nt
+                    if item.quantifier in '+*':     # more than one repetition allowed
+                    
+                        while start + numtokens < len(self.tokens):
+                            failure, nt = self.parse_item(start + numtokens, item, qnode)
+                            if failure:                 # no more repetitions of item
+                                failure = None              # OK, repetition optional
+                                break
+                            else:
+                                numtokens += nt             # another item parsed successfully
+            
+            if failure:                 # wrong item, alternate fails
+                node.remove_children()
+                break
+            if start + numtokens == len(self.tokens):
+                ### Give error if end of tokens before end of alternate?
+                break
         return failure, numtokens
     
     

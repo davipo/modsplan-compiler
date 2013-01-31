@@ -22,6 +22,8 @@ class BaseNode:
     def __init__(self, name):
         self.name = name                # name of nonterminal or terminal
         self.level = 0                  # depth of node in tree
+        self.linenum = 0                # line number where found in source
+        self.col = 0                    # column number where found in source
         self.used = False               # to keep track of nodes already compiled
 
 
@@ -148,7 +150,7 @@ class NonterminalNode(BaseNode):
 
 
     def find(self, name):
-        """ Return first node with name in preorder traversal from this node."""
+        """ Return first node with name in preorder traversal from this node, or None."""
         if self.name == name:
             return self
         else:

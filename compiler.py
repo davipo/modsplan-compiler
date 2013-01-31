@@ -77,8 +77,7 @@ class Compiler:
                 code.append(self.compiler_directive(source_node, directive, arg_defs))
                 
             elif instr.name == 'expansion':     # expand next unused child with this name
-                child_name = instr.findtext()
-                child = source_node.nextchild(child_name)
+                child = source_node.nextchild(defn.childname(instr))
                 code.extend(self.codegen(child))
                 
             elif instr.name == 'rewrite':       # use instructions from another signature
@@ -94,7 +93,7 @@ class Compiler:
                 label = instr.findtext()
                 code.append(label + ':')
                 ### option to indent output instructions under label?
-                instructions = instruction.firstchild('instructions').children
+                instructions = instruction.find('instructions?').findall('instruction')
                 code.extend(self.gen_instructions(source_node, instructions))
                 
             elif instr.name == 'operation':     # generate single instruction
