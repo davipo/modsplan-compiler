@@ -49,12 +49,16 @@ class Definitions:
         for definition in self.defn_tree.findall('definition'):
             signature = self.make_signature(definition.firstchild())
             instructions = definition.firstchild('instructions')
-            self.defns[signature] = instructions.children
+            self.defns[signature] = instructions.findall('instruction')
 
 
     def make_signature(self, signode):
-        ### move outside class? to parsetree?
-        signature = [node.findtext() for node in signode.children]
+        ### move outside class?
+        if signode.firstchild().name == 'nonterm':
+            signature = [signode.findtext()]
+            signature += [childname(node) for node in signode.findall('child')]
+        else:   # 'terminal'
+            signature = [node.findtext() for node in signode.children]
         signature = map(remove_quotes, signature)
         ### need to get subtypes
         return tuple(signature)
@@ -66,7 +70,8 @@ class Definitions:
         if source_node.isterminal():
             signature.append(source_node.text)
         else:           
-            signature += [child.name for child in source_node.children]
+            signature += [child.name for child in source_node.children if child.findtext()]
+            #   ignore children with no content (skips endline)
         return self.defns.get(tuple(signature))
     
     
@@ -84,6 +89,16 @@ class Definitions:
 
 def sig_str(sig):
     return sig[0] + '(' + ' '.join(sig[1:]) + ')'
+
+
+def childname(child):
+    """ Given child node in defn tree (or its parent, if single child), 
+        return name of child with quantifier, if any."""
+    name = child.findtext()
+    qnode = child.find('QUANTIFIER')
+    if qnode:
+        name += qnode.findtext()
+    return name
 
 
 if __name__ == '__main__':
