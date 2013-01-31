@@ -57,8 +57,11 @@ class Compiler:
             code.extend(self.gen_instructions(source_node, definition))
         else:   # no definition found; generate code for any children
             if source_node.isterminal():
-                message = 'No definition found for terminal token %s' % source_node.name
-                raise self.defs.err.msg(message)
+                if source_node.name == 'COMMENT':
+                    code.append(instr_fmt % ('', ';' + source_node.text))
+                else:
+                    message = 'No definition found for terminal token %s' % source_node.name
+                    raise self.defs.err.msg(message)
             else:
                 for child in source_node.children:
                     code.extend(self.codegen(child))
@@ -102,7 +105,10 @@ class Compiler:
                 code.append(instr_fmt % (opcode, args_str))
                 
             elif instr.name == 'endline':
-                pass
+                comment = instr.find('COMMENT')     # defn comment, not normally output
+                if comment and 'c' in debug:
+                    text = ';(' + self.langname + ')' + comment.findtext()
+                    code.append(instr_fmt % ('', text))
             else:
                 message = 'Unrecognized instruction "%s"' % instr.name
                 raise self.defs.err.msg(message)
@@ -142,10 +148,9 @@ class Compiler:
 
     def compiler_directive(self, source_node, directive, arg_defs):
         """ Generate code per compiler directive, using source and arg definitions."""
+        args_str = self.gen_args(source_node, arg_defs)
         if directive == 'getsymbol':
             pass
-        ### temporary version
-        args_str = self.gen_args(source_node, arg_defs)
         return instr_fmt % ('.' + directive, args_str)
 
 
@@ -164,7 +169,7 @@ if __name__ == '__main__':
             compiler = Compiler(langname, spec_dir, debug)      # initialize for langname
             code = compiler.compile(sourcepath)                 # compile source
             print '\n'.join(code) + '\n'
-        except Error as exc:
+        except (None if debug else Error) as exc:
             print exc
     else:
         print 'Usage: ./compiler.py <source_filename> [<specification_directory>] [-<debug_flags>]'
