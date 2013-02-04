@@ -48,6 +48,7 @@ atom => call
 atom => variable
 
 # function call
+## call => variable '(' arg,* ')'
 call => variable '(' arglist? ')'
 
 arglist => arg nextarg*
