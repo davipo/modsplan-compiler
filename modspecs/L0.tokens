@@ -31,7 +31,9 @@ KEYWORD => 'if'
 KEYWORD => 'else'
 KEYWORD => 'while'
 KEYWORD => 'declare'
-KEYWORD => 'external'
+
+# variable attributes, used in declare statement
+ATTRIBUTE => 'external'
 
 RELATION => '=='
 RELATION => '!='
