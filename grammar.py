@@ -9,6 +9,7 @@ from collections import OrderedDict
 
 
 quote_chars = "'" + '"'
+quantifiers = '*+?'
 separators = '.,;:/|\&-'    # may be used with quantifier to separate repeating items
 
 
@@ -263,7 +264,7 @@ class Grammar:
                         break                   #### (only found if space before #)
                     quantifier = '1'
                     separator = ''
-                    if item[-1] in '*+?':           # last char is a quantifier
+                    if item[-1] in quantifiers:
                         quantifier = item[-1]
                         item = item[:-1]                # remove quantifier
                         if item[-1] in separators:
