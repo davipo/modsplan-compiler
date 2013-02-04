@@ -63,17 +63,13 @@ class Alternate:
         self.prefixes = set()
         for item in self.items:
             item_prefixes = item.get_prefixes(nonterms)
-            if None in item_prefixes:
-                if len(self.prefixes) > 0:
-                    # something followed by nothing cannot be nothing
-                    item_prefixes.remove(None)
-                self.prefixes |= item_prefixes
-                continue    # item can be empty, so may be more prefixes
             self.prefixes |= item_prefixes
+            if '' in item_prefixes:
+                continue    # item can be empty, so may be more prefixes
             if item.quantifier not in '?*':
                 break       # item cannot occur 0 times, so no more first terminals
-        else:                           # end of alternate & still looking, so
-            self.prefixes.add(None)     #   production may produce nothing
+        else:   # end of alternate & still looking, so production may produce nothing
+            self.prefixes.add('')
             
 
 class Item:
@@ -180,7 +176,7 @@ class Grammar:
     def show_prefixes(self):
         """ Return text table of prefixes of all nonterms."""
         text = '\nPrefixes:\n'
-        for name, nonterm in sorted(self.nonterms.items()):
+        for name, nonterm in self.nonterms.items():
             text += '%s: %s\n' % (name, ' '.join(nonterm.prefixes))
         return text + '\n'
     
