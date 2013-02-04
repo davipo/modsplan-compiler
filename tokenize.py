@@ -228,8 +228,9 @@ class Tokenizer:
         """
         if debug > 2:
             print '   match_item %s with "%s"' % (item, text)
+        if text == '':
+            return 0 if item.quantifier in '?*' else -1
         col = 0
-        quant = item.quantifier
         item_text = item.text()
 
         if skip:
@@ -244,6 +245,7 @@ class Tokenizer:
                 col += len(item_text)   # found it, move past it
             return col            
         
+        # repeat item as quantifier allows
         while col < len(text):
             length = -1         # failure unless otherwise determined
             if item.ischarclass():
@@ -258,15 +260,22 @@ class Tokenizer:
             # we have a match unless length == -1
             if debug > 3:
                 print '  ', col, length, item
+                
             # handle quantifier repetitions
-            if quant in '?*' or (quant == '+' and col > 0):
+            if item.quantifier in '?*' or (item.quantifier == '+' and col > 0):
                 # can do zero occurrences, so don't need to match
                 length = max(0, length)     # 0 is worst case
-            if quant not in '*+':   # can't repeat
+            if item.quantifier not in '*+':   # can't repeat
                 return length       # first time through, col == 0
             if length <= 0:
                 return col
             col += length
+            if item.separator and col < len(text):       
+                # if item has separator, next char must be separator, or no repeat
+                if text[col] == item.separator:
+                    col += 1
+                else:
+                    return col
         return col
                 
     
