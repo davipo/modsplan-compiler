@@ -203,9 +203,6 @@ class SyntaxParser:
             if failure:                 # wrong item, alternate fails
                 node.remove_children()
                 break
-            if start + numtokens == len(self.tokens):
-                ### Give error if end of tokens before end of alternate?
-                break
         return failure, numtokens
     
     
@@ -214,8 +211,10 @@ class SyntaxParser:
             Return parse item that failed (or None), number of tokens parsed.
         """
         numtokens = 0           # number of tokens matching syntax
-        token = self.tokens[start]
+        if start == len(self.tokens):
+            return item, numtokens          # fail: no tokens left
         if item.isterminal():
+            token = self.tokens[start]
             # literal item matches token text; tokenkind matches token name
             match_text = token.text if item.isliteral() else token.name
             if match_text == item.text():
