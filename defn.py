@@ -5,7 +5,6 @@
 import os.path
 
 import syntax
-from grammar import Error
 
 
 class DefnNode:  #### not used ####
@@ -69,9 +68,11 @@ class Definitions:
         signature = [source_node.name]
         if source_node.isterminal():
             signature.append(source_node.text)
-        else:           
-            signature += [child.name for child in source_node.children if child.findtext()]
-            #   ignore children with no content (skips endline)
+        else:
+            for child in source_node.children:
+                signature.append(child.name)
+#         print signature
+#         print '   ', self.defns.get(tuple(signature))
         return self.defns.get(tuple(signature))
     
     
