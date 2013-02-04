@@ -2,9 +2,7 @@
 # (A minimal subset of Python)
 
 
-module.root => block
-
-block => line+
+module.root => line+
 
 line => endline
 line => statement
@@ -30,7 +28,7 @@ designator => variable
 if => 'if' test ':' endline suite else? 
 else => 'else' ':' endline suite
 
-suite => INDENT block DEDENT
+suite => INDENT line+ DEDENT
 
 
 while => 'while' test ':' endline suite
