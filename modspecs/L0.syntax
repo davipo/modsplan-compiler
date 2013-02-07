@@ -15,7 +15,7 @@ statement => while
 statement => assignment endline
 statement => call endline
 
-declaration => 'declare' ATTRIBUTE* variable
+declaration => 'declare' variable ATTRIBUTE* 
 
 assignment => designator ASSIGN test
 

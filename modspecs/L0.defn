@@ -10,7 +10,7 @@
 ##      Compiler traverses tree depth-first, matching these, generating as it goes.
 
 
-declaration(ATTRIBUTE* variable)
+declaration(variable ATTRIBUTE*)
     # provides for external functions (for I/O, etc.) and variables
     .addsymbol(variable, ATTRIBUTE*)
 
@@ -37,25 +37,22 @@ if(test endline suite else?)
         &else?
     ifend:
 
-else(endline suite)
-    &suite
-
 
 while(test endline suite)
     while:
         &test
-        branch iftrue, iffalse
-        iftrue:
+        branch whiletrue, whileend
+        whiletrue:
             &suite
             branch while
-        iffalse:
+        whileend:
 
 
-designator(variable)
-    &variable
-    constant 0
-    getptr
-
+# designator(variable)
+#     &variable
+#     constant 0
+#     getptr
+# 
 
 # When sequences added:
 # subscript(variable_seq expr_int)
@@ -122,7 +119,7 @@ parentheses(test)
 
 # just "variable" instead of "atom(variable)"?
 atom(variable)
-    load variable
+    .load(variable)
 
 
 identifier(NAME)
