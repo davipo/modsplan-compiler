@@ -106,7 +106,7 @@ class Compiler:
                 
             elif instr.name == 'endline':
                 comment = instr.find('COMMENT')     # defn comment, not normally output
-                if comment and 'c' in debug:
+                if comment and 'm' in debug:
                     text = ';(' + self.langname + ')' + comment.findtext()
                     code.append(instr_fmt % ('', text))
             else:
@@ -129,8 +129,18 @@ class Compiler:
             if argtype.name in ('constant', 'label'):
                 args.append(argtext)
                 
-            elif argtype.name == 'nonterm':         # for compiler directives
-                args.append(source_node.firstchild(argtext).findtext())
+#             elif argtype.name == 'nonterm':         # for compiler directives
+#                 args.append(source_node.firstchild(argtext).findtext())
+            
+            ### revert to previous, but with '&' prefix for nonterm
+            elif argtype.name == 'child':
+                child = source_node.nextchild(defn.childname(argtype))
+                if child.isterminal():
+                    args.append(child.findtext())
+                else:
+                    for arg in child.children:          # handles quantifiers
+                        args.append(arg.findtext())
+#                 print 'gen_args', source_node.name, child, args
             
             elif argtype.name == 'terminal':
                 child = source_node.nextchild(argtext)      # argtext is tokenkind in source,
@@ -168,7 +178,7 @@ if __name__ == '__main__':
         try:
             compiler = Compiler(langname, spec_dir, debug)      # initialize for langname
             code = compiler.compile(sourcepath)                 # compile source
-            print '\n'.join(code) + '\n'
+            print '\n' + '\n'.join(code) + '\n'
         except (None if debug else Error) as exc:
             print exc
     else:

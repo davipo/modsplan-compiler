@@ -53,8 +53,9 @@ label => LOWERNAME
 ### Implement ',' qualifier, use "carg,*" above, eliminate next 2 lines
 cargs => carg next_carg*
 next_carg => ',' carg
-carg => nonterm
-carg => terminal
+carg => child
+# carg => nonterm
+# carg => terminal
 carg => constant
 
 operation => identifier opargs?
@@ -67,6 +68,7 @@ next_oparg => ',' oparg
 oparg => constant
 oparg => label
 oparg => terminal       # substitutes text of terminal
+oparg => '&' nonterm    # substitutes first text in nonterm (like identifier name)
 oparg => directive
 
 constant => number
