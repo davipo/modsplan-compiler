@@ -84,7 +84,7 @@ class SyntaxParser:
         # Start at syntax root, find terminals matching tokens of source file.
         # Build parse tree depth-first, climbing syntax to classify nodes.
         nonterm = self.syntax.root
-        parse_tree = parsetree.new(nonterm.name)    # root of parse tree
+        parse_tree = parsetree.new(nonterm.name, self.debug)    # root of parse tree
         self.log(3, '\n\nParse trace:\n')
         if self.tokens:
             self.newtoken = True
@@ -117,6 +117,7 @@ class SyntaxParser:
         numtokens = 0           # number of tokens matching syntax
         maxtokens = 0           # max number of tokens parsed among failed alternates
         token = self.tokens[start]
+        node.set_location(token)
         if self.newtoken:
             self.log(3, token)      # display new token once
             self.newtoken = False
@@ -222,7 +223,7 @@ class SyntaxParser:
                 failure = None
                 if token.text and not item.isliteral():
                     # don't output NEWLINE, INDENT, DEDENT, or literals
-                    node.add_child(token.name, token.text)      # terminal node
+                    node.add_child(token)   # terminal node
                 if self.newtoken:
                     self.log(3, token)      # if token display pending, show this one
                 self.log(5, '    %s found' % item, node)

@@ -5,34 +5,39 @@
 
 from grammar import Error
 
+indent_size = 3
+indent1 = ' ' * indent_size             # string to display one level of indentation
+indent2 = '|' + indent1[1:]             # every other indent contains a vertical bar
+indentation = indent1 * 2 + (indent2 + indent1) * 40    # (enough for 82 indent levels)
 
-indentation = ' ' * 3       # string to display one level of indentation
-indentation1 = '|' + indentation[1:]
-indentation2 = indentation * 2
-indentation3 = indentation1 + indentation
 
-
-def new(name):
+def new(name, debug_flags=''):
     """ Return new empty tree, with name on root node."""
-    return NonterminalNode(name)
+    return NonterminalNode(name, debug_flags)
 
 
 class BaseNode:
     """ Base class for a node of the parse tree."""
-    def __init__(self, name):
+    def __init__(self, name, debug_flags):
         self.name = name                # name of nonterminal or terminal
+        self.debug = debug_flags
         self.level = 0                  # depth of node in tree
         self.linenum = 0                # line number where found in source
-        self.col = 0                    # column number where found in source
+        self.column = 0                 # column number where found in source
         self.used = False               # to keep track of nodes already compiled
+
+
+    def set_location(self, token):
+        """ Set location in source code from token."""
+        self.linenum, self.column = token.linenum, token.column
 
 
     def indent(self):
         """ Return string of indentation to level of node."""
-        level2 = self.level // 2
-        indent2 = indentation2 * (level2 > 0) + indentation3 * (level2 - 1)
-        indent1 = indentation1 if level2 > 0 else indentation
-        return indent2 + indent1 * (self.level % 2)
+        location = ''
+        if 'n' in self.debug:
+            location = '%2d %2d ' % (self.linenum, self.column)
+        return location + indentation[len(location):self.level * indent_size]
 
 
     def find(self, name):
@@ -53,9 +58,10 @@ class BaseNode:
 
 class TerminalNode(BaseNode):
     """ A terminal node of the parse tree; contains text."""
-    def __init__(self, name, text):
-        BaseNode.__init__(self, name)
-        self.text = text                # terminal text
+    def __init__(self, token, debug_flags):
+        BaseNode.__init__(self, token.name, debug_flags)
+        self.text = token.text              # terminal text
+        self.set_location(token)
 
 
     def isterminal(self):
@@ -78,8 +84,8 @@ class TerminalNode(BaseNode):
 
 class NonterminalNode(BaseNode):
     """ A nonterminal node of the parse tree; contains a list of child nodes."""
-    def __init__(self, name):
-        BaseNode.__init__(self, name)
+    def __init__(self, name, debug_flags):
+        BaseNode.__init__(self, name, debug_flags)
         self.children = []
 
 
@@ -91,13 +97,14 @@ class NonterminalNode(BaseNode):
         return self.name + '[' + ', '.join([str(child) for child in self.children]) + ']'
 
 
-    def add_child(self, name, text=None):
-        """ Append child node to this node's list of children. 
-            If text is given, append terminal node, else append nonterminal."""
-        if text:
-            child = TerminalNode(name, text)
+    def add_child(self, object):
+        """ Append child node to this node's list of children.
+            If object is a string, make a nonterminal node named with it;
+            else assume object is a token, make a terminal node with it."""
+        if isinstance(object, str):
+            child = NonterminalNode(object, self.debug)
         else:
-            child = NonterminalNode(name)
+            child = TerminalNode(object, self.debug)
         child.level = self.level + 1
         self.children.append(child)
         return child
