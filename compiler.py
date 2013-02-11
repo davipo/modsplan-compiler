@@ -44,7 +44,6 @@ class Compiler:
         print '\nParsing %s ...' % source_filepath
         self.source_tree = self.parser.parse(source_filepath)
         return self.codegen(self.source_tree)
-#         return ['\t' * (':' not in line) + line for line in code]
 
 
     def codegen(self, source_node):
@@ -106,7 +105,7 @@ class Compiler:
                 
             elif instr.name == 'endline':
                 comment = instr.find('COMMENT')     # defn comment, not normally output
-                if comment and 'm' in debug:
+                if comment and 'm' in self.debug:
                     text = ';(' + self.langname + ')' + comment.findtext()
                     code.append(instr_fmt % ('', text))
             else:
@@ -164,6 +163,26 @@ class Compiler:
         return instr_fmt % ('.' + directive, args_str)
 
 
+def compile_src(sourcepath, codepath='', spec_dir=None, debug=''):
+    """ Compile source code from sourcepath, write target code to codepath (if given),
+        return lines of target code in a single string.
+        If codepath is '*', write to sourcepath.code.
+        Optional specification directory and debug flags."""
+    langname = sourcepath.rpartition('.')[-1]
+    try:
+        compiler = Compiler(langname, spec_dir, debug)      # initialize for langname
+        code = compiler.compile(sourcepath)                 # compile source
+        codestring = '\n' + '\n'.join(code) + '\n'
+        if codepath:
+            if codepath == '*':
+                codepath = sourcepath + '.code'
+            with open(codepath, 'w') as outfile:
+                outfile.write(codestring)
+        return codestring
+    except (None if debug else Error) as exc:
+        print exc
+
+
 if __name__ == '__main__':
     debug = ''                      # default debugging output
     if 2 <= len(sys.argv) <= 4:
@@ -174,13 +193,8 @@ if __name__ == '__main__':
                 debug = arg[1:]
             else:
                 spec_dir = arg
-        langname = sourcepath.rpartition('.')[-1]
-        try:
-            compiler = Compiler(langname, spec_dir, debug)      # initialize for langname
-            code = compiler.compile(sourcepath)                 # compile source
-            print '\n' + '\n'.join(code) + '\n'
-        except (None if debug else Error) as exc:
-            print exc
+        codestring = compile_src(sourcepath, '*', spec_dir, debug)
+        print codestring
     else:
         print 'Usage: ./compiler.py <source_filename> [<specification_directory>] [-<debug_flags>]'
 
