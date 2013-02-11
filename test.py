@@ -7,7 +7,7 @@
 import unittest
 import os
 
-import compiler
+import modsplan.compiler
 
 
 source_dir = 'sample_source'
@@ -35,7 +35,7 @@ class TestCompiler(unittest.TestCase):
     
     def check_with_prev(self, sourcepath):
         """ Compile source at sourcepath, compare code to previously compiled code."""
-        code = compiler.compile_src(sourcepath)
+        code = modsplan.compiler.compile_src(sourcepath)
         with open(sourcepath + '.code') as codefile:
             prevcode = codefile.read()
         self.assertEqual(code, prevcode)
