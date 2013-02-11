@@ -93,7 +93,7 @@ class Compiler:
                 
             elif instr.name == 'label':     # insert label, compile block below it
                 label = instr.findtext()
-                code.append(label + ':')
+                code.append(label + '%d:' % source_node.linenum)
                 ### option to indent output instructions under label?
                 instructions = instruction.find('instructions?').findall('instruction')
                 code.extend(self.gen_instructions(source_node, instructions))
@@ -125,8 +125,11 @@ class Compiler:
             argtype = argdef.firstchild()
             argtext = argtype.findtext()
             
-            if argtype.name in ('constant', 'label'):
+            if argtype.name in ('constant', 'otherarg'):
                 args.append(argtext)
+            
+            elif argtype.name == 'label':
+                args.append(argtext + '%d' % source_node.linenum)
                 
 #             elif argtype.name == 'nonterm':         # for compiler directives
 #                 args.append(source_node.firstchild(argtext).findtext())

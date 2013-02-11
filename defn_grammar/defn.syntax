@@ -59,10 +59,13 @@ operation => identifier oparg,*
 
 # operation args
 oparg => constant
-oparg => label
+oparg => ':' label
 oparg => terminal       # substitutes text of terminal
 # oparg => '&' nonterm    # substitutes first text in nonterm (like identifier name)
 oparg => directive
+oparg => otherarg
+
+otherarg => LOWERNAME
 
 constant => number
 constant => STRING

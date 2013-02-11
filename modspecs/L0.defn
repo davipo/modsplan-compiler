@@ -29,10 +29,10 @@ ASSIGN('+=')
 
 if(test endline suite else?)
     &test
-    branch iftrue, iffalse
+    branch :iftrue, :iffalse
     iftrue:
         &suite
-        branch ifend
+        branch :ifend
     iffalse:
         &else?
     ifend:
@@ -41,10 +41,10 @@ if(test endline suite else?)
 while(test endline suite)
     while:
         &test
-        branch whiletrue, whileend
+        branch :whiletrue, :whileend
         whiletrue:
             &suite
-            branch while
+            branch :while
         whileend:
 
 
