@@ -1,0 +1,14 @@
+
+Line count for modsplan version 0.1:
+Filename            Lines  Nonblank   % blank
+
+__init__.py             6         3        50
+compiler.py           212       175        17
+defn.py               111        83        25
+grammar.py            315       257        18
+parsetree.py          197       147        25
+syntax.py             290       245        16
+tokenize.py           386       324        16
+
+Total (7 files)      1517      1234        19
+
