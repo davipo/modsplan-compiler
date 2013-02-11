@@ -43,28 +43,21 @@ instruction => rewrite endline
 instruction => label ':' endline instructions?
 instruction => operation endline
 
-directive => '.' identifier '(' cargs? ')'      # compiler directive
+directive => '.' identifier '(' carg,* ')'      # compiler directive
 expansion => '&' child                          # generate code for child node
 rewrite => '=' signature
 
 label => LOWERNAME
 
 # compiler directive args
-### Implement ',' qualifier, use "carg,*" above, eliminate next 2 lines
-cargs => carg next_carg*
-next_carg => ',' carg
 carg => child
 # carg => nonterm
 # carg => terminal
 carg => constant
 
-operation => identifier opargs?
-### operation => identifier oparg,*
-
+operation => identifier oparg,*
 
 # operation args
-opargs => oparg next_oparg*
-next_oparg => ',' oparg
 oparg => constant
 oparg => label
 oparg => terminal       # substitutes text of terminal
