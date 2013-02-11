@@ -109,8 +109,8 @@ MUL_OP('*')
     mul
     
 
-call(variable arglist?)     # function call
-    &arglist?
+call(variable arg*)     # function call
+    &arg*
     &variable
     call
 
