@@ -61,7 +61,7 @@ operation => identifier oparg,*
 oparg => constant
 oparg => label
 oparg => terminal       # substitutes text of terminal
-oparg => '&' nonterm    # substitutes first text in nonterm (like identifier name)
+# oparg => '&' nonterm    # substitutes first text in nonterm (like identifier name)
 oparg => directive
 
 constant => number
