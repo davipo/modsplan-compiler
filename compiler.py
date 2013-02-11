@@ -104,13 +104,21 @@ class Compiler:
                 code.append(instr_fmt % (opcode, args_str))
                 
             elif instr.name == 'endline':
-                comment = instr.find('COMMENT')     # defn comment, not normally output
-                if comment and 'm' in self.debug:
-                    text = ';(' + self.langname + ')' + comment.findtext()
-                    code.append(instr_fmt % ('', text))
+                pass
             else:
                 message = 'Unrecognized instruction "%s"' % instr.name
                 raise self.defs.err.msg(message)
+            
+            if 'm' in self.debug:       # output defn comments
+                endline = instruction.firstchild('endline')
+                if endline:
+                    comment = endline.find('COMMENT')   # defn comment, not normally output
+                    if comment:
+                        text = ';(' + self.langname + ')' + comment.findtext()
+                        if code:
+                            code[-1] = code[-1] + '   ' + text
+                        else:
+                            code.append(instr_fmt % ('', text))
                 
         if 'i' in self.debug:
             print '(%s:)' % source_node.name 

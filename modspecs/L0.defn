@@ -124,7 +124,7 @@ atom(variable)
 
 identifier(NAME)
     .getsymbol(NAME)        # compile error if NAME undefined
-    
+
 
 number(INTEGER)
     const INTEGER
