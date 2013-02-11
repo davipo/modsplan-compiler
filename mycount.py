@@ -16,3 +16,4 @@ if __name__ == '__main__':
         count_file.write(table + '\n')
     
     print table
+    
