@@ -8,7 +8,7 @@ import unittest
 import os
 
 import modsplan.compiler
-
+import modsplan.lineparsers
 
 source_dir = 'sample_source'
 
@@ -36,10 +36,20 @@ class TestCompiler(unittest.TestCase):
     def check_with_prev(self, sourcepath):
         """ Compile source at sourcepath, compare code to previously compiled code."""
         code = modsplan.compiler.compile_src(sourcepath)
-        with open(sourcepath + '.code') as codefile:
+        with open(sourcepath + '.stkvm') as codefile:
             prevcode = codefile.read()
         self.assertEqual(code, prevcode)
-        
+     
+     
+    def test_import(self):
+        """ Parse lines of import_test.L0, check that imports are processed correctly."""
+        filename = 'import_test.L0'
+        sourcepath = os.path.join(source_dir, filename)
+        lines = modsplan.lineparsers.ImportParser(sourcepath).readlines()
+        with open(sourcepath + '.txt') as f:
+            prevtext = f.read()
+        self.assertEqual(''.join(lines), prevtext)
+     
 
 if __name__ == '__main__':
     unittest.main()
