@@ -43,7 +43,8 @@ class LineParser(object):
         implements an iterator; tracks line number."""
     
     def __init__(self, iterator):
-        """ Create line parser from iterator of strings (one per line)."""
+        """ Create line parser from iterator of strings (one per line);
+            linenum attribute gives line number of last line served (starting at 1)."""
         self.iterator = iterator
         self.linenum = 0        # number of lines generated (also current line number)
         
@@ -63,7 +64,8 @@ class LineParser(object):
     
 
 class FileParser(LineParser):
-    """ Parses lines of text from file; implements an iterator; tracks line number."""
+    """ Serves lines of text from file; implements an iterator; 
+        tracks line number. Lines served without line end chars."""
     
     def __init__(self, sourcepath):
         """ Create line parser from text file at sourcepath."""
@@ -78,7 +80,8 @@ class FileParser(LineParser):
 
 
 class ImportParser(FileParser):
-    """ Parses lines of text from file; implements an iterator; tracks line number.
+    """ Serves lines of text (without line end chars) from file; 
+        implements an iterator; tracks line number.
         Imports other files as specified in 'use' directives.
         Keeps a list of imports to avoid repeats and loops."""
     
@@ -92,7 +95,6 @@ class ImportParser(FileParser):
         self.imported = imported                # list of already imported filepaths
         self.imported.append(sourcepath)
 
-        
     def generator(self):
         """ Generator (iterator) of lines of source; if a line begins with 
             <import_cmd> <import>, return lines of file <import>.ext in place of this line,
@@ -110,14 +112,65 @@ class ImportParser(FileParser):
                 yield line
 
 
-
 class IndentParser(LineParser):
-    pass
+    """ Serves lines of text from an iterator of strings; 
+        implements an iterator; tracks line number and indentation level.
+        Strict indentation rules (IndentationError raised if violated):
+            Only tab ('\t') or space chars may indent a line, they may not be mixed.
+            First indent may be one tab char or a string of spaces.
+            All indents must be a multiple of the first."""
+    
+    def __init__(self, iterator):
+        """ Create indentation parser from iterator of strings (one per line);
+            linenum attribute gives line number of last line served (starting at 1).
+            level attribute gives indentation level of last line served."""
+        LineParser.__init__(self, iterator)
+        self.level = 0          # indentation level
+        self.indent = ''        # indent chars: one tab or string of spaces
+    
+    def generator(self):
+        """ Generator (iterator) of lines of source;
+            tracks indentation level, raises IndentationError if inconsistent."""
+        for line in self.iterator:
+            self.linenum += 1
+            if line.strip():        # a blank line (only whitespace) does not affect level
+                # compute indentation level
+                indentstr = self.indentation(line)   # all the whitespace at start of line
+                if len(indentstr) == 0:
+                    self.level = 0
+                elif self.indent:
+                    # not first indent, check that this line is consistent with first
+                    self.level, extra = divmod(len(indentstr), len(self.indent))
+                    if extra != 0:
+                        message = 'Indent in line %d is not a multiple of first indent'
+                        raise IndentationError(message % self.linenum)
+                else:
+                    # this is first indent, set indent string for current text
+                    if indentstr[0] == '\t' and len(indentstr > 1):
+                        message = 'First indent (line %d) has more than one tab'
+                        raise IndentationError(message % self.linenum)
+                    else:
+                        self.indent = indentstr
+                        self.level = 1
+            yield line
+    
+    def indentation(self, line):
+        """ Return string of all whitespace at start of line;
+            check that it contains either only tab chars or only space chars,
+            otherwise raise IndentationError."""
+        length = len(line) - len(line.lstrip())
+        whitespace = line[:length]
+        if whitespace:
+            first = whitespace[0]
+            if first not in (' ', '\t') or any(char != first for char in whitespace):
+                message = 'Bad indentation in line %d, must be all tabs or all spaces'
+                raise IndentationError(message % self.linenum)
+        return whitespace
+    
 
-## Read iterator once, track indentation as we go.
-
-
-
-
-
+def test_indentparse(sourcepath):
+    f = open(sourcepath)
+    inp = IndentParser(f)
+    for line in inp:
+        print '%d %s' % (inp.level, line)
 
