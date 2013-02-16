@@ -56,7 +56,13 @@ class LineParser(object):
         """ Generator (iterator) of lines of source."""
         for line in self.iterator:
             self.linenum += 1
-            yield line
+            for procline in self.process_line(line):
+                yield procline
+    
+    def process_line(self, line):
+        """ Generator of processed lines. Perform any processing on line,
+            yield resulting lines. (Override in subclasses.)"""
+        yield line
     
     def readlines(self):
         """ Return list of remaining lines, each terminated with '\n'."""
@@ -95,21 +101,19 @@ class ImportParser(FileParser):
         self.imported = imported                # list of already imported filepaths
         self.imported.append(sourcepath)
 
-    def generator(self):
-        """ Generator (iterator) of lines of source; if a line begins with 
-            <import_cmd> <import>, return lines of file <import>.ext in place of this line,
-            else return line. Imported file uses directory and extension of current file."""
-        for line in self.iterator:
-            self.linenum += 1
-            if line.startswith(self.import_cmd):
-                importname = line[len(self.import_cmd):].strip()
-                importpath = os.path.join(self.source_dir, importname) + self.extension
-                if importpath not in self.imported:
-                    self.imported.append(importpath)
-                    for import_line in ImportParser(importpath, self.imported):
-                        yield import_line
-            else:           
-                yield line
+    def process_line(self, line):
+        """ Generator of processed lines. If a line begins with <import_cmd> <import>,
+            yield lines of file <import>.ext in place of this line, else yield line. 
+            Imported file uses directory and extension of current file."""
+        if line.startswith(self.import_cmd):
+            importname = line[len(self.import_cmd):].strip()
+            importpath = os.path.join(self.source_dir, importname) + self.extension
+            if importpath not in self.imported:
+                self.imported.append(importpath)
+                for import_line in ImportParser(importpath, self.imported):
+                    yield import_line
+        else:           
+            yield line
 
 
 class IndentParser(LineParser):
@@ -129,31 +133,29 @@ class IndentParser(LineParser):
         self.indent = ''                    # indent chars: one tab or string of spaces
         self.track_indent = track_indent    # set False to disable level computation
     
-    def generator(self):
-        """ Generator (iterator) of lines of source;
-            tracks indentation level, raises IndentationError if inconsistent."""
-        for line in self.iterator:
-            self.linenum += 1
-            if self.track_indent and line.strip():  # blank line doesn't affect level
-                # compute indentation level
-                indentstr = self.indentation(line)  # all the whitespace at start of line
-                if len(indentstr) == 0:
-                    self.level = 0
-                elif self.indent:
-                    # not first indent, check that this line is consistent with first
-                    self.level, extra = divmod(len(indentstr), len(self.indent))
-                    if extra != 0:
-                        message = 'Indent in line %d is not a multiple of first indent'
-                        raise IndentationError(message % self.linenum)
+    def process_line(self, line):
+        """ Track indentation level, raise IndentationError if inconsistent.
+            (Generator of processed lines, yields orginal line unchanged.)"""
+        if self.track_indent and line.strip():      # line of whitespace doesn't affect level
+            # compute indentation level
+            indentstr = self.indentation(line)      # all the whitespace at start of line
+            if len(indentstr) == 0:
+                self.level = 0
+            elif self.indent:
+                # not first indent, check that this line is consistent with first
+                self.level, extra = divmod(len(indentstr), len(self.indent))
+                if extra != 0:
+                    message = 'Indent in line %d is not a multiple of first indent'
+                    raise IndentationError(message % self.linenum)
+            else:
+                # this is first indent, set indent string for current text
+                if indentstr[0] == '\t' and len(indentstr) > 1:
+                    message = 'First indent (line %d) has more than one tab'
+                    raise IndentationError(message % self.linenum)
                 else:
-                    # this is first indent, set indent string for current text
-                    if indentstr[0] == '\t' and len(indentstr) > 1:
-                        message = 'First indent (line %d) has more than one tab'
-                        raise IndentationError(message % self.linenum)
-                    else:
-                        self.indent = indentstr
-                        self.level = 1
-            yield line
+                    self.indent = indentstr
+                    self.level = 1
+        yield line
     
     def indentation(self, line):
         """ Return string of all whitespace at start of line;
@@ -179,7 +181,7 @@ def test_indentparse(sourcepath):
 # sourcepath = 'sample_source/' + 'reassemble.py'
 # sourcepath = 'sample_source/' + 'reassemble_tabbed.py'
 # fp = FileParser(sourcepath)
-# inp = IndentParser(fp, False)
+# inp = IndentParser(fp, True)
 # for line in inp:
 #     print '%2d' % inp.linenum, inp.level, line
 
