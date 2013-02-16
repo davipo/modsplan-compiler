@@ -9,9 +9,9 @@ import os
 
 """ These parsers offer convenient iteration over lines of text.
         LineParser tracks current line number.
+        IndentParser tracks indentation level.
         FileParser reads lines from a file.
         ImportParser handles importing lines from other files.
-        IndentParser tracks indentation level.
 """
 
 
@@ -69,53 +69,6 @@ class LineParser(object):
         return ['%s\n' % line for line in self.generator()]
     
 
-class FileParser(LineParser):
-    """ Serves lines of text from file; implements an iterator; 
-        tracks line number. Lines served without line end chars."""
-    
-    def __init__(self, sourcepath):
-        """ Create line parser from text file at sourcepath."""
-        self.sourcepath = sourcepath
-        self.err = Error(sourcepath)
-        try:
-            sourcetext = open(sourcepath).read()
-        except IOError as exc:
-            raise self.err.msg('Error loading file ' + sourcepath + '\n' + str(exc))
-        lines = sourcetext.splitlines()
-        LineParser.__init__(self, lines)
-
-
-class ImportParser(FileParser):
-    """ Serves lines of text (without line end chars) from file; 
-        implements an iterator; tracks line number.
-        Imports other files as specified in 'use' directives.
-        Keeps a list of imports to avoid repeats and loops."""
-    
-    def __init__(self, sourcepath, imported=[]):
-        """ Create import parser from text file at sourcepath;
-            optional param 'imported' is a list of filepaths already imported."""
-        FileParser.__init__(self, sourcepath)
-        self.import_cmd = 'use '
-        self.source_dir = os.path.dirname(sourcepath)
-        self.extension = os.path.splitext(sourcepath)[1]
-        self.imported = imported                # list of already imported filepaths
-        self.imported.append(sourcepath)
-
-    def process_line(self, line):
-        """ Generator of processed lines. If a line begins with <import_cmd> <import>,
-            yield lines of file <import>.ext in place of this line, else yield line. 
-            Imported file uses directory and extension of current file."""
-        if line.startswith(self.import_cmd):
-            importname = line[len(self.import_cmd):].strip()
-            importpath = os.path.join(self.source_dir, importname) + self.extension
-            if importpath not in self.imported:
-                self.imported.append(importpath)
-                for import_line in ImportParser(importpath, self.imported):
-                    yield import_line
-        else:           
-            yield line
-
-
 class IndentParser(LineParser):
     """ Serves lines of text from an iterator of strings; 
         implements an iterator; tracks line number and indentation level.
@@ -171,8 +124,61 @@ class IndentParser(LineParser):
         return whitespace
     
 
-def test_indentparse(sourcepath):
-    inp = IndentParser(FileParser(sourcepath))
+class FileParser(IndentParser):
+    """ Serves lines of text from file; implements an iterator; 
+        tracks line number. Lines served without line end chars.
+        Option to track indentation (see IndentParser), disabled by default."""
+    
+    def __init__(self, sourcepath, track_indent=False):
+        """ Create line parser from text file at sourcepath.
+            Option to track indentation (see IndentParser), disabled by default."""
+        self.sourcepath = sourcepath
+        self.err = Error(sourcepath)
+        try:
+            sourcetext = open(sourcepath).read()
+        except IOError as exc:
+            raise self.err.msg('Error loading file ' + sourcepath + '\n' + str(exc))
+        lines = sourcetext.splitlines()
+        IndentParser.__init__(self, lines, track_indent)
+
+
+class ImportParser(FileParser):
+    """ Serves lines of text (without line end chars) from file; 
+        implements an iterator; tracks line number.
+        Imports other files as specified in 'use' directives.
+        Keeps a list of imports to avoid repeats and loops.
+        Option to track indentation (see IndentParser), disabled by default."""
+    
+    def __init__(self, sourcepath, track_indent=False, imported=[]):
+        """ Create import parser from text file at sourcepath.
+            Option to track indentation (see IndentParser), disabled by default.
+            Optional param 'imported' is a list of filepaths already imported."""
+        FileParser.__init__(self, sourcepath, track_indent)
+        self.imported = imported                # list of already imported filepaths
+        self.imported.append(sourcepath)
+        self.import_cmd = 'use '
+        self.source_dir = os.path.dirname(sourcepath)
+        self.extension = os.path.splitext(sourcepath)[1]
+
+    def process_line(self, line):
+        """ Generator of processed lines. If a line begins with <import_cmd> <import>,
+            yield lines of file <import>.ext in place of this line, else yield line. 
+            Imported file uses directory and extension of current file."""
+        # overriding FileParser.process_line(), so do its processing first
+        for pline in FileParser.process_line(self, line):
+            if pline.startswith(self.import_cmd):
+                importname = pline[len(self.import_cmd):].strip()
+                importpath = os.path.join(self.source_dir, importname) + self.extension
+                if importpath not in self.imported:
+                    import_lines = ImportParser(importpath, self.track_indent, self.imported)
+                    for import_line in import_lines:
+                        yield import_line
+            else:           
+                yield pline
+
+
+def test_parse(sourcepath):
+    inp = ImportParser(sourcepath, track_indent=True)
     for line in inp:
         print '%2d' % inp.linenum, inp.level, line
 
@@ -180,8 +186,8 @@ def test_indentparse(sourcepath):
 # sourcepath = 'sample_source/' + 'simplepy.L0'
 # sourcepath = 'sample_source/' + 'reassemble.py'
 # sourcepath = 'sample_source/' + 'reassemble_tabbed.py'
-# fp = FileParser(sourcepath)
-# inp = IndentParser(fp, True)
-# for line in inp:
-#     print '%2d' % inp.linenum, inp.level, line
+# sourcepath = 'sample_source/' + 'import_test.L0'
+# pr = ImportParser(sourcepath, True)
+# for line in pr:
+#     print '%2d' % pr.linenum, pr.level, line
 

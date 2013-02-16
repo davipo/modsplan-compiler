@@ -45,11 +45,16 @@ class TestCompiler(unittest.TestCase):
         """ Parse lines of import_test.L0, check that imports are processed correctly."""
         filename = 'import_test.L0'
         sourcepath = os.path.join(source_dir, filename)
-        lines = modsplan.lineparsers.ImportParser(sourcepath).readlines()
+        lines = modsplan.lineparsers.ImportParser(sourcepath, True).readlines()
         with open(sourcepath + '.txt') as f:
             prevtext = f.read()
         self.assertEqual(''.join(lines), prevtext)
      
+     
+    def test_tokenizer(self):
+        """ Tokenize a test file, check tokens."""
+        filename = 'simplepy.L0'
+        
 
 if __name__ == '__main__':
     unittest.main()
