@@ -46,9 +46,10 @@ class TestCompiler(unittest.TestCase):
         filename = 'import_test.L0'
         sourcepath = os.path.join(source_dir, filename)
         lines = modsplan.lineparsers.ImportParser(sourcepath, True).readlines()
+        text = ''.join(lines)
         with open(sourcepath + '.txt') as f:
             prevtext = f.read()
-        self.assertEqual(''.join(lines), prevtext)
+        self.assertEqual(text, prevtext)
      
      
     def test_tokenizer(self):

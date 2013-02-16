@@ -163,31 +163,34 @@ class ImportParser(FileParser):
     def process_line(self, line):
         """ Generator of processed lines. If a line begins with <import_cmd> <import>,
             yield lines of file <import>.ext in place of this line, else yield line. 
-            Imported file uses directory and extension of current file."""
+            Imported file uses directory and extension of parent file.
+            Yields tuples of (line, indent_level, line_number, filepath)."""
         # overriding FileParser.process_line(), so do its processing first
         for pline in FileParser.process_line(self, line):
             if pline.startswith(self.import_cmd):
                 importname = pline[len(self.import_cmd):].strip()
                 importpath = os.path.join(self.source_dir, importname) + self.extension
                 if importpath not in self.imported:
-                    import_lines = ImportParser(importpath, self.track_indent, self.imported)
-                    for import_line in import_lines:
+                    importer = ImportParser(importpath, self.track_indent, self.imported)
+                    for import_line in importer:
                         yield import_line
-            else:           
-                yield pline
+            else:
+                yield (pline, self.level, self.linenum, self.sourcepath)
+
+    def readlines(self):
+        """ Return list of remaining lines, each terminated with '\n'."""
+        return ['%s\n' % line[0] for line in self.generator()]
 
 
 def test_parse(sourcepath):
-    inp = ImportParser(sourcepath, track_indent=True)
-    for line in inp:
-        print '%2d' % inp.linenum, inp.level, line
+    parser = ImportParser(sourcepath, track_indent=True)
+    for (line, level, linenum, filepath) in parser:
+        filename = os.path.basename(filepath)
+        print '%20s %2d %1d %s' % (filename, linenum, level, line)
 
 
-# sourcepath = 'sample_source/' + 'simplepy.L0'
-# sourcepath = 'sample_source/' + 'reassemble.py'
-# sourcepath = 'sample_source/' + 'reassemble_tabbed.py'
-# sourcepath = 'sample_source/' + 'import_test.L0'
-# pr = ImportParser(sourcepath, True)
-# for line in pr:
-#     print '%2d' % pr.linenum, pr.level, line
+sp = 'sample_source/' + 'simplepy.L0'
+ra = 'sample_source/' + 'reassemble.py'
+rt = 'sample_source/' + 'reassemble_tabbed.py'
+it = 'sample_source/' + 'import_test.L0'
 
