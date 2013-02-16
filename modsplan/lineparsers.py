@@ -120,22 +120,23 @@ class IndentParser(LineParser):
             First indent may be one tab char or a string of spaces.
             All indents must be a multiple of the first."""
     
-    def __init__(self, iterator):
+    def __init__(self, iterator, track_indent=True):
         """ Create indentation parser from iterator of strings (one per line);
             linenum attribute gives line number of last line served (starting at 1).
-            level attribute gives indentation level of last line served."""
+            If track_indent, level attribute gives indentation level of last line served."""
         LineParser.__init__(self, iterator)
-        self.level = 0          # indentation level
-        self.indent = ''        # indent chars: one tab or string of spaces
+        self.level = 0                      # indentation level
+        self.indent = ''                    # indent chars: one tab or string of spaces
+        self.track_indent = track_indent    # set False to disable level computation
     
     def generator(self):
         """ Generator (iterator) of lines of source;
             tracks indentation level, raises IndentationError if inconsistent."""
         for line in self.iterator:
             self.linenum += 1
-            if line.strip():        # a blank line (only whitespace) does not affect level
+            if self.track_indent and line.strip():  # blank line doesn't affect level
                 # compute indentation level
-                indentstr = self.indentation(line)   # all the whitespace at start of line
+                indentstr = self.indentation(line)  # all the whitespace at start of line
                 if len(indentstr) == 0:
                     self.level = 0
                 elif self.indent:
@@ -146,7 +147,7 @@ class IndentParser(LineParser):
                         raise IndentationError(message % self.linenum)
                 else:
                     # this is first indent, set indent string for current text
-                    if indentstr[0] == '\t' and len(indentstr > 1):
+                    if indentstr[0] == '\t' and len(indentstr) > 1:
                         message = 'First indent (line %d) has more than one tab'
                         raise IndentationError(message % self.linenum)
                     else:
@@ -169,8 +170,16 @@ class IndentParser(LineParser):
     
 
 def test_indentparse(sourcepath):
-    f = open(sourcepath)
-    inp = IndentParser(f)
+    inp = IndentParser(FileParser(sourcepath))
     for line in inp:
-        print '%d %s' % (inp.level, line)
+        print '%2d' % inp.linenum, inp.level, line
+
+
+# sourcepath = 'sample_source/' + 'simplepy.L0'
+# sourcepath = 'sample_source/' + 'reassemble.py'
+# sourcepath = 'sample_source/' + 'reassemble_tabbed.py'
+# fp = FileParser(sourcepath)
+# inp = IndentParser(fp, False)
+# for line in inp:
+#     print '%2d' % inp.linenum, inp.level, line
 
