@@ -82,9 +82,9 @@ class IndentParser(LineParser):
             linenum attribute gives line number of last line served (starting at 1).
             If track_indent, level attribute gives indentation level of last line served."""
         LineParser.__init__(self, iterator)
+        self.track_indent = track_indent    # set False to disable level computation
         self.level = 0                      # indentation level
         self.indent = ''                    # indent chars: one tab or string of spaces
-        self.track_indent = track_indent    # set False to disable level computation
     
     def process_line(self, line):
         """ Track indentation level, raise IndentationError if inconsistent.
@@ -95,19 +95,15 @@ class IndentParser(LineParser):
             if len(indentstr) == 0:
                 self.level = 0
             elif self.indent:
-                # not first indent, check that this line is consistent with first
+                # not first indent, check that indent is multiple of first indent
                 self.level, extra = divmod(len(indentstr), len(self.indent))
                 if extra != 0:
                     message = 'Indent in line %d is not a multiple of first indent'
                     raise IndentationError(message % self.linenum)
             else:
                 # this is first indent, set indent string for current text
-                if indentstr[0] == '\t' and len(indentstr) > 1:
-                    message = 'First indent (line %d) has more than one tab'
-                    raise IndentationError(message % self.linenum)
-                else:
-                    self.indent = indentstr
-                    self.level = 1
+                self.indent = indentstr
+                self.level = 1
         yield line
     
     def indentation(self, line):
@@ -175,7 +171,7 @@ class ImportParser(FileParser):
                     for import_line in importer:
                         yield import_line
             else:
-                yield (pline, self.level, self.linenum, self.sourcepath)
+                yield (pline, self)
 
     def readlines(self):
         """ Return list of remaining lines, each terminated with '\n'."""
@@ -184,9 +180,9 @@ class ImportParser(FileParser):
 
 def test_parse(sourcepath):
     parser = ImportParser(sourcepath, track_indent=True)
-    for (line, level, linenum, filepath) in parser:
-        filename = os.path.basename(filepath)
-        print '%20s %2d %1d %s' % (filename, linenum, level, line)
+    for line, info in parser:
+        filename = os.path.basename(info.sourcepath)
+        print '%20s %2d %1d %s' % (filename, info.linenum, info.level, line)
 
 
 sp = 'sample_source/' + 'simplepy.L0'

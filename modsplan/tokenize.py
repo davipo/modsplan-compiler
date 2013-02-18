@@ -6,6 +6,7 @@
 from collections import namedtuple
 
 import grammar
+import lineparsers
 
 
 Token_t = namedtuple('Token', 'name, text, linenum, column')
@@ -110,7 +111,8 @@ class Tokenizer:
             To use multiple grammar files, create one file of 'use' directives.
         """
         self.tokendef = TokenGrammar(grammar_filename)  # load token definitions
-        self.source_filename = None                     # set in get_tokens()
+        self.tabsize = 0                    # for reporting column number, set in get_tokens()
+        self.sourcepath = None              # set in get_tokens()
         self.err = None                     # source error reporter, set in get_tokens()
 
                     
@@ -125,32 +127,21 @@ class Tokenizer:
             text += '%s: %s\n' % (kind.name, list(kind.prefixes))
         return text + '\n'
 
-    def get_tokens(self, filename, tabsize=4):
-        """ Tokenize source from filename, return a list of Token.
+    def get_tokens(self, sourcepath, tabsize=4):
+        """ Tokenize source from sourcepath, return a list of Token.
             tabsize is # of spaces per tab char, to report accurate column #s.
         """
-        self.source_filename = filename
-        self.err = Error(filename)
-        try:
-            source = open(filename).read()
-        except IOError, exc:
-            raise self.err.msg('Error loading file ' + filename + '\n' + str(exc))
-        lines = source.splitlines()
-
-        # First nonblank line beginning with \t or space sets tab.
-        tab = first_indent(lines)       # '\t' or a string of spaces
-        if ' ' in tab:
-            tabsize = len(tab)
-        
-        # Read lines from top, tokenize
+        self.sourcepath = sourcepath
+        self.tabsize = tabsize              # for reporting column number in errors
+        self.err = Error(sourcepath)
+        lines = lineparsers.ImportParser(sourcepath, track_indent=True)
+                
+        # Read lines from source, tokenize
         tokens = []
-        lineno = 0              # line number
         indentlevel = 0
-        for line in lines:
-            lineno += 1             # first line is line 1
-            
-            indentlevel = self.process_indents(line, lineno, indentlevel, tab, tabsize, tokens)
-
+        for line, info in lines:
+            tokens += self.indents(info.level - indentlevel, info.linenum)
+            indentlevel = info.level
             col = 0             # column of line
             viewcol = 1         # column as viewed in source (1-origin, expand tabs)
             while col < len(line):
@@ -163,36 +154,29 @@ class Tokenizer:
                     if length > 0:
                         # match found, length is number of chars matched
                         text = line[col:col + length]
-                        tokens.append(Token(kind.name, text, lineno, viewcol))
+                        tokens.append(Token(kind.name, text, info.linenum, viewcol))
                         col += length
                         viewcol += length
                         break           # look for next token
                 else:  # no match found for any kind starting with char
-                    if char not in ' \t':       # skip space, tab
-                        tokens.append(Token('', char, lineno, viewcol))     # punctuation
+                    if not char.isspace():          # skip whitespace
+                        tokens.append(Token('', char, info.linenum, viewcol))   # punctuation
                     col += 1
                     viewcol += tabsize if char == '\t' else 1
-            tokens.append(Token('NEWLINE', '', lineno, viewcol))    # mark end of line
+            tokens.append(Token('NEWLINE', '', info.linenum, viewcol))      # mark end of line
 
         # close indented blocks
-        self.process_indents('', lineno + 1, indentlevel, tab, tabsize, tokens)
+        tokens += self.indents(- indentlevel, info.linenum + 1)
         return tokens
 
 
-    def process_indents(self, line, lineno, indentlevel, tab, tabsize, tokens):
-        """ Check indentation level, append indent & dedents to tokens."""
-        ### Only if language is indentation-sensitive? (like Python)
-        level, extra = divmod( lcount(line, tab[0]), len(tab) )
-        if extra:               # extra spaces
-            raise self.err.msg('Inconsistent indentation', lineno)
-        if level == indentlevel + 1:
-            indentlevel += 1
-            tokens.append(Token('INDENT', '', lineno, 1 + tabsize * indentlevel))
+    def indents(self, change, linenum):
+        """ Return list of indent or dedent tokens, for change in indent level."""
+        # ignores multiple-level indents (usually a continuation of prev line)
+        if change == 1:
+            return [Token('INDENT', '', linenum, 1)]
         else:
-            while indentlevel > level:
-                indentlevel -= 1
-                tokens.append(Token('DEDENT', '', lineno, 1 + tabsize * indentlevel))
-        return indentlevel
+            return (- change) * [Token('DEDENT', '', linenum, 1)]   # [] if change >= 0
 
 
     def match(self, text, nonterm):
@@ -289,36 +273,17 @@ def charclass(char):
         return 'D'
     else:
         return char     # char is its own class
-
-
-def first_indent(lines):
-    """ Scan list of text lines, return first indent found (tab or spaces). """
-    ### To do: Check for mixed tabs and spaces, give error?
-    for line in lines:
-        if line.strip() == '':
-            continue                        # skip blank line
-        if line.startswith('\t'):
-            return '\t'
-        elif line.startswith(' '):
-            numspaces = lcount(line, ' ')
-            return ' ' * numspaces          # tab is some spaces
-    return ' '      # if no indentation found
-
-def lcount(line, chars):
-    """ Count the number of consecutive characters in chars at beginning of line."""
-    return len(line) - len(line.lstrip(chars))
-
-    
-## (Use a utility program to clean up indents in files?)
                 
+
+nametokens = ('NAME', 'KEYWORD', 'ATTRIBUTE')
 
 def reassemble(tokens):
     """ Return a string of tokens in lines similar to the original source."""
     level = 0
     result = ''
     lastkind = 'NEWLINE'
-    for tkn in tokens:
-        kind, string = tkn[0:2]
+    for token in tokens:
+        kind, string = token[0:2]
         if kind == 'NEWLINE':
             if lastkind == 'NEWLINE':
                 result += '\n'
@@ -338,7 +303,7 @@ def reassemble(tokens):
             elif kind in ('ASSIGN', 'RELATION') or kind.endswith('_OP'):
                 result += ' ' + string + ' '
             else:
-                if kind == 'NAME' and lastkind == 'KEYWORD':
+                if kind in nametokens and lastkind in nametokens:
                     result += ' '
                 result += string
                 result += ' ' * (string in ',')     # add a space after comma
