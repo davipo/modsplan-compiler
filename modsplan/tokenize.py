@@ -3,21 +3,21 @@
 # Copyright 2011-2013 by David H Post, DaviWorks.com.
 
 
-from collections import namedtuple
-
 import grammar
 import lineparsers
 
 
-Token_t = namedtuple('Token', 'name, text, linenum, column')
-""" name is the (string) name for the kind (the category) of the token.
-    text is the string of the token.
-    linenum is the line in the source where found.
-    column is the column in the source of the first character of the token.
-"""
-
-class Token(Token_t):
-
+class Token:
+    """ One symbol from source text; 
+        for example: name, keyword, operator, punctuation, number."""
+    
+    def __init__(self, name, text, linenum, column):
+        self.name = name            # name for the kind (the category) of the token
+        self.text = text            # string of chars from source
+        self.linenum = linenum      # line number where found in source
+        self.column = column        # column number of first char of token in source
+        self.sourcepath = ''        # filepath of source
+    
     def __str__(self):
         """ If no text, return name. If no name, return quoted text.
             If both, return name(text)."""
@@ -283,7 +283,7 @@ def reassemble(tokens):
     result = ''
     lastkind = 'NEWLINE'
     for token in tokens:
-        kind, string = token[0:2]
+        kind = token.name
         if kind == 'NEWLINE':
             if lastkind == 'NEWLINE':
                 result += '\n'
@@ -299,14 +299,14 @@ def reassemble(tokens):
             if kind == 'COMMENT':
                 if lastkind != 'NEWLINE':
                     result += ' \t\t'
-                result += string
+                result += token.text
             elif kind in ('ASSIGN', 'RELATION') or kind.endswith('_OP'):
-                result += ' ' + string + ' '
+                result += ' ' + token.text + ' '
             else:
                 if kind in nametokens and lastkind in nametokens:
                     result += ' '
-                result += string
-                result += ' ' * (string in ',')     # add a space after comma
+                result += token.text
+                result += ' ' * (token.text in ',')     # add a space after comma
         lastkind = kind
     return result
 
