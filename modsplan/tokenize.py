@@ -9,14 +9,14 @@ import lineparsers
 
 class Token:
     """ One symbol from source text; 
-        for example: name, keyword, operator, punctuation, number."""
+        for example: keyword, identifier, operator, punctuation, number."""
     
-    def __init__(self, name, text, linenum, column):
-        self.name = name            # name for the kind (the category) of the token
-        self.text = text            # string of chars from source
-        self.linenum = linenum      # line number where found in source
-        self.column = column        # column number of first char of token in source
-        self.sourcepath = ''        # filepath of source
+    def __init__(self, name, text, info, column):
+        self.name = name                    # name for the kind (the category) of the token
+        self.text = text                    # string of chars from source
+        self.linenum = info.linenum         # line number where found in source
+        self.sourcepath = info.sourcepath   # filepath of source
+        self.column = column                # column number of first char of token in source
     
     def __str__(self):
         """ If no text, return name. If no name, return quoted text.
@@ -140,7 +140,7 @@ class Tokenizer:
         tokens = []
         indentlevel = 0
         for line in lines:
-            tokens += self.indents(lines.level - indentlevel, lines.linenum)
+            tokens += self.indents(lines.level - indentlevel, lines)
             indentlevel = lines.level
             col = 0             # column of line
             viewcol = 1         # column as viewed in source (1-origin, expand tabs)
@@ -154,29 +154,29 @@ class Tokenizer:
                     if length > 0:
                         # match found, length is number of chars matched
                         text = line[col:col + length]
-                        tokens.append(Token(kind.name, text, lines.linenum, viewcol))
+                        tokens.append(Token(kind.name, text, lines, viewcol))
                         col += length
                         viewcol += length
                         break           # look for next token
                 else:  # no match found for any kind starting with char
                     if not char.isspace():          # skip whitespace
-                        tokens.append(Token('', char, lines.linenum, viewcol))  # punctuation
+                        tokens.append(Token('', char, lines, viewcol))  # punctuation
                     col += 1
                     viewcol += tabsize if char == '\t' else 1
-            tokens.append(Token('NEWLINE', '', lines.linenum, viewcol))    # mark end of line
+            tokens.append(Token('NEWLINE', '', lines, viewcol))         # mark end of line
 
         # close indented blocks
-        tokens += self.indents(- indentlevel, lines.linenum + 1)
+        tokens += self.indents(- indentlevel, lines)
         return tokens
 
 
-    def indents(self, change, linenum):
+    def indents(self, change, line_info):
         """ Return list of indent or dedent tokens, for change in indent level."""
         # ignores multiple-level indents (usually a continuation of prev line)
         if change == 1:
-            return [Token('INDENT', '', linenum, 1)]
+            return [Token('INDENT', '', line_info, 1)]
         else:
-            return (- change) * [Token('DEDENT', '', linenum, 1)]   # [] if change >= 0
+            return (- change) * [Token('DEDENT', '', line_info, 1)]     # [] if change >= 0
 
 
     def match(self, text, nonterm):

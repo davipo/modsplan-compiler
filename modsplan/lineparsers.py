@@ -204,10 +204,10 @@ class LineInfoParser(LineParser):
 
 
 def test_parse(sourcepath):
-    parser = ImportParser(sourcepath, track_indent=True)
-    for line, info in parser:
-        filename = os.path.basename(info.sourcepath)
-        print '%20s %2d %1d %s' % (filename, info.linenum, info.level, line)
+    lines = LineInfoParser(sourcepath, track_indent=True)
+    for line in lines:
+        filename = os.path.basename(lines.sourcepath)
+        print '%20s %2d %1d %s' % (filename, lines.linenum, lines.level, line)
 
 
 sp = 'sample_source/' + 'simplepy.L0'
