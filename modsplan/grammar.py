@@ -3,9 +3,9 @@
 # Copyright 2011-2013 by David H Post, DaviWorks.com.
 
 
-from __future__ import print_function       # (using Python 2.7)
-
 from collections import OrderedDict
+
+import lineparsers
 
 
 quote_chars = "'" + '"'
@@ -152,11 +152,6 @@ class Grammar:
             (make_item must be a subclass of Item.)
         """
         self.filename = filename
-        self.imported=[]                # list of imported filenames
-        
-#         self.imported=[filename]      # list of imported filenames
-#                                   #   (start with current file to avoid import loops)
-        
         self.nonterms = OrderedDict()   # dictionary of Nonterminals, keyed by name
                                         #   order is preserved for tokenizing, & show()
         self.root = None                # last Nonterminal with a .root flag, if any
@@ -167,11 +162,11 @@ class Grammar:
     
     def show(self):
         """ Display grammar. """
-        print()
+        print
         for nonterm in self.nonterms.values():
             if nonterm == self.root:
-                print('(root:)')
-            print(nonterm.show())
+                print '(root:)'
+            print nonterm.show()
 
 
     def show_prefixes(self):
@@ -182,57 +177,22 @@ class Grammar:
         return text + '\n'
     
     
-    def load_grammar(self, filename):
+    def load_grammar(self, filepath):
         """ Load grammar file (format defined by base.metagrammar).
             Store productions in self.nonterms.
             If grammar contains 'use' directives, import all needed files.
             Set self.root to last nonterminal found with a .root flag.
             (To use multiple grammar files, create one file of 'use' directives.)
         """ 
-        lineno = 0                  # line number of file
-        needed = []                 # list of files needed (and not yet imported)
-        in_preface = True           # true while lines are only comments and imports
-        try:
-            text = open(filename).read()
-        except IOError, exc:
-            raise self.err.msg('Error loading file ' + filename + '\n' + str(exc))
-        lines = text.splitlines()
+        lines = lineparsers.LineInfoParser(filepath)
         for line in lines:
-            lineno += 1                     # first line is line 1
             line = line.strip()
             if line == '':                  # skip blank line
                 continue
             if line.startswith('#'):        # skip comment line
                 continue
-            if line.startswith('use '):     # files to be imported
-                if not in_preface:
-                    raise self.err.msg('"use" must appear before productions, error', lineno)
-                for import_filename in line[4:].split(','):
-                    import_filename = import_filename.strip()
-                    if import_filename not in self.imported:
-                        needed.append(import_filename)
-                continue
-            # line is not blank, comment, or use directive
-            in_preface = False
-            
-### Possible infinite loop if two or more files "use" each other.
-### How to prevent this?
-###     Can we just add the current file to self.imported?
-###         Does that prevent all chains?
-###     Or do we have to remember chain of files, check for loop, give error?
-
-### Any reference to a nonterm not in current file or its imports should give error.
-
-
-#### Revise this to load separate grammar from each file, then merge them?
-####    If so, how deal with references to nonterms only defined in imported file?
-
-            while needed:   # files to import before parsing this grammar
-                import_filename = needed.pop(0)
-                self.load_grammar(import_filename)
-                self.imported.append(import_filename)
-            
-            self.store_production(line, lineno, filename)
+            # line is not blank or comment
+            self.store_production(line, lines.linenum, filepath)
         self.load_items()       # replace raw strings of production with Item
 
 
