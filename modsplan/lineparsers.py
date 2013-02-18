@@ -140,19 +140,21 @@ class FileParser(IndentParser):
 
 class ImportParser(FileParser):
     """ Serves lines of text (without line end chars) from file; 
-        implements an iterator; tracks line number.
-        Imports other files as specified in 'use' directives.
-        Keeps a list of imports to avoid repeats and loops.
-        Option to track indentation (see IndentParser), disabled by default."""
+            implements an iterator; tracks line number.
+        Recursively includes other files as specified in import commands,
+            keeping a list of imports to avoid repeats and loops.
+        Option to track indentation level."""
     
     def __init__(self, sourcepath, track_indent=False, imported=[]):
         """ Create import parser from text file at sourcepath.
             Option to track indentation (see IndentParser), disabled by default.
-            Optional param 'imported' is a list of filepaths already imported."""
+            Optional param 'imported' is a list of filepaths already imported.
+            Yields (line, info), info has attributes linenum, (indent) level, sourcepath.
+        """
         FileParser.__init__(self, sourcepath, track_indent)
         self.imported = imported                # list of already imported filepaths
         self.imported.append(sourcepath)
-        self.import_cmd = 'use '
+        self.import_cmd = 'use '                # command to import a file
         self.source_dir = os.path.dirname(sourcepath)
         self.extension = os.path.splitext(sourcepath)[1]
 
@@ -160,7 +162,8 @@ class ImportParser(FileParser):
         """ Generator of processed lines. If a line begins with <import_cmd> <import>,
             yield lines of file <import>.ext in place of this line, else yield line. 
             Imported file uses directory and extension of parent file.
-            Yields tuples of (line, indent_level, line_number, filepath)."""
+            Yields (line, info), info has attributes linenum, (indent) level, sourcepath.
+        """
         # overriding FileParser.process_line(), so do its processing first
         for pline in FileParser.process_line(self, line):
             if pline.startswith(self.import_cmd):
@@ -173,9 +176,31 @@ class ImportParser(FileParser):
             else:
                 yield (pline, self)
 
-    def readlines(self):
-        """ Return list of remaining lines, each terminated with '\n'."""
-        return ['%s\n' % line[0] for line in self.generator()]
+
+class LineInfoParser(LineParser):
+    """ Simplifies access to line data, yielding line text directly.
+        Serves lines of text (without line end chars) from file; 
+            implements an iterator; tracks line number.
+        Recursively includes other files as specified in import commands,
+            keeping a list of imports to avoid repeats and loops.
+        Option to track indentation level."""
+    
+    def __init__(self, sourcepath, track_indent=False):
+        """ Create line parser from text file at sourcepath.
+            Option to track indentation (see IndentParser), disabled by default."""
+        self.parser = ImportParser(sourcepath, track_indent)
+        # line info, updated for each line served
+        self.linenum = 0
+        self.level = 0
+        self.sourcepath = ''
+           
+    def generator(self):
+        """ Generator (iterator) of lines of source."""
+        for line, info in self.parser:
+            self.linenum = info.linenum
+            self.level = info.level
+            self.sourcepath = info.sourcepath
+            yield line
 
 
 def test_parse(sourcepath):

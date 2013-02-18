@@ -134,14 +134,14 @@ class Tokenizer:
         self.sourcepath = sourcepath
         self.tabsize = tabsize              # for reporting column number in errors
         self.err = Error(sourcepath)
-        lines = lineparsers.ImportParser(sourcepath, track_indent=True)
+        lines = lineparsers.LineInfoParser(sourcepath, track_indent=True)
                 
         # Read lines from source, tokenize
         tokens = []
         indentlevel = 0
-        for line, info in lines:
-            tokens += self.indents(info.level - indentlevel, info.linenum)
-            indentlevel = info.level
+        for line in lines:
+            tokens += self.indents(lines.level - indentlevel, lines.linenum)
+            indentlevel = lines.level
             col = 0             # column of line
             viewcol = 1         # column as viewed in source (1-origin, expand tabs)
             while col < len(line):
@@ -154,19 +154,19 @@ class Tokenizer:
                     if length > 0:
                         # match found, length is number of chars matched
                         text = line[col:col + length]
-                        tokens.append(Token(kind.name, text, info.linenum, viewcol))
+                        tokens.append(Token(kind.name, text, lines.linenum, viewcol))
                         col += length
                         viewcol += length
                         break           # look for next token
                 else:  # no match found for any kind starting with char
                     if not char.isspace():          # skip whitespace
-                        tokens.append(Token('', char, info.linenum, viewcol))   # punctuation
+                        tokens.append(Token('', char, lines.linenum, viewcol))  # punctuation
                     col += 1
                     viewcol += tabsize if char == '\t' else 1
-            tokens.append(Token('NEWLINE', '', info.linenum, viewcol))      # mark end of line
+            tokens.append(Token('NEWLINE', '', lines.linenum, viewcol))    # mark end of line
 
         # close indented blocks
-        tokens += self.indents(- indentlevel, info.linenum + 1)
+        tokens += self.indents(- indentlevel, lines.linenum + 1)
         return tokens
 
 

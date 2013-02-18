@@ -45,7 +45,7 @@ class TestCompiler(unittest.TestCase):
         """ Parse lines of import_test.L0, check that imports are processed correctly."""
         filename = 'import_test.L0'
         sourcepath = os.path.join(source_dir, filename)
-        lines = modsplan.lineparsers.ImportParser(sourcepath, True).readlines()
+        lines = modsplan.lineparsers.LineInfoParser(sourcepath, True).readlines()
         text = ''.join(lines)
         with open(sourcepath + '.txt') as f:
             prevtext = f.read()
