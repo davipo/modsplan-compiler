@@ -15,7 +15,7 @@ class Token:
         self.name = name                    # name for the kind (the category) of the token
         self.text = text                    # string of chars from source
         self.linenum = info.linenum         # line number where found in source
-        self.sourcepath = info.sourcepath   # filepath of source
+        self.filepath = info.sourcepath     # filepath of source
         self.column = column                # column number of first char of token in source
     
     def __str__(self):
@@ -63,14 +63,13 @@ class TokenGrammar(grammar.Grammar):
 
     def check_item(self, item, quantifier, alt):
         """ Check string item, with given quantifier, in alternate alt."""
-        # Check for error if (string) item is a character class.
-        if item.isupper() and len(item) == 1:
-            if item == 'P' and quantifier != '*':
-                message = 'Character class P must be used with *, error'
-                raise self.err.msg(message, alt.linenum)
-            ## Check for valid character class (L, U, D, P) here?
+        if item.isupper() and len(item) == 1:       # check for valid character class
+            if item not in ('L', 'U', 'D', 'P'):
+                raise Error('Unrecognized character class (%s)' % item, alt)
+            elif item == 'P' and quantifier != '*':
+                raise Error('Character class P must be used with *, error', alt)
         else:
-            item = grammar.Grammar.check_item(self, item, quantifier, alt)
+            grammar.Grammar.check_item(self, item, quantifier, alt)
 
 
 class TokenItem(grammar.Item):
@@ -88,37 +87,37 @@ class TokenItem(grammar.Item):
 class Error(grammar.Error):
     """ Convenient error reporting."""
 
-    def msg(self, message, loc=None, column=None):
-        """ If loc is Token, extract line number & column; else assume loc is line number.
-            If line number specified, add it and filename to message; if column, insert that.
-            Otherwise just use message.
-        """
-        if isinstance(loc, Token):
-            lineno, column = loc.linenum, loc.column
-        else:
-            lineno = loc
-        return grammar.Error.msg(self, message, lineno, column)
+    def __init__(self, message, location):
+        """ Create error with message; location supplies filepath, line number, column."""
+        column = 0
+        if hasattr(location, 'column'):
+            column = location.column
+        grammar.Error.__init__(self, message, location.filepath, location.linenum, column)
         
 
 class Tokenizer:
     """ Configurable tokenizer. Reads a token specification grammar,
     then parses source text into tokens, as defined by the grammar.
     """
-    def __init__(self, grammar_filename):
+    def __init__(self, grammar_filename, track_indent=True):
         """ Create tokenizer from grammar file (format defined in tokens.metagrammar).
+            If track_indent, emit INDENT and DEDENT tokens at indentation level changes.
             The grammar defines the syntax and kinds of tokens.
             If grammar contains 'use' directives, import all needed files.
             To use multiple grammar files, create one file of 'use' directives.
         """
+        self.track_indent = track_indent
         self.tokendef = TokenGrammar(grammar_filename)  # load token definitions
-        self.tabsize = 0                    # for reporting column number, set in get_tokens()
-        self.sourcepath = None              # set in get_tokens()
-        self.err = None                     # source error reporter, set in get_tokens()
+        self.tabsize = 0                # for reporting column number, set in get_tokens()
+        self.sourcepath = None          # set in get_tokens()
 
                     
     def names(self):
         """ Return list of token kind names."""
-        return [kind.name for kind in self.tokendef.kinds]
+        kindnames = [kind.name for kind in self.tokendef.kinds]
+        kindnames += ['NEWLINE', 'INDENT', 'DEDENT']
+        return kindnames
+
 
     def prefixes(self):
         """ Return text table of prefixes for each token kind."""
@@ -127,15 +126,15 @@ class Tokenizer:
             text += '%s: %s\n' % (kind.name, list(kind.prefixes))
         return text + '\n'
 
+
     def get_tokens(self, sourcepath, tabsize=4):
         """ Tokenize source from sourcepath, return a list of Token.
             tabsize is # of spaces per tab char, to report accurate column #s.
         """
         self.sourcepath = sourcepath
         self.tabsize = tabsize              # for reporting column number in errors
-        self.err = Error(sourcepath)
-        lines = lineparsers.LineInfoParser(sourcepath, track_indent=True)
-                
+        lines = lineparsers.LineInfoParser(sourcepath, track_indent=self.track_indent)
+        
         # Read lines from source, tokenize
         tokens = []
         indentlevel = 0
@@ -219,9 +218,7 @@ class Tokenizer:
 
         if skip:
             # last item was character class P*, so match any chars before this item
-            if not item.isliteral():
-                message = 'Terminal literal or EOL must follow character class P*'
-                raise self.tokendef.err.msg(message, alt.linenum)
+            #   (this item must be a literal, checked when grammar loaded)
             col = text.find(item_text)
             if col == -1:       # item not found; but it may have zero occurrences, so
                 col = 0         #   don't fail, just no progress (try next item)

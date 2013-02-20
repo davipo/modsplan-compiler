@@ -15,14 +15,23 @@ import parsetree
 
 class SyntaxGrammar(grammar.Grammar):
     """ Defines language syntax. """
-    def __init__(self, filename):
-        """ Load syntax grammar from file (format defined by metagrammar)."""
+    def __init__(self, filename, tokenkindnames):
+        """ Load syntax grammar from file (format defined by metagrammar);
+            check for valid tokenkindnames."""
+        self.tokenkindnames = tokenkindnames
         grammar.Grammar.__init__(self, filename, SyntaxItem)
         if not self.root:
-            raise self.err.msg('One nonterminal must be marked .root')
+            raise grammar.Error('One nonterminal must be marked .root', filename)
         # find prefixes for all nonterms and alternates
         for nonterm in self.nonterms.values():
             nonterm.find_prefixes(self.nonterms)
+
+    def check_item(self, item, quantifier, alt):
+        """ Check string item, with given quantifier, in alternate alt."""
+        if item.isupper() and item not in self.tokenkindnames:
+            raise tokenize.Error('Unrecognized tokenkind (%s)' % item, alt)
+        else:
+            grammar.Grammar.check_item(self, item, quantifier, alt)
 
 
 class SyntaxItem(grammar.Item):
@@ -50,7 +59,7 @@ class SyntaxParser:
         self.tokenizer = tokenize.Tokenizer(langpath + '.tokens')
         if self.debug:
             print 'Token spec loaded from ' + self.tokenizer.tokendef.filename
-        self.syntax = SyntaxGrammar(langpath + '.syntax')
+        self.syntax = SyntaxGrammar(langpath + '.syntax', self.tokenizer.names())
         if self.debug:
             print 'Syntax spec loaded from ' + self.syntax.filename
         if 's' in self.debug:
@@ -61,7 +70,6 @@ class SyntaxParser:
         self.maxtokens = 0          # greatest number of tokens parsed before a parse failure
         self.expected = None        # grammar item expected at furthest failure
         self.tokens = None          # list of tokens in source file
-        self.err = None             # Error instance for reporting, set in parse()
         self.newtoken = False       # True when new token will be parsed (for trace display)
 
         
@@ -70,7 +78,6 @@ class SyntaxParser:
             Syntax error will raise Error exception.
         """
         self.source_path = filepath
-        self.err =  tokenize.Error(filepath)    #  to report errors by token line & column 
         self.tokens = self.tokenizer.get_tokens(filepath)
         if 'o' in self.debug:
             print '\nTokens from ' + filepath + ':\n'
@@ -105,7 +112,7 @@ class SyntaxParser:
         message = 'Syntax error at %s token "%s"' % (token.name, token.text)
         if expect:
             message += ': expecting %s' % expect
-        raise self.err.msg(message, token)
+        raise tokenize.Error(message, token)
 
 
     def parse_nonterm(self, start, nonterm, node):
@@ -216,6 +223,7 @@ class SyntaxParser:
             return item, numtokens          # fail: no tokens left
         if item.isterminal():
             token = self.tokens[start]
+            node.set_location(token)
             # literal item matches token text; tokenkind matches token name
             match_text = token.text if item.isliteral() else token.name
             if match_text == item.text():

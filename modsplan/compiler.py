@@ -7,7 +7,9 @@
 import sys
 import os.path
 
-from grammar import Error
+from lineparsers import Error as BaseError
+from tokenize import Error
+
 import syntax
 import defn
 
@@ -60,8 +62,8 @@ class Compiler:
                 if source_node.name == 'COMMENT':
                     code.append(instr_fmt % ('', ';' + source_node.text))
                 else:
-                    message = 'No definition found for terminal token %s' % source_node.name
-                    raise self.defs.err.msg(message)
+                    message = 'No definition found for terminal token %s' % source_node
+                    raise Error(message, self.defs.defn_tree)
             else:
                 for child in source_node.children:
                     code.extend(self.codegen(child))
@@ -90,7 +92,7 @@ class Compiler:
                     code.extend(self.gen_instructions(source_node, instructions))
                 else:
                     message = 'Rewrite signature "%s" not found' % defn.sig_str(signature)
-                    raise self.defs.err.msg(message)
+                    raise Error(message, instruction)
                 
             elif instr.name == 'label':     # insert label, compile block below it
                 label = instr.findtext()
@@ -107,8 +109,9 @@ class Compiler:
             elif instr.name == 'endline':
                 pass
             else:
-                message = 'Unrecognized instruction "%s"' % instr.name
-                raise self.defs.err.msg(message)
+                message = 'Unrecognized instruction kind "%s"' % instr.name
+                alt = self.defs.defn_parser.syntax.nonterms[instr.name].alternates[0]
+                raise Error(message, alt)
             
             if 'm' in self.debug:       # output defn comments
                 endline = instruction.firstchild('endline')
@@ -162,8 +165,9 @@ class Compiler:
                 args.append(self.compiler_directive(source_node, argtext, arg_defs))
                 
             else:
-                message = 'Unrecognized argument "%s"' % argtype.name
-                raise self.defs.err.msg(message)
+                message = 'Unrecognized argument kind "%s"' % argtype.name
+                alt = self.defs.defn_parser.syntax.nonterms[argtype.name].alternates[0]
+                raise Error(message, alt)       ## first alternate for kind
         return ', '.join(args)
         
 
@@ -191,7 +195,7 @@ def compile_src(sourcepath, codepath='', spec_dir=None, debug=''):
             with open(codepath, 'w') as outfile:
                 outfile.write(codestring)
         return codestring
-    except (None if debug else Error) as exc:
+    except (None if debug else BaseError) as exc:
         print exc
 
 

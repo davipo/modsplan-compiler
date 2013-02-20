@@ -47,7 +47,7 @@ class Alternate:
     def __init__(self, production, filename, linenum, flags=[]):
         self.items = production     # list of Item
         self.prefixes = None        # set of terminals that are possible prefixes
-        self.filename = filename    # grammar file this production was loaded from
+        self.filepath = filename    # grammar file this production was loaded from
         self.linenum = linenum      # line number in grammar file
         self.flags = flags          # list of attribute strings
     
@@ -115,34 +115,23 @@ class Item:
             prefix = self.text()
             prefixes = set([prefix])
         else:   # nonterminal
-            nonterm = nonterms.get(self.element)
-            if nonterm == None:
-                raise Error().msg('Unrecognized nonterminal (%s)' % self.element)
+            nonterm = nonterms[self.element]    # must be in nonterms, checked when created
             nonterm.find_prefixes(nonterms)
             prefixes = nonterm.prefixes
         return prefixes
 
 
-class Error(Exception):
-    """ Convenient error reporting."""
-    def __init__(self, filename=None):
-        self.filename = filename        # current filename (where errors found)
-        self.message = ''
+class Error(lineparsers.Error):
+
+    def __init__(self, message, filepath, linenum=0, column=0):
+        self.message = message + ' in %s' % filepath
+        if linenum:
+            self.message += ' at line %d' % linenum
+            if column:
+                self.message += ', column %d' % column
 
     def __str__(self):
         return self.message
-
-    def msg(self, message, lineno=None, column=None):
-        """ Add message. If line number specified, add it and filename to message;
-            if column, insert that. Return self.
-        """
-        if lineno:
-            message += ' in line %d' % lineno
-            if column:
-                message += ', column %s' % column
-            message += ' of %s' % self.filename
-        self.message = message
-        return self
 
 
 class Grammar:
@@ -153,9 +142,7 @@ class Grammar:
         """
         self.filename = filename
         self.nonterms = OrderedDict()   # dictionary of Nonterminals, keyed by name
-                                        #   order is preserved for tokenizing, & show()
         self.root = None                # last Nonterminal with a .root flag, if any
-        self.err = Error(filename)      # set filename for error reporting
         self.make_item = make_item      # item constructor (extendable by subclasses)
         self.load_grammar(filename)
         
@@ -192,23 +179,23 @@ class Grammar:
             if line.startswith('#'):        # skip comment line
                 continue
             # line is not blank or comment
-            self.store_production(line, lines.linenum, filepath)
+            self.store_production(line, lines.sourcepath, lines.linenum)
         self.load_items()       # replace raw strings of production with Item
 
 
-    def store_production(self, line, lineno, filename):
+    def store_production(self, line, filepath, linenum):
         """ Parse a production, store in self.nonterms."""
         production = line.split()
 # Would string items in grammar ever have spaces in them? (If so, don't split them.)
 # If we want to save comments in terminals, don't split them.
         if len(production) < 3 or production[1] != '=>':
-            raise self.err.msg(line + '\nSyntax error in grammar', lineno)
+            raise Error(line + '\nSyntax error in grammar', filepath, linenum)
         nameflags = production[0].split('.')    # flags after name, separated by '.'
         name = nameflags[0]                     # remove any flags
         flags = nameflags[1:]
         nonterm = self.nonterms.setdefault(name, Nonterminal(name))     # create if not found
         # Store raw strings for now; must create nonterms before we can point to them.
-        alt = Alternate(production[2:], filename, lineno, flags)
+        alt = Alternate(production[2:], filepath, linenum, flags)
         nonterm.alternates.append(alt)
         if 'root' in flags:
             self.root = nonterm
@@ -219,15 +206,20 @@ class Grammar:
         for nonterm in self.nonterms.values():
             for alt in nonterm.alternates:
                 production = []                 # new production to replace raw strings
+                literal_next = False            # if true, next item must be literal
                 for item in alt.items:
                     if item.startswith('#'):    # rest of production is comment, discard
-                        break                   #### (only found if space before #)
+                        break                   #   (only if space before #)
+                    if literal_next and (item[0] not in quote_chars):
+                        message = 'Literal or end of line must follow character class P*'
+                        raise Error(message, alt.filepath, alt.linenum)
+                    literal_next = (item == 'P*')       # literal must follow 'P*'
                     quantifier = '1'
                     separator = ''
                     if item[-1] in quantifiers:
                         quantifier = item[-1]
                         item = item[:-1]                # remove quantifier
-                        if item[-1] in separators:
+                        if item and item[-1] in separators:
                             separator = item[-1]
                             item = item[:-1]                # remove separator
                     self.check_item(item, quantifier, alt)
@@ -237,20 +229,22 @@ class Grammar:
 
     def check_item(self, item, quantifier, alt):
         """ Check string item, with quantifier, in alternate alt. (Extended by subclass.)"""
+        if item == '':
+            raise Error('Misplaced quantifier', alt.filepath, alt.linenum)
         if item[0] in quote_chars:      # terminal node: literal
             if item[0] != item[-1]:
-                raise self.err.msg('Mismatched quotes in item (%s)' % item, alt.linenum)
+                message = 'Mismatched quotes in item (%s)' % item
+                raise Error(message, alt.filepath, alt.linenum)
             if len(item) < 3:
-                raise self.err.msg('Empty literal not allowed (%s)' % item, alt.linenum)
-        elif item.isupper():            # terminal (tokenkind), handled by subclasses
+                message = 'Empty literal not allowed (%s)' % item
+                raise Error(message, alt.filepath, alt.linenum)
+        elif item.isupper():            # terminal, handled by subclasses
             pass
         elif item in self.nonterms:     # item should be name of nonterminal
             pass
         else:
-            raise self.err.msg('Unrecognized item (%s)' % item, alt.linenum)
+            raise Error('Unrecognized item (%s)' % item, alt.filepath, alt.linenum)
 
-
-    
 
 gfn = 'base.tokens'
 gfn = 'tokens.metagrammar'      #### Error when "use" tries to add to existing nonterm.
@@ -272,4 +266,3 @@ if __name__ == '__main__':
         test(sys.argv[1])
     else:
         test()
-

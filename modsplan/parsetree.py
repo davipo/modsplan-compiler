@@ -3,7 +3,7 @@
 # Copyright 2013 by David H Post, DaviWorks.com.
 
 
-from grammar import Error
+from tokenize import Error
 
 indent_size = 3
 indent1 = ' ' * indent_size             # string to display one level of indentation
@@ -22,6 +22,7 @@ class BaseNode:
         self.name = name                # name of nonterminal or terminal
         self.debug = debug_flags
         self.level = 0                  # depth of node in tree
+        self.filepath = ''              # filepath of source where found
         self.linenum = 0                # line number where found in source
         self.column = 0                 # column number where found in source
         self.used = False               # to keep track of nodes already compiled
@@ -29,6 +30,7 @@ class BaseNode:
 
     def set_location(self, token):
         """ Set location in source code from token."""
+        self.filepath = token.filepath
         self.linenum, self.column = token.linenum, token.column
 
 
@@ -139,7 +141,7 @@ class NonterminalNode(BaseNode):
         message = 'Node "%s" has no unused child' % self.name
         if name:
             message += ' with name "%s"' % name
-        raise Error().msg(message)
+        raise Error(message, self)
 
             
     def firstchild(self, name=None):
@@ -153,7 +155,7 @@ class NonterminalNode(BaseNode):
         message = 'Node %s has no child' % self.name
         if name:
             message += ' with name "%s"' % name
-        raise Error().msg(message)
+        raise Error(message, self)
 
 
     def find(self, name):

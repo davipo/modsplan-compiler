@@ -16,26 +16,7 @@ import os
 
 
 class Error(Exception):
-    """ Convenient error reporting."""
-    
-    def __init__(self, filename=None):
-        self.filename = filename        # current filename (where errors found)
-        self.message = ''
-
-    def __str__(self):
-        return self.message
-
-    def msg(self, message, linenum=None, column=None):
-        """ Add message. If line number specified, add it and filename to message;
-            if column, insert that. Return self.
-        """
-        if linenum:
-            message += ' in line %d' % linenum
-            if column:
-                message += ', column %s' % column
-            message += ' of %s' % self.filename
-        self.message = message
-        return self
+    pass
 
 
 class LineParser(object):
@@ -68,6 +49,12 @@ class LineParser(object):
         """ Return list of remaining lines, each terminated with '\n'."""
         return ['%s\n' % line for line in self.generator()]
     
+    def error(self, message):
+        """ Return Error containing message; append line number if nonzero."""
+        if self.linenum:
+            message += ' in line %d' % self.linenum
+        return Error(message)
+
 
 class IndentParser(LineParser):
     """ Serves lines of text from an iterator of strings; 
@@ -87,7 +74,7 @@ class IndentParser(LineParser):
         self.indent = ''                    # indent chars: one tab or string of spaces
     
     def process_line(self, line):
-        """ Track indentation level, raise IndentationError if inconsistent.
+        """ Track indentation level, raise Error if inconsistent.
             (Generator of processed lines, yields orginal line unchanged.)"""
         if self.track_indent and line.strip():      # line of whitespace doesn't affect level
             # compute indentation level
@@ -97,9 +84,8 @@ class IndentParser(LineParser):
             elif self.indent:
                 # not first indent, check that indent is multiple of first indent
                 self.level, extra = divmod(len(indentstr), len(self.indent))
-                if extra != 0:
-                    message = 'Indent in line %d is not a multiple of first indent'
-                    raise IndentationError(message % self.linenum)
+                if not indentstr.startswith(self.indent) or extra != 0:
+                    raise self.error('Indent is not a multiple of first indent')
             else:
                 # this is first indent, set indent string for current text
                 self.indent = indentstr
@@ -109,14 +95,13 @@ class IndentParser(LineParser):
     def indentation(self, line):
         """ Return string of all whitespace at start of line;
             check that it contains either only tab chars or only space chars,
-            otherwise raise IndentationError."""
+            otherwise raise Error."""
         length = len(line) - len(line.lstrip())
         whitespace = line[:length]
         if whitespace:
             first = whitespace[0]
             if first not in (' ', '\t') or any(char != first for char in whitespace):
-                message = 'Bad indentation in line %d, must be all tabs or all spaces'
-                raise IndentationError(message % self.linenum)
+                raise self.error('Bad indentation, must be all tabs or all spaces')
         return whitespace
     
 
@@ -129,13 +114,20 @@ class FileParser(IndentParser):
         """ Create line parser from text file at sourcepath.
             Option to track indentation (see IndentParser), disabled by default."""
         self.sourcepath = sourcepath
-        self.err = Error(sourcepath)
         try:
             sourcetext = open(sourcepath).read()
         except IOError as exc:
-            raise self.err.msg('Error loading file ' + sourcepath + '\n' + str(exc))
+            raise Error('Error loading file ' + sourcepath + '\n' + str(exc))
         lines = sourcetext.splitlines()
         IndentParser.__init__(self, lines, track_indent)
+
+    def error(self, message):
+        """ Return Error with message; append current filepath, & line number if nonzero."""
+        message += ' in '
+        if self.linenum:
+            message += 'line %d of ' % self.linenum
+        message += self.sourcepath
+        return Error(message)
 
 
 class ImportParser(FileParser):
@@ -192,7 +184,8 @@ class LineInfoParser(LineParser):
         # line info, updated for each line served
         self.linenum = 0
         self.level = 0
-        self.sourcepath = ''
+        self.sourcepath = sourcepath
+        self.info = self.parser
            
     def generator(self):
         """ Generator (iterator) of lines of source."""
@@ -200,7 +193,12 @@ class LineInfoParser(LineParser):
             self.linenum = info.linenum
             self.level = info.level
             self.sourcepath = info.sourcepath
+            self.info = info
             yield line
+
+    def error(self, message):
+        """ Return Error with message; append current filepath, & line number if nonzero."""
+        return self.info.error(message)
 
 
 def test_parse(sourcepath):
