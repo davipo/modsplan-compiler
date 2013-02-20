@@ -44,11 +44,13 @@ class Nonterminal:
 
 class Alternate:
     """ Holds items of one production. """    
-    def __init__(self, production, filename, linenum, flags=[]):
+    def __init__(self, production, filename, linenum, flags=None):
         self.items = production     # list of Item
         self.prefixes = None        # set of terminals that are possible prefixes
         self.filepath = filename    # grammar file this production was loaded from
         self.linenum = linenum      # line number in grammar file
+        if flags == None:
+            flags = []
         self.flags = flags          # list of attribute strings
     
     def __str__(self):

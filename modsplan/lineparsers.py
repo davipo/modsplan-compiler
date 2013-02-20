@@ -137,13 +137,15 @@ class ImportParser(FileParser):
             keeping a list of imports to avoid repeats and loops.
         Option to track indentation level."""
     
-    def __init__(self, sourcepath, track_indent=False, imported=[]):
+    def __init__(self, sourcepath, track_indent=False, imported=None):
         """ Create import parser from text file at sourcepath.
             Option to track indentation (see IndentParser), disabled by default.
             Optional param 'imported' is a list of filepaths already imported.
             Yields (line, info), info has attributes linenum, (indent) level, sourcepath.
         """
         FileParser.__init__(self, sourcepath, track_indent)
+        if imported == None:
+            imported = []
         self.imported = imported                # list of already imported filepaths
         self.imported.append(sourcepath)
         self.import_cmd = 'use '                # command to import a file

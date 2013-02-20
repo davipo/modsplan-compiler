@@ -17,6 +17,7 @@ import defn
 default_spec_dir = 'modspecs/'          # default location for language specifications
 code_suffix = 'stkvm'                   # name of target language
 instr_fmt = '\t%-12s %s'
+letters = '_abcdefghijklmnopqrstuvwxyz'
         
 class Compiler:
     """ Universal compiler: reads language specs, compiles specified language."""
@@ -33,6 +34,7 @@ class Compiler:
         self.parser = syntax.SyntaxParser(langpath, debug)  # load langname.{tokens, syntax}
         self.defs = defn.Definitions()          # initialize defn parser
         self.defs.load(langpath)                # load semantics from langname.defn
+        self.labelsuffix = {}           # key is label, value is last unique suffix used
         if 'e' in debug:
             print self.defs.defn_tree.show()        # parse tree of language definitions
         if 'g' in debug:
@@ -46,6 +48,7 @@ class Compiler:
             return list of target code instructions (strings)."""
         print '\nParsing %s ...' % source_filepath
         self.source_tree = self.parser.parse(source_filepath)
+        self.labelsuffix.clear()
         return self.codegen(self.source_tree)
 
 
@@ -70,16 +73,45 @@ class Compiler:
         return code
 
 
-    def gen_instructions(self, source_node, instruction_defs):
-        """ Generate list of target code instructions from source & instruction definitions."""        
+    def new_label(self, label, source_node, defn_node):
+        """ Return a unique label for this node;
+            use label + <source line number>, with a letter appended if needed."""
+        label += '%d' % source_node.linenum
+        suffix = self.labelsuffix.get(label)
+        if suffix == None:                  # label not in use: use without a suffix
+            suffix = ''
+        else:                               # label in use: use next suffix
+            index = letters.index(suffix) + 1
+            if index >= len(letters):
+                raise Error('Too many labels "%s"' % label, defn_node)
+            suffix = letters[index]
+        self.labelsuffix[label] = suffix
+        return label + suffix
+    
+    
+    def get_label(self, label, labels, source_node, defn_node):
+        """ Return label with current suffix from labels;
+            if not present, get a new one."""
+        labelwith = labels.get(label)
+        if labelwith == None:
+            labelwith = self.new_label(label, source_node, defn_node)
+            labels[label] = labelwith
+        return labelwith
+    
+    
+    def gen_instructions(self, source_node, instruction_defs, labels=None):
+        """ Generate list of target code instructions from source & instruction definitions.
+            labels[label] is label with suffix for this definition."""        
         code = []
+        if labels == None:
+            labels = {}
         for instruction in instruction_defs:
             instr = instruction.firstchild()
             
-            if instr.name == 'directive':   # compiler directive, generates single instruction
+            if instr.name == 'directive':   # compiler directive, generates one instruction
                 directive = instr.findtext()
                 arg_defs = instr.findall('carg')
-                code.append(self.compiler_directive(source_node, directive, arg_defs))
+                code.append(self.compiler_directive(source_node, directive, arg_defs, labels))
                 
             elif instr.name == 'expansion':     # expand next unused child with this name
                 child = source_node.nextchild(defn.childname(instr))
@@ -89,21 +121,21 @@ class Compiler:
                 signature = self.defs.make_signature(instr.firstchild())
                 instructions = self.defs.defns.get(signature)
                 if instructions:
-                    code.extend(self.gen_instructions(source_node, instructions))
+                    code.extend(self.gen_instructions(source_node, instructions, labels))
                 else:
                     message = 'Rewrite signature "%s" not found' % defn.sig_str(signature)
                     raise Error(message, instruction)
                 
             elif instr.name == 'label':     # insert label, compile block below it
-                label = instr.findtext()
-                code.append(label + '%d:' % source_node.linenum)
+                label = self.get_label(instr.findtext(), labels, source_node, instruction)
+                code.append(label + ':')
                 ### option to indent output instructions under label?
                 instructions = instruction.find('instructions?').findall('instruction')
-                code.extend(self.gen_instructions(source_node, instructions))
+                code.extend(self.gen_instructions(source_node, instructions, labels))
                 
             elif instr.name == 'operation':     # generate single instruction
                 opcode = instr.findtext()
-                args_str = self.gen_args(source_node, instr.findall('oparg'))
+                args_str = self.gen_args(source_node, instr.findall('oparg'), labels)
                 code.append(instr_fmt % (opcode, args_str))
                 
             elif instr.name == 'endline':
@@ -130,8 +162,9 @@ class Compiler:
         return code
         
 
-    def gen_args(self, source_node, arg_defs):
-        """ Generate string of code for instruction args from source and arg definitions."""
+    def gen_args(self, source_node, arg_defs, labels):
+        """ Generate string of code for instruction args from source and arg definitions.
+            labels[label] is label with suffix for this definition."""        
         args = []
         for argdef in arg_defs:
             argtype = argdef.firstchild()
@@ -141,7 +174,7 @@ class Compiler:
                 args.append(argtext)
             
             elif argtype.name == 'label':
-                args.append(argtext + '%d' % source_node.linenum)
+                args.append(self.get_label(argtext, labels, source_node, argdef))
                 
 #             elif argtype.name == 'nonterm':         # for compiler directives
 #                 args.append(source_node.firstchild(argtext).findtext())
@@ -162,7 +195,7 @@ class Compiler:
                 
             elif argtype.name == 'directive':
                 arg_defs = instr.findall('carg')
-                args.append(self.compiler_directive(source_node, argtext, arg_defs))
+                args.append(self.compiler_directive(source_node, argtext, arg_defs, labels))
                 
             else:
                 message = 'Unrecognized argument kind "%s"' % argtype.name
@@ -171,9 +204,10 @@ class Compiler:
         return ', '.join(args)
         
 
-    def compiler_directive(self, source_node, directive, arg_defs):
-        """ Generate code per compiler directive, using source and arg definitions."""
-        args_str = self.gen_args(source_node, arg_defs)
+    def compiler_directive(self, source_node, directive, arg_defs, labels):
+        """ Generate code per compiler directive, using source and arg definitions.
+            labels[label] is label with suffix for this definition."""        
+        args_str = self.gen_args(source_node, arg_defs, labels)
         if directive == 'getsymbol':
             pass
         return instr_fmt % ('.' + directive, args_str)
@@ -188,7 +222,7 @@ def compile_src(sourcepath, codepath='', spec_dir=None, debug=''):
     try:
         compiler = Compiler(langname, spec_dir, debug)      # initialize for langname
         code = compiler.compile(sourcepath)                 # compile source
-        codestring = '\n' + '\n'.join(code) + '\n'
+        codestring = '\n'.join(code) + '\n'
         if codepath:
             if codepath == '*':
                 codepath = sourcepath + '.' + code_suffix
@@ -210,7 +244,7 @@ if __name__ == '__main__':
             else:
                 spec_dir = arg
         codestring = compile_src(sourcepath, '*', spec_dir, debug)
-        print codestring
+        print '\n' + codestring
     else:
         print 'Usage: ./compiler.py <source_filename> [<specification_directory>] [-<debug_flags>]'
 
