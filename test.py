@@ -25,6 +25,8 @@ class TestCompiler(unittest.TestCase):
     def test_compile(self):
         self.check_src('bazgoop.L0')
         self.check_src('simplepy.L0')
+        self.check_import('import_test.L0')
+        self.check_src('import_test.L0')
     
     
     def check_src(self, sourcename):
@@ -36,14 +38,13 @@ class TestCompiler(unittest.TestCase):
     def check_with_prev(self, sourcepath):
         """ Compile source at sourcepath, compare code to previously compiled code."""
         code = modsplan.compiler.compile_src(sourcepath)
-        with open(sourcepath + '.stkvm') as codefile:
+        with open(sourcepath + '.' + modsplan.compiler.code_suffix) as codefile:
             prevcode = codefile.read()
         self.assertEqual(code, prevcode)
      
      
-    def test_import(self):
-        """ Parse lines of import_test.L0, check that imports are processed correctly."""
-        filename = 'import_test.L0'
+    def check_import(self, filename):
+        """ Parse lines of filename, check that imports are processed correctly."""
         sourcepath = os.path.join(source_dir, filename)
         lines = modsplan.lineparsers.LineInfoParser(sourcepath, True).readlines()
         text = ''.join(lines)
@@ -51,11 +52,6 @@ class TestCompiler(unittest.TestCase):
             prevtext = f.read()
         self.assertEqual(text, prevtext)
      
-     
-    def test_tokenizer(self):
-        """ Tokenize a test file, check tokens."""
-        filename = 'simplepy.L0'
-        
 
 if __name__ == '__main__':
     unittest.main()
