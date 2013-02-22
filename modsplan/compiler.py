@@ -142,8 +142,8 @@ class Compiler:
                 pass
             else:
                 message = 'Unrecognized instruction kind "%s"' % instr.name
-                alt = self.defs.defn_parser.syntax.nonterms[instr.name].alternates[0]
-                raise Error(message, alt)
+                raise Error(message, self.defs.first_alternate(instr.name))
+                ### Error may be in a subsequent alternate, too hard to find which one
             
             if 'm' in self.debug:       # output defn comments
                 endline = instruction.firstchild('endline')
@@ -199,8 +199,8 @@ class Compiler:
                 
             else:
                 message = 'Unrecognized argument kind "%s"' % argtype.name
-                alt = self.defs.defn_parser.syntax.nonterms[argtype.name].alternates[0]
-                raise Error(message, alt)       ## first alternate for kind
+                raise Error(message, self.defs.first_alternate(argtype.name))
+                ### Error may be in a subsequent alternate, too hard to find which one
         return ', '.join(args)
         
 
@@ -244,7 +244,8 @@ if __name__ == '__main__':
             else:
                 spec_dir = arg
         codestring = compile_src(sourcepath, '*', spec_dir, debug)
-        print '\n' + codestring
+        print
+        print codestring
     else:
         print 'Usage: ./compiler.py <source_filename> [<specification_directory>] [-<debug_flags>]'
 

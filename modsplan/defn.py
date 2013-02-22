@@ -35,7 +35,6 @@ class Definitions:
                                 #   key is signature (list of strings for name and args), 
                                 #   value is a list of instructions for this defn.
         
-        
     def load(self, langpath):
         """ Load definitions from langpath.defn file."""
         # Use a SyntaxParser to load definitions into a parse tree.
@@ -49,7 +48,6 @@ class Definitions:
             instructions = definition.firstchild('instructions')
             self.defns[signature] = instructions.findall('instruction')
 
-
     def make_signature(self, signode):
         ### move outside class?
         if signode.firstchild().name == 'nonterm':
@@ -60,7 +58,6 @@ class Definitions:
         signature = map(remove_quotes, signature)
         ### need to get subtypes
         return tuple(signature)
-
 
     def get_defn(self, source_node):
         """ Return a list of instructions for the defn matching source_node, or None."""
@@ -74,7 +71,6 @@ class Definitions:
 #         print '   ', self.defns.get(tuple(signature))
         return self.defns.get(tuple(signature))
     
-    
     def show(self, sigs_only=True):
         """ Return string display of sorted definitions."""
         display = '\n'
@@ -85,6 +81,11 @@ class Definitions:
             if not sigs_only:
                 display += '\n'.join([ instr.show() for instr in self.defns[sig] ]) + '\n'
         return display + '\n'
+
+    def first_alternate(self, nonterm_name):
+        """ Return first Alternate for named nonterm in defn syntax.
+            Used to access the location of an error in defn spec."""
+        return self.defn_parser.syntax.nonterms[nonterm_name].alternates[0]
 
 
 def sig_str(sig):

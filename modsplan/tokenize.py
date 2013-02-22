@@ -43,24 +43,29 @@ class TokenGrammar(grammar.Grammar):
         self.kinds = [nonterm for name, nonterm in self.nonterms.items() if name.isupper()]
                         
         # Compute possible prefix character classes for each kind of token.
-        #   prefix_map[char_class] is a list of kinds that can start with the character class.
+        #   prefix_map[char_class] is a list of kinds that can start with char_class.
         #   These lists preserve the order of tokenkinds in .tokens specification.
         self.prefix_map = dict()
         for kind in self.kinds:
             kind.find_prefixes(self.nonterms)       # stores prefixes in kind
-            # Compute list of possible token kinds for each prefix's character class
-            kind.prefixes.discard(None)     ## should not have None, but in case (give error?)
-            for prefix in kind.prefixes:
-                # if prefix is already a character class (1 uppercase letter) just use it
-                #       (needed for keywords and bool_ops)
-                ###     Buggy if we have any uppercase keywords
-                chrclass = prefix if TokenItem(prefix).ischarclass() else charclass(prefix[0])
-                # Keep lists of kinds ordered as in token grammar
-                chrclass_kinds = self.prefix_map.setdefault(chrclass, [])   # new list if none
-                if kind not in chrclass_kinds:
-                    chrclass_kinds.append(kind)
+            kind.prefixes.discard(None)   ## should not have None, but in case (give error?)
+            self._add_prefixes(kind)
+            
+    def _add_prefixes(self, tokenkind):
+        """ Add prefixes of tokenkind to prefix_map."""
+        # Compute list of possible token kinds for each prefix's character class
+        for prefix in tokenkind.prefixes:
+            # if prefix is already a character class (1 uppercase letter) just use it
+            #       (needed for keywords and bool_ops)
+            if TokenItem(prefix).ischarclass():
+                chrclass = prefix
+            else:
+                chrclass = charclass(prefix[0])
+            # Keep lists of tokenkinds ordered as in token grammar
+            chrclass_kinds = self.prefix_map.setdefault(chrclass, [])   # new list if none
+            if tokenkind not in chrclass_kinds:
+                chrclass_kinds.append(tokenkind)
     
-
     def check_item(self, item, quantifier, alt):
         """ Check string item, with given quantifier, in alternate alt."""
         if item.isupper() and len(item) == 1:       # check for valid character class
@@ -73,8 +78,9 @@ class TokenGrammar(grammar.Grammar):
 
 
 class TokenItem(grammar.Item):
-    def __init__(self, elem=None, quant='1', sep=''):
-        grammar.Item.__init__(self, elem, quant, sep)
+    """ One item of a production: character class, literal, or nonterm."""
+    def __init__(self, element=None, quantifier='1', separator=''):
+        grammar.Item.__init__(self, element, quantifier, separator)
         
     def ischarclass(self):
         """ Is item a character class specifier (one uppercase letter)?"""

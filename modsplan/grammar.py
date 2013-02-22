@@ -115,12 +115,11 @@ class Item:
         """
         if self.isterminal():
             prefix = self.text()
-            prefixes = set([prefix])
+            return set([prefix])        ## Python 2.7+ can use {prefix}
         else:   # nonterminal
             nonterm = nonterms[self.element]    # must be in nonterms, checked when created
             nonterm.find_prefixes(nonterms)
-            prefixes = nonterm.prefixes
-        return prefixes
+            return nonterm.prefixes
 
 
 class Error(lineparsers.Error):
