@@ -190,11 +190,11 @@ class Compiler:
 #                 print 'gen_args', source_node.name, child, args
             
             elif argtype.name == 'terminal':
-                child = source_node.nextchild(argtext)      # argtext is tokenkind in source,
-                args.append(child.text)                     #   substitute token text
+                child = source_node.nextchild(argtext)  # argtext is tokenkind in source,
+                args.append(child.text)                 #   substitute token text
                 
             elif argtype.name == 'directive':
-                arg_defs = instr.findall('carg')
+                arg_defs = argtype.findall('carg')
                 args.append(self.compiler_directive(source_node, argtext, arg_defs, labels))
                 
             else:
