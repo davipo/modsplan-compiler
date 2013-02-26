@@ -132,6 +132,14 @@ class Compiler:
                 ### option to indent output instructions under label?
                 instructions = instruction.find('instructions?').findall('instruction')
                 code.extend(self.gen_instructions(source_node, instructions, labels))
+
+            elif instr.name == 'branch':
+                args = []
+                for arg in instr.findall('label'):
+                    args.append(self.get_label(arg.findtext(), labels, source_node, instr))
+                args_str = ', '.join(args)
+                opcode = self.defs.first_alternate(instr.name).items[0].text()
+                code.append(instr_fmt % (opcode, args_str))
                 
             elif instr.name == 'operation':     # generate single instruction
                 opcode = instr.findtext()
@@ -173,9 +181,6 @@ class Compiler:
             if argtype.name in ('constant', 'otherarg'):
                 args.append(argtext)
             
-            elif argtype.name == 'label':
-                args.append(self.get_label(argtext, labels, source_node, argdef))
-                
 #             elif argtype.name == 'nonterm':         # for compiler directives
 #                 args.append(source_node.firstchild(argtext).findtext())
             
@@ -216,7 +221,7 @@ class Compiler:
 def compile_src(sourcepath, codepath='', spec_dir=None, debug=''):
     """ Compile source code from sourcepath, write target code to codepath (if given),
         return lines of target code in a single string.
-        If codepath is '*', write to sourcepath.code.
+        If codepath is '*', write to sourcepath.<code_suffix>.
         Optional specification directory and debug flags."""
     langname = sourcepath.rpartition('.')[-1]
     try:

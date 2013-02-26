@@ -40,12 +40,14 @@ instruction => endline
 instruction => directive endline
 instruction => expansion endline
 instruction => rewrite endline
+instruction => branch endline
 instruction => label ':' endline instructions?
 instruction => operation endline
 
 directive => '.' identifier '(' carg,* ')'      # compiler directive
 expansion => '&' child                          # generate code for child node
 rewrite => '=' signature
+branch => 'br' label,+
 
 label => LOWERNAME
 
@@ -59,7 +61,6 @@ operation => identifier oparg,*
 
 # operation args
 oparg => constant
-oparg => ':' label
 oparg => terminal       # substitutes text of terminal
 # oparg => '&' nonterm    # substitutes first text in nonterm (like identifier name)
 oparg => directive
