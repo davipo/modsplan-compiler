@@ -2,30 +2,27 @@
 
 # This is also the metagrammar for itself!
 
-# Specify spacing between terminals?
-# Handle blank lines explicitly?
+# Space character may appear only where noted; extra spaces ignored
 
 
 grammar => preface body
 
 preface => preface_line*
 
-preface_line => comment
-preface_line => import
+preface_line => comment "\n"    # "\n" represents a newline (end-of-line marker)
+preface_line => import "\n"
 
-import => 'use' filename comma_filename*
+import => 'use ' filename,+     # one or more filenames, separated by ", "
 
-comma_filename => ',' filename
-
-filename => identifier
+filename => identifier      # no extension, assume same extension as current file
 
 body => body_line*
 
 body_line => production? comment? "\n"
 
-comment => "#" P*
+comment => "#" P*           # if not at start of line, must be preceded by a space
 
-production => nonterminal "=>" alternate
+production => nonterminal " => " alternate
 
 nonterminal => nonterm      # "nonterminal" is left side only; "nonterm" may be on right
 
@@ -33,21 +30,28 @@ nonterm => identifier
 
 identifier => L+
 
-alternate => word+
+alternate => word+          # spaces must separate adjacent words
 
-word => item repeatflag
+word => item repeater?
 
-repeatflag => "*" 			# zero or more
-repeatflag => "+" 			# one or more
-repeatflag => "?" 			# zero or one
+repeater => separator? quantifier
+
+separator => ","            # separates repeated items (space must follow each)
+
+quantifier => "*"           # zero or more
+quantifier => "+"           # one or more
+quantifier => "?"           # zero or one
 
 item => nonterm 
-item => literal
+item => literal             # terminal
 
-literal => "'" P* "'" 		# terminal
-literal => '"' P* '"' 		# terminal
+literal => "'" P* "'"
+literal => '"' P* '"'
 
-charclass => U 				# terminal
+# charclass is permitted only in .tokens spec; here only because used in this metagrammar
+item => charclass           # terminal
+
+charclass => U
 
 # Character classes are represented by a single uppercase letter:
 # U => any upper case letter
@@ -55,4 +59,6 @@ charclass => U 				# terminal
 # D => any digit
 #
 # P* = any printable characters, must be followed by terminal or end of line.
-# (P may be used only with *)
+# P may be used only with *
+# Printable char may be a space; tab char discouraged
+
