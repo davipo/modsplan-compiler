@@ -252,5 +252,4 @@ if __name__ == '__main__':
         print
         print codestring
     else:
-        print 'Usage: ./compiler.py <source_filename> [<specification_directory>] [-<debug_flags>]'
-
+        print 'Usage: python compiler.py <source_path> [<specification_dir>] [-<debug_flags>]'

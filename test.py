@@ -38,19 +38,21 @@ class TestCompiler(unittest.TestCase):
     def check_with_prev(self, sourcepath):
         """ Compile source at sourcepath, compare code to previously compiled code."""
         code = modsplan.compiler.compile_src(sourcepath)
-        with open(sourcepath + '.' + modsplan.compiler.code_suffix) as codefile:
-            prevcode = codefile.read()
-        self.assertEqual(code, prevcode)
+        if code:
+            with open(sourcepath + '.' + modsplan.compiler.code_suffix) as codefile:
+                prevcode = codefile.read()
+            self.assertEqual(code, prevcode)
      
      
     def check_import(self, filename):
         """ Parse lines of filename, check that imports are processed correctly."""
         sourcepath = os.path.join(source_dir, filename)
         lines = modsplan.lineparsers.LineInfoParser(sourcepath, True).readlines()
-        text = ''.join(lines)
-        with open(sourcepath + '.txt') as f:
-            prevtext = f.read()
-        self.assertEqual(text, prevtext)
+        if lines:
+            text = ''.join(lines)
+            with open(sourcepath + '.txt') as f:
+                prevtext = f.read()
+            self.assertEqual(text, prevtext)
      
 
 if __name__ == '__main__':

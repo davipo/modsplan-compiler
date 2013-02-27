@@ -14,6 +14,7 @@ import os
         ImportParser handles importing lines from other files.
 """
 
+import_command = 'use '
 
 class Error(Exception):
     pass
@@ -148,20 +149,20 @@ class ImportParser(FileParser):
             imported = []
         self.imported = imported                # list of already imported filepaths
         self.imported.append(sourcepath)
-        self.import_cmd = 'use '                # command to import a file
         self.source_dir = os.path.dirname(sourcepath)
         self.extension = os.path.splitext(sourcepath)[1]
 
     def process_line(self, line):
-        """ Generator of processed lines. If a line begins with <import_cmd> <import>,
+        """ Generator of processed lines. If a line begins <import_command> <import>,
             yield lines of file <import>.ext in place of this line, else yield line. 
             Imported file uses directory and extension of parent file.
             Yields (line, info), info has attributes linenum, (indent) level, sourcepath.
         """
         # overriding FileParser.process_line(), so do its processing first
         for pline in FileParser.process_line(self, line):
-            if pline.startswith(self.import_cmd):
-                importname = pline[len(self.import_cmd):].strip()
+            if pline.startswith(import_command):
+                pline = pline.partition('#')[0]     # remove any comment
+                importname = pline[len(import_command):].strip()
                 importpath = os.path.join(self.source_dir, importname) + self.extension
                 if importpath not in self.imported:
                     importer = ImportParser(importpath, self.track_indent, self.imported)
