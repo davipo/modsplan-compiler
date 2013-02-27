@@ -61,7 +61,7 @@ while(test endline suite)
 #   getptr
 
 
-comparison(RELATION expr)
+compare(RELATION expr)
     &expr
     &RELATION
 

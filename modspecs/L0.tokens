@@ -12,9 +12,9 @@ COMMENT => '#' P*
 
 
 # Must appear before NAME from base.tokens
-BOOL_OP => 'and'
-BOOL_OP => 'or'
-BOOL_OP => 'not'
+AND_OP => 'and'
+OR_OP => 'or'
+NOT_OP => 'not'
 
 
 # Must appear before NAME from base.tokens

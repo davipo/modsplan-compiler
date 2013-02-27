@@ -1,5 +1,8 @@
+# L0.syntax
 # L0 language syntax
 # (A minimal subset of Python)
+
+use expr        # common expression syntax
 
 
 module.root => line+
@@ -29,38 +32,3 @@ suite => INDENT line+ DEDENT
 
 
 while => 'while' test ':' endline suite
-
-test => expr comparison?
-comparison => RELATION expr
-
-expr => term addition*
-addition => ADD_OP term
-
-term => factor multiplication*
-multiplication => MUL_OP factor
-
-factor => atom
-factor => ADD_OP atom
-
-atom => literal
-atom => parentheses
-atom => call
-atom => variable
-
-# function call
-call => variable '(' arg,* ')'
-
-arg => test
-
-parentheses => '(' test ')'
-
-
-variable => identifier
-
-identifier => NAME
-
-literal => number
-literal => STRING 		# put in string module
-
-number => INTEGER
-# number => FLOAT 		# put in float module

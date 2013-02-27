@@ -1,0 +1,38 @@
+# expr.syntax
+# Common expression syntax
+
+
+test => NOT_OP? comparison
+
+comparison => expr compare?
+compare => RELATION expr
+
+expr => term addition*
+addition => ADD_OP term
+
+term => factor multiplication*
+multiplication => MUL_OP factor
+
+factor => atom
+factor => ADD_OP atom       # unary - (or +)
+
+atom => literal
+atom => parentheses
+atom => call
+atom => variable
+
+# function call
+call => variable '(' arg,* ')'
+
+arg => test
+
+parentheses => '(' test ')'
+
+
+variable => identifier
+
+identifier => NAME
+
+literal => number
+
+number => INTEGER
