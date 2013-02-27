@@ -1,7 +1,7 @@
-# base.metagrammar: base syntax for Modsplan grammars
+# base.metagrammar
+# Base syntax for Modsplan grammars
 
 # This is also the metagrammar for itself!
-
 # Space character may appear only where noted; extra spaces ignored
 
 

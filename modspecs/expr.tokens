@@ -1,0 +1,19 @@
+# expr.tokens
+# expr token specification
+# Common expression tokens
+
+
+ADD_OP => '+'
+ADD_OP => '-'
+
+MUL_OP => '*'
+MUL_OP => '/'
+## MUL_OP => '//' 		# integer division
+
+
+RELATION => '=='
+RELATION => '!='
+RELATION => inequality '='?
+
+inequality => '<'
+inequality => '>'

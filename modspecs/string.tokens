@@ -1,0 +1,10 @@
+# string.tokens
+# string literal
+
+
+STRING => '"' P* '"'
+STRING => "'" P* "'"
+
+# P* = any printable characters (including space)
+#   A terminal or end of line must follow P*
+#   (P may be used only with *)
