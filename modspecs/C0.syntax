@@ -1,0 +1,61 @@
+# C0.syntax
+# C0 language syntax
+# A minimal subset of C
+
+use expr        # common expression syntax
+
+
+program.root => extdef*
+
+extdef => funcdef
+extdef => datadef
+
+datadef => declspecs initdeclarator,* ';'
+declspecs => storage_spec? typespecifier
+storage_spec => 'extern'
+
+typespecifier => 'int'
+# typespecifier => 'void'
+# typespecifier => 'char'
+# typespecifier => 'float'
+
+# initdeclarator => declarator initializer?
+initdeclarator => declarator
+
+# declarator => declarator '[' constexpr? ']'
+# declarator => declarator '(' ')'
+# declarator => '(' declarator ')'
+# declarator => '*' declarator
+declarator => identifier
+
+
+funcdef => declspecs? funcdeclarator funcbody
+
+funcdeclarator => declarator '(' parameter,* ')'
+parameter => identifier
+
+funcbody => typedeclaration+ '{' declarator* statement+ '}'
+
+typedeclaration => typespecifier declarator+ ';'
+
+
+statement => if
+statement => while
+statement => compound
+statement => expression ';'
+statement => call 
+
+declaration => 'int' variable
+
+assignment => designator ASSIGN test
+
+designator => variable
+
+
+if => 'if' '(' test ')' statement else?
+else => 'else' statement
+
+
+while => 'while' '(' test ')' statement
+
+compound => '{' statement* '}'

@@ -1,0 +1,39 @@
+# C0.tokens
+# C0 token specification
+# A minimal subset of C
+
+use expr
+# use string
+
+# use base below -- must include after KEYWORD, ATTRIBUTE
+
+
+COMMENT => '/*' P* '*/'
+COMMENT => '//' P*
+# P* = any printable characters (including space)
+
+
+# Must appear before NAME from base.tokens
+KEYWORD => 'if'
+KEYWORD => 'else'
+KEYWORD => 'while'
+KEYWORD => 'declare'
+
+
+# Variable attributes, used in declare statement
+# Must appear before NAME from base.tokens
+ATTRIBUTE => 'external'
+ATTRIBUTE => 'integer'
+
+
+use base        # include after KEYWORD, ATTRIBUTE
+
+
+ASSIGN => '='
+ASSIGN => '+='
+ASSIGN => '-='
+
+AND_OP => '&&'
+OR_OP => '||'
+NOT_OP => '!'
+
