@@ -6,12 +6,10 @@
 
 defn_file.root => piece*
 
-piece => endline
+piece => NEWLINE
 piece => definition
 
-endline => COMMENT? NEWLINE
-
-definition => signature endline instructions
+definition => signature NEWLINE instructions
 
 signature => nonterm '(' child* ')'     # match a node with these children
 signature => terminal '(' STRING ')'    # match when terminal text == string
@@ -34,15 +32,15 @@ identifier => LOWERNAME     # lowercase letters only
 terminal => UPPERNAME       # uppercase letters and '_'
 
 
-instructions => INDENT instruction+ DEDENT
+instructions => INDENT NEWLINE? instruction+ NEWLINE* DEDENT
 
-instruction => endline
-instruction => directive endline
-instruction => expansion endline
-instruction => rewrite endline
-instruction => branch endline
-instruction => label ':' endline instructions?
-instruction => operation endline
+## instruction => NEWLINE
+instruction => directive NEWLINE
+instruction => expansion NEWLINE
+instruction => rewrite NEWLINE
+instruction => branch NEWLINE
+instruction => label ':' NEWLINE instructions?
+instruction => operation NEWLINE
 
 directive => '.' identifier '(' carg,* ')'      # compiler directive
 expansion => '&' child                          # generate code for child node

@@ -27,7 +27,7 @@ ASSIGN('+=')
     add 'in place'
 
 
-if(test endline suite else?)
+if(test suite else?)
     &test
     br iftrue, iffalse
     iftrue:
@@ -38,7 +38,7 @@ if(test endline suite else?)
     ifend:
 
 
-while(test endline suite)
+while(test suite)
     while:
         &test
         br whiletrue, whileend
@@ -117,8 +117,8 @@ call(variable arg*)     # function call
 parentheses(test)
     &test
 
-# just "variable" instead of "atom(variable)"?
-atom(variable)
+
+atom(variable)      # "variable" instead of "atom(variable)"?
     .load(variable)
 
 

@@ -7,16 +7,15 @@ use expr        # common expression syntax
 
 module.root => line+
 
-line => endline
+line => NEWLINE
 line => statement
 
-endline => COMMENT? NEWLINE
 
-statement => declaration endline
+statement => declaration NEWLINE
 statement => if
 statement => while
-statement => assignment endline
-statement => call endline
+statement => assignment NEWLINE
+statement => call NEWLINE
 
 declaration => 'declare' variable ATTRIBUTE* 
 
@@ -25,10 +24,10 @@ assignment => designator ASSIGN test
 designator => variable
 
 
-if => 'if' test ':' endline suite else? 
-else => 'else' ':' endline suite
+if => 'if' test ':' NEWLINE suite else? 
+else => 'else' ':' NEWLINE suite
 
 suite => INDENT line+ DEDENT
 
 
-while => 'while' test ':' endline suite
+while => 'while' test ':' NEWLINE suite

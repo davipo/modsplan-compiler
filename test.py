@@ -15,12 +15,9 @@ source_dir = 'sample_source'
 
 class TestCompiler(unittest.TestCase):
     """ Run some tests on compiler."""
+    longMessage = True
+    maxDiff = 2000
     
-    
-    def setUp(self):
-        """ """
-        pass
-
 
     def test_compile(self):
         self.check_src('bazgoop.L0')
@@ -41,7 +38,10 @@ class TestCompiler(unittest.TestCase):
         if code:
             with open(sourcepath + '.' + modsplan.compiler.code_suffix) as codefile:
                 prevcode = codefile.read()
-            self.assertEqual(code, prevcode)
+            msg = 'Compiled code does not match previously compiled code for %s'
+# Diff not displayed for str type, only unicode
+#             self.assertEqual(code, prevcode, msg % sourcepath)
+            self.assertMultiLineEqual(code, prevcode, msg % sourcepath)
      
      
     def check_import(self, filename):
@@ -52,7 +52,7 @@ class TestCompiler(unittest.TestCase):
             text = ''.join(lines)
             with open(sourcepath + '.txt') as f:
                 prevtext = f.read()
-            self.assertEqual(text, prevtext)
+            self.assertMultiLineEqual(text, prevtext)
      
 
 if __name__ == '__main__':

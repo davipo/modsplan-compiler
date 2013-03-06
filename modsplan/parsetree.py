@@ -26,6 +26,7 @@ class BaseNode:
         self.linenum = 0                # line number where found in source
         self.column = 0                 # column number where found in source
         self.used = False               # to keep track of nodes already compiled
+        self.comment = ''               # text of comment following node in source
 
 
     def set_location(self, token):
@@ -123,7 +124,7 @@ class NonterminalNode(BaseNode):
 
     def show(self):
         """ Return display (as string) of parse tree starting at this node."""
-        result = self.indent() + self.name + '\n'
+        result = self.indent() + self.name + '  ' + self.comment + '\n'
         for node in self.children:
             result += node.show()
         return result

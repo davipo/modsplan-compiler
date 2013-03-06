@@ -94,8 +94,10 @@ class SyntaxParser:
         parse_tree = parsetree.new(nonterm.name, self.debug)    # root of parse tree
         self.log(3, '\n\nParse trace:\n')
         if self.tokens:
+            numtokens = self.parse_comments(0, parse_tree)
             self.newtoken = True
-            failure, numtokens = self.parse_nonterm(0, nonterm, parse_tree)
+            failure, nt = self.parse_nonterm(numtokens, nonterm, parse_tree)
+            numtokens += nt
             if numtokens < len(self.tokens):
                 print '\nParsed %d tokens of %d total' % (self.maxtokens, len(self.tokens))
                 token = self.tokens[self.maxtokens]
@@ -114,6 +116,23 @@ class SyntaxParser:
             message += ': expecting %s' % expect
         raise tokenize.Error(message, token)
 
+
+    def parse_comments(self, start, node):
+        """ Parse comments from self.tokens beginning at index start;
+            put comments in node; return number of comment tokens."""
+        comments = []
+        numtokens = 0
+        for token in self.tokens[start:]:
+            if token.name == 'COMMENT':
+                comments.append(token.text)
+                numtokens += 1
+            else:
+                break
+        if comments:            # don't wipe out initial comments
+            node.comment = '\n'.join(comments)
+            self.log(6, 'comment added to %s: %s' % (node.name, node.comment))
+        return numtokens
+        
 
     def parse_nonterm(self, start, nonterm, node):
         """ Parse tokens from index start using syntax of nonterm; store parse tree in node. 
@@ -211,6 +230,9 @@ class SyntaxParser:
             if failure:                 # wrong item, alternate fails
                 node.remove_children()
                 break
+            else:
+                nt = self.parse_comments(start + numtokens, node)
+                numtokens += nt
         return failure, numtokens
     
     

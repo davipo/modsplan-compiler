@@ -56,17 +56,16 @@ class Compiler:
         """ Generate code from source_node, using definitions loaded for language.
             Return list of target code instructions (strings)."""
         code = []
+        if source_node.comment:
+            code.append(';' + source_node.comment)
         # Traverse in preorder, generating code for any defns found
         definition = self.defs.get_defn(source_node)    # find definition matching this node
         if definition:
             code.extend(self.gen_instructions(source_node, definition))
         else:   # no definition found; generate code for any children
             if source_node.isterminal():
-                if source_node.name == 'COMMENT':
-                    code.append(instr_fmt % ('', ';' + source_node.text))
-                else:
-                    message = 'No definition found for terminal token %s' % source_node
-                    raise Error(message, self.defs.defn_tree)
+                message = 'No definition found for terminal token %s' % source_node
+                raise Error(message, self.defs.defn_tree)
             else:
                 for child in source_node.children:
                     code.extend(self.codegen(child))
@@ -146,23 +145,17 @@ class Compiler:
                 args_str = self.gen_args(source_node, instr.findall('oparg'), labels)
                 code.append(instr_fmt % (opcode, args_str))
                 
-            elif instr.name == 'endline':
-                pass
             else:
                 message = 'Unrecognized instruction kind "%s"' % instr.name
                 raise Error(message, self.defs.first_alternate(instr.name))
                 ### Error may be in a subsequent alternate, too hard to find which one
             
-            if 'm' in self.debug:       # output defn comments
-                endline = instruction.firstchild('endline')
-                if endline:
-                    comment = endline.find('COMMENT')   # defn comment, not normally output
-                    if comment:
-                        text = ';(' + self.langname + ')' + comment.findtext()
-                        if code:
-                            code[-1] = code[-1] + '   ' + text
-                        else:
-                            code.append(instr_fmt % ('', text))
+            if instr.comment and 'm' in self.debug:         # output defn comment
+                text = '  ;(' + self.langname + ')' + instr.comment
+                if code:
+                    code[-1] = code[-1] +  text
+                else:
+                    code.append(text)
                 
         if 'i' in self.debug:
             print '(%s:)' % source_node.name 

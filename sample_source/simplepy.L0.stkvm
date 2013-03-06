@@ -1,0 +1,52 @@
+while1:
+	.load        col
+	.load        text
+	.getsymbol   len
+	call         
+	cmp          lt
+	br           whiletrue1, whileend1
+whiletrue1:
+	.getsymbol   length
+	const        0
+;# failure unless otherwise determined
+	const        1
+	sub          
+	store        
+	.load        char_class
+	.load        char
+	.getsymbol   charclass
+	call         
+	cmp          eq
+	br           iftrue3, iffalse3
+iftrue3:
+	.getsymbol   length
+	const        1
+	store        
+	br           ifend3
+iffalse3:
+	.load        element
+	.load        str
+	.getsymbol   isinstance
+	call         
+	br           iftrue6, iffalse6
+iftrue6:
+	.load        text
+	.load        element
+	.getsymbol   startswith
+	call         
+	br           iftrue7, iffalse7
+iftrue7:
+	.getsymbol   length
+	.load        element
+	.getsymbol   len
+	call         
+	store        
+	br           ifend7
+iffalse7:
+ifend7:
+	br           ifend6
+iffalse6:
+ifend6:
+ifend3:
+	br           while1
+whileend1:

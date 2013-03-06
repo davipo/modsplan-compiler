@@ -1,0 +1,11 @@
+declare baz external
+
+snape = goop - 12 + baz
+
+if snape <= 93:     # keep low
+    run(snape, goop * 3)
+else:
+    exit()
+
+if goop != 0:
+    snape = -1

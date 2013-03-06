@@ -1,0 +1,38 @@
+	.addsymbol   baz, external
+	.getsymbol   snape
+	.load        goop
+	const        12
+	sub          
+	.load        baz
+	add          
+	store        
+;# keep low
+	.load        snape
+	const        93
+	cmp          le
+	br           iftrue5, iffalse5
+iftrue5:
+	.load        snape
+	.load        goop
+	const        3
+	mul          
+	.getsymbol   run
+	call         
+	br           ifend5
+iffalse5:
+	.getsymbol   exit
+	call         
+ifend5:
+	.load        goop
+	const        0
+	cmp          ne
+	br           iftrue10, iffalse10
+iftrue10:
+	.getsymbol   snape
+	const        0
+	const        1
+	sub          
+	store        
+	br           ifend10
+iffalse10:
+ifend10:
