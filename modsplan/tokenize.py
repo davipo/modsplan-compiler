@@ -41,7 +41,13 @@ class TokenGrammar(grammar.Grammar):
         # nonterminals with uppercase names specify a kind of token
         # self.nonterms is an OrderedDict, so this preserves order of definition
         self.kinds = [nonterm for name, nonterm in self.nonterms.items() if name.isupper()]
-                        
+        
+        self.kindnames = [kind.name for kind in self.kinds]
+        if 'newline' in self.options:
+            self.kindnames += ['NEWLINE']
+        if 'indent' in self.options:
+            self.kindnames += ['INDENT', 'DEDENT']
+        
         # Compute possible prefix character classes for each kind of token.
         #   prefix_map[char_class] is a list of kinds that can start with char_class.
         #   These lists preserve the order of tokenkinds in .tokens specification.
@@ -103,26 +109,18 @@ class Error(grammar.Error):
 
 class Tokenizer:
     """ Configurable tokenizer. Reads a token specification grammar,
-    then parses source text into tokens, as defined by the grammar.
+        then parses source text into tokens, as defined by the grammar.
     """
-    def __init__(self, grammar_filename, track_indent=True):
+    def __init__(self, grammar_filename):
         """ Create tokenizer from grammar file (format defined in tokens.metagrammar).
-            If track_indent, emit INDENT and DEDENT tokens at indentation level changes.
             The grammar defines the syntax and kinds of tokens.
             If grammar contains 'use' directives, import all needed files.
             To use multiple grammar files, create one file of 'use' directives.
+            Grammar commands may enable emitting of NEWLINE, INDENT & DEDENT tokens.
         """
-        self.track_indent = track_indent
         self.tokendef = TokenGrammar(grammar_filename)  # load token definitions
         self.tabsize = 0                # for reporting column number, set in get_tokens()
         self.sourcepath = None          # set in get_tokens()
-
-                    
-    def names(self):
-        """ Return list of token kind names."""
-        kindnames = [kind.name for kind in self.tokendef.kinds]
-        kindnames += ['NEWLINE', 'INDENT', 'DEDENT']
-        return kindnames
 
 
     def prefixes(self):
@@ -139,7 +137,9 @@ class Tokenizer:
         """
         self.sourcepath = sourcepath
         self.tabsize = tabsize              # for reporting column number in errors
-        lines = lineparsers.LineInfoParser(sourcepath, track_indent=self.track_indent)
+        enable_newline = 'newline' in self.tokendef.options
+        enable_indent = 'indent' in self.tokendef.options
+        lines = lineparsers.LineInfoParser(sourcepath, track_indent=enable_indent)
         
         # Read lines from source, tokenize
         tokens = []
@@ -168,7 +168,8 @@ class Tokenizer:
                         tokens.append(Token('', char, lines, viewcol))  # punctuation
                     col += 1
                     viewcol += tabsize if char == '\t' else 1
-            tokens.append(Token('NEWLINE', '', lines, viewcol))         # mark end of line
+            if enable_newline:
+                tokens.append(Token('NEWLINE', '', lines, viewcol))     # mark end of line
 
         # close indented blocks
         tokens += self.indents(- indentlevel, lines)

@@ -11,6 +11,7 @@ import lineparsers
 quote_chars = "'" + '"'
 quantifiers = '*+?'
 separators = '.,;:/|\&-'    # may be used with quantifier to separate repeating items
+enable_cmd = 'enable '
 
 
 class Nonterminal:
@@ -144,6 +145,7 @@ class Grammar:
         self.filename = filename
         self.nonterms = OrderedDict()   # dictionary of Nonterminals, keyed by name
         self.root = None                # last Nonterminal with a .root flag, if any
+        self.options = []               # list of (string) options from enable commands
         self.make_item = make_item      # item constructor (extendable by subclasses)
         self.load_grammar(filename)
         
@@ -174,13 +176,13 @@ class Grammar:
         """ 
         lines = lineparsers.LineInfoParser(filepath)
         for line in lines:
-            line = line.strip()
-            if line == '':                  # skip blank line
-                continue
-            if line.startswith('#'):        # skip comment line
-                continue
-            # line is not blank or comment
-            self.store_production(line, lines.sourcepath, lines.linenum)
+            if line.startswith(enable_cmd):
+                option = line[len(enable_cmd):].strip()
+                self.options.append(option.lower())
+            else:
+                line = line.strip()
+                if line and not line.startswith('#'):   # skip blank and comment lines
+                    self.store_production(line, lines.sourcepath, lines.linenum)
         self.load_items()       # replace raw strings of production with Item
 
 

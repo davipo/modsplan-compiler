@@ -1,8 +1,7 @@
 # defn.tokens
 # This is the token specification for .defn files.
 
-# Created September 2011.
-# Copyright 2011 David H Post. All rights reserved.
+# Copyright 2011-2013 David H Post. All rights reserved.
 
 
 # All characters not recognized become single-character tokens.
@@ -10,6 +9,11 @@
 #   L = lowercase letter, U = uppercase letter, D = digit.
 #   P* = any printable characters, must be followed by terminal or end of line.
 #   (P may be used only with *)
+
+
+# tell tokenizer to emit NEWLINE, INDENT, DEDENT tokens
+enable newline
+enable indent
 
 
 LOWERNAME => L+     # '_' not allowed (used to append subtype)

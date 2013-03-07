@@ -59,7 +59,7 @@ class SyntaxParser:
         self.tokenizer = tokenize.Tokenizer(langpath + '.tokens')
         if self.debug:
             print 'Token spec loaded from ' + self.tokenizer.tokendef.filename
-        self.syntax = SyntaxGrammar(langpath + '.syntax', self.tokenizer.names())
+        self.syntax = SyntaxGrammar(langpath + '.syntax', self.tokenizer.tokendef.kindnames)
         if self.debug:
             print 'Syntax spec loaded from ' + self.syntax.filename
         if 's' in self.debug:

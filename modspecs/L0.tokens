@@ -1,6 +1,11 @@
 # L0.tokens
 # L0 token specification
 
+# tell tokenizer to emit NEWLINE, INDENT, DEDENT tokens
+enable newline
+enable indent
+
+# include these token specs 
 use expr
 use string
 
