@@ -1,0 +1,113 @@
+# Modsplan base.defn
+
+# This is the base definition for most programming languages.
+# It specifies code generation from an abstract syntax tree (AST).
+
+# See defn.metagrammar for syntax of .defn files
+
+# Specify only nonterms which generate code
+# Compiler traverses tree depth-first, matching these, generating as it goes.
+
+
+declaration(variable ATTRIBUTE*)
+    # provides for external functions (for I/O, etc.) and variables
+    .addsymbol(variable, ATTRIBUTE*)
+
+
+assignment(designator ASSIGN test)
+    &designator
+    &test
+    &ASSIGN
+    
+ASSIGN('=')
+    store
+    
+
+if(test suite else?)
+    &test
+    br iftrue, iffalse
+    iftrue:
+        &suite
+        br ifend
+    iffalse:
+        &else?
+    ifend:
+
+
+while(test suite)
+    while:
+        &test
+        br whiletrue, whileend
+        whiletrue:
+            &suite
+            br while
+        whileend:
+
+
+compare(RELATION expr)
+    &expr
+    &RELATION
+
+RELATION('==')
+    cmp eq
+
+RELATION('!=')
+    cmp ne
+
+RELATION('>')
+    cmp gt
+
+RELATION('>=')
+    cmp ge
+
+RELATION('<')
+    cmp lt
+
+RELATION('<=')
+    cmp le
+
+
+factor(ADD_OP atom)     # handles unary '-' (and '+')
+    const 0
+    &atom
+    &ADD_OP
+
+
+addition(ADD_OP term)
+    &term
+    &ADD_OP
+
+ADD_OP('+')
+    add
+    
+ADD_OP('-')
+    sub
+
+
+multiplication(MUL_OP factor)
+    &factor
+    &MUL_OP
+
+MUL_OP('*')
+    mul
+    
+
+call(variable arg*)     # function call
+    &arg*
+    &variable
+    call
+
+parentheses(test)
+    &test
+
+
+atom(variable)      # "variable" instead of "atom(variable)"?
+    .load(variable)
+
+
+identifier(NAME)
+    .getsymbol(NAME)        # compile error if NAME undefined
+
+
+number(INTEGER)
+    const INTEGER
