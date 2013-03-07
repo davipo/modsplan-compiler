@@ -23,9 +23,6 @@ NOT_OP => 'not'
 
 
 # Must appear before NAME from base.tokens
-KEYWORD => 'if'
-KEYWORD => 'else'
-KEYWORD => 'while'
 KEYWORD => 'declare'
 
 
@@ -35,9 +32,5 @@ ATTRIBUTE => 'external'
 ATTRIBUTE => 'integer'
 
 
-use base        # include after BOOL_OP, KEYWORD, ATTRIBUTE
+use base        # include after alphabetic tokens
 
-
-ASSIGN => '='
-ASSIGN => '+='
-ASSIGN => '-='

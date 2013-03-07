@@ -5,12 +5,12 @@
 
 COMMENT => '/*' P* '*/'
 COMMENT => '//' P*
-# P* = any printable characters (including space)
+    # P* = any printable characters (including space)
 
 use expr
-# use string
+## use string
 
-# use base below -- must include after KEYWORD, ATTRIBUTE
+# use base below -- must include after alphabetic keywords
 
 
 # Must appear before NAME from base.tokens
@@ -27,25 +27,8 @@ TYPEQUALIFIER => 'const'
 TYPEQUALIFIER => 'volatile'
 
 
+use base        # include after alphabetic keywords
 
-KEYWORD => 'if'
-KEYWORD => 'else'
-KEYWORD => 'while'
-KEYWORD => 'declare'
-
-
-# Variable attributes, used in declare statement
-# Must appear before NAME from base.tokens
-ATTRIBUTE => 'external'
-ATTRIBUTE => 'integer'
-
-
-use base        # include after KEYWORD, ATTRIBUTE
-
-
-ASSIGN => '='
-ASSIGN => '+='
-ASSIGN => '-='
 
 AND_OP => '&&'
 OR_OP => '||'

@@ -36,7 +36,7 @@ class TestCompiler(unittest.TestCase):
     
     def check_with_prev(self, sourcepath):
         """ Compile source at sourcepath, compare code to previously compiled code."""
-        code = modsplan.compiler.compile_src(sourcepath)
+        code = modsplan.compiler.compile_src(sourcepath, debug='1')
         if code:
             with open(sourcepath + '.' + modsplan.compiler.code_suffix) as codefile:
                 prevcode = codefile.read()

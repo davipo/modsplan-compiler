@@ -46,7 +46,8 @@ class Compiler:
     def compile(self, source_filepath):
         """ Compile source code for initialized language, 
             return list of target code instructions (strings)."""
-        print '\nParsing %s ...' % source_filepath
+        if '2' in self.debug:
+            print '\nParsing %s ...' % source_filepath
         self.source_tree = self.parser.parse(source_filepath)
         self.labelsuffix.clear()
         return self.codegen(self.source_tree)
@@ -232,7 +233,7 @@ def compile_src(sourcepath, codepath='', spec_dir=None, debug=''):
 
 
 if __name__ == '__main__':
-    debug = ''                      # default debugging output
+    debug = '1'                     # default debugging output
     if 2 <= len(sys.argv) <= 4:
         sourcepath = sys.argv[1]
         spec_dir = None                 # specifications directory, use default if None

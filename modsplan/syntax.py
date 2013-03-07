@@ -57,10 +57,10 @@ class SyntaxParser:
         """
         self.debug = debug          # debugging flags
         self.tokenizer = tokenize.Tokenizer(langpath + '.tokens')
-        if self.debug:
+        if '2' in self.debug:
             print 'Token spec loaded from ' + self.tokenizer.tokendef.filename
         self.syntax = SyntaxGrammar(langpath + '.syntax', self.tokenizer.tokendef.kindnames)
-        if self.debug:
+        if '2' in self.debug:
             print 'Syntax spec loaded from ' + self.syntax.filename
         if 's' in self.debug:
             self.syntax.show()
@@ -102,7 +102,7 @@ class SyntaxParser:
                 print '\nParsed %d tokens of %d total' % (self.maxtokens, len(self.tokens))
                 token = self.tokens[self.maxtokens]
                 self.syntax_error(token, self.expected)
-            else:
+            elif '1' in self.debug:
                 print '\n%s parsed successfully (%d tokens)' % (filepath, len(self.tokens))
         if 't' in self.debug:
             print '\nTree:\n'
