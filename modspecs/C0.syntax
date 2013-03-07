@@ -5,57 +5,79 @@
 use expr        # common expression syntax
 
 
-program.root => extdef*
+program.root => extdecl+
 
-extdef => funcdef
-extdef => datadef
+## extdecl => funcdef
+extdecl => statement        ## until we implement functions
 
-datadef => declspecs initdeclarator,* ';'
-declspecs => storage_spec? typespecifier
-storage_spec => 'extern'
+extdecl => declaration
 
-typespecifier => 'int'
-# typespecifier => 'void'
-# typespecifier => 'char'
-# typespecifier => 'float'
+declaration => declspecifier+ initdeclarator,* ';'
 
-# initdeclarator => declarator initializer?
+declspecifier => STORAGESPEC
+declspecifier => TYPESPECIFIER
+declspecifier => TYPEQUALIFIER
+
+# initdeclarator => declarator '=' initializer
 initdeclarator => declarator
 
-# declarator => declarator '[' constexpr? ']'
-# declarator => declarator '(' ')'
-# declarator => '(' declarator ')'
-# declarator => '*' declarator
-declarator => identifier
+declarator => pointr* directdeclarator
 
+pointr => '*' TYPEQUALIFIER*
 
-funcdef => declspecs? funcdeclarator funcbody
+directdeclarator => identifier followdeclarator*
+directdeclarator => '(' declarator ')' followdeclarator*
 
-funcdeclarator => declarator '(' parameter,* ')'
-parameter => identifier
+followdeclarator => identifier
+followdeclarator => '(' declarator ')'
+followdeclarator => arraydeclarator
+followdeclarator => functiondeclarator
 
-funcbody => typedeclaration+ '{' declarator* statement+ '}'
+arraydeclarator => arrayincomplete
+arraydeclarator => arrayvarlen
+arraydeclarator => '[' STORAGESPEC? TYPEQUALIFIER* assignexpr ']'
+    # STORAGESPEC here may be only 'static'
 
-typedeclaration => typespecifier declarator+ ';'
+arrayincomplete => '[' TYPEQUALIFIER* ']'
+arrayvarlen => '[' TYPEQUALIFIER*  '*'  ']'
 
+# functiondeclarator => '(' identifier,* ')'
+    # separated param declarations may be too hard to compile
+    
+functiondeclarator => '(' paramdeclaration,* ellipsis? ')'
+
+ellipsis => ','  '...'
+
+paramdeclaration => declspecifier+ declarator
+    # require a declarator
+# paramdeclaration => declspecifier+ declarator?
+# paramdeclaration => declspecifier+ abstractdeclarator
+
+# funcdef => declspecifier+ declarator declaration* compoundstatement
+    # As specified in C11, but has many constraints not in syntax
+
+funcdef => declspecifier+ identifier functiondeclarator compoundstatement
+
+compoundstatement => '{' blockitem* '}'
+blockitem => declaration
+blockitem => statement
 
 statement => if
 statement => while
-statement => compound
-statement => expression ';'
-statement => call 
+statement => compoundstatement
+statement => expression? ';'
 
-declaration => 'int' variable
+if => 'if' '(' test ')' suite else?
+else => 'else' suite
 
-assignment => designator ASSIGN test
+while => 'while' '(' test ')' suite
+
+suite => statement
+
+expression => assignexpr
+expression => test      # test specified in expr.syntax
+
+assignexpr => designator ASSIGN expression
 
 designator => variable
 
-
-if => 'if' '(' test ')' statement else?
-else => 'else' statement
-
-
-while => 'while' '(' test ')' statement
-
-compound => '{' statement* '}'

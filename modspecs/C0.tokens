@@ -2,18 +2,32 @@
 # C0 token specification
 # A minimal subset of C
 
+
+COMMENT => '/*' P* '*/'
+COMMENT => '//' P*
+# P* = any printable characters (including space)
+
 use expr
 # use string
 
 # use base below -- must include after KEYWORD, ATTRIBUTE
 
 
-COMMENT => '/*' P* '*/'
-COMMENT => '//' P*
-# P* = any printable characters (including space)
-
-
 # Must appear before NAME from base.tokens
+
+STORAGESPEC => 'extern'
+STORAGESPEC => 'static'
+
+TYPESPECIFIER => 'int'
+TYPESPECIFIER => 'void'
+TYPESPECIFIER => 'char'
+TYPESPECIFIER => 'float'
+
+TYPEQUALIFIER => 'const'
+TYPEQUALIFIER => 'volatile'
+
+
+
 KEYWORD => 'if'
 KEYWORD => 'else'
 KEYWORD => 'while'

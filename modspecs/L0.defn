@@ -2,3 +2,13 @@
 
 use base
 
+
+declaration(variable ATTRIBUTE*)
+    # provides for external functions (for I/O, etc.) and variables
+    .addsymbol(variable, ATTRIBUTE*)
+
+
+assignment(designator ASSIGN test)
+    &designator
+    &test
+    &ASSIGN

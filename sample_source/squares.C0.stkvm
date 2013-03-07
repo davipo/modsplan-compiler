@@ -1,0 +1,19 @@
+;/* squares.C0 */
+	.addsymbol   print, extern, void
+	.getsymbol   i
+	const        1
+	store        
+while6:
+	.load        i
+	const        20
+	cmp          le
+	br           whiletrue6, whileend6
+whiletrue6:
+	.load        i
+	.load        i
+	.load        i
+	mul          
+	.getsymbol   print
+	call         
+	br           while6
+whileend6:

@@ -2,3 +2,16 @@
 
 use base
 
+
+declaration(declspecifier+ initdeclarator*)
+    .addsymbol(initdeclarator*, declspecifier+)
+
+declspecifier(STORAGESPEC)
+    &STORAGESPEC
+
+    
+assignexpr(designator ASSIGN expression)
+    &designator
+    &expression
+    &ASSIGN
+

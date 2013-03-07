@@ -8,16 +8,6 @@
 # Specify only nonterms which generate code
 # Compiler traverses tree depth-first, matching these, generating as it goes.
 
-
-declaration(variable ATTRIBUTE*)
-    # provides for external functions (for I/O, etc.) and variables
-    .addsymbol(variable, ATTRIBUTE*)
-
-
-assignment(designator ASSIGN test)
-    &designator
-    &test
-    &ASSIGN
     
 ASSIGN('=')
     store
