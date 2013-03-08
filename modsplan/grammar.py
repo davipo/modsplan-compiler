@@ -7,6 +7,7 @@ from collections import OrderedDict
 
 import lineparsers
 
+Error = lineparsers.Error
 
 quote_chars = "'" + '"'
 quantifiers = '*+?'
@@ -45,10 +46,10 @@ class Nonterminal:
 
 class Alternate:
     """ Holds items of one production. """    
-    def __init__(self, production, filename, linenum, flags=None):
+    def __init__(self, production, filepath, linenum, flags=None):
         self.items = production     # list of Item
         self.prefixes = None        # set of terminals that are possible prefixes
-        self.filepath = filename    # grammar file this production was loaded from
+        self.filepath = filepath    # grammar file this production was loaded from
         self.linenum = linenum      # line number in grammar file
         if flags == None:
             flags = []
@@ -123,31 +124,18 @@ class Item:
             return nonterm.prefixes
 
 
-class Error(lineparsers.Error):
-
-    def __init__(self, message, filepath, linenum=0, column=0):
-        self.message = message + ' in %s' % filepath
-        if linenum:
-            self.message += ' at line %d' % linenum
-            if column:
-                self.message += ', column %d' % column
-
-    def __str__(self):
-        return self.message
-
-
 class Grammar:
     """ Holds a grammar."""
-    def __init__(self, filename, make_item=Item):
+    def __init__(self, filepath, make_item=Item):
         """ Load grammar from file (format defined by metagrammar).
             (make_item must be a subclass of Item.)
         """
-        self.filename = filename
+        self.filepath = filepath
         self.nonterms = OrderedDict()   # dictionary of Nonterminals, keyed by name
         self.root = None                # last Nonterminal with a .root flag, if any
         self.options = []               # list of (string) options from enable commands
         self.make_item = make_item      # item constructor (extendable by subclasses)
-        self.load_grammar(filename)
+        self.load_grammar(filepath)
         
     
     def show(self):
@@ -182,23 +170,24 @@ class Grammar:
             else:
                 line = line.strip()
                 if line and not line.startswith('#'):   # skip blank and comment lines
-                    self.store_production(line, lines.sourcepath, lines.linenum)
+                    self.store_production(line, lines)
         self.load_items()       # replace raw strings of production with Item
 
 
-    def store_production(self, line, filepath, linenum):
-        """ Parse a production, store in self.nonterms."""
+    def store_production(self, line, location):
+        """ Parse a production, store in self.nonterms.
+            location has filepath and linenum attributes, for error reporting."""
         production = line.split()
 # Would string items in grammar ever have spaces in them? (If so, don't split them.)
 # If we want to save comments in terminals, don't split them.
         if len(production) < 3 or production[1] != '=>':
-            raise Error(line + '\nSyntax error in grammar', filepath, linenum)
+            raise Error(line + '\nSyntax error in grammar', location)
         nameflags = production[0].split('.')    # flags after name, separated by '.'
         name = nameflags[0]                     # remove any flags
         flags = nameflags[1:]
         nonterm = self.nonterms.setdefault(name, Nonterminal(name))     # create if not found
         # Store raw strings for now; must create nonterms before we can point to them.
-        alt = Alternate(production[2:], filepath, linenum, flags)
+        alt = Alternate(production[2:], location.filepath, location.linenum, flags)
         nonterm.alternates.append(alt)
         if 'root' in flags:
             self.root = nonterm
@@ -215,7 +204,7 @@ class Grammar:
                         break                   #   (only if space before #)
                     if literal_next and (item[0] not in quote_chars):
                         message = 'Literal or end of line must follow character class P*'
-                        raise Error(message, alt.filepath, alt.linenum)
+                        raise Error(message, alt)
                     literal_next = (item == 'P*')       # literal must follow 'P*'
                     quantifier = '1'
                     separator = ''
@@ -233,20 +222,18 @@ class Grammar:
     def check_item(self, item, quantifier, alt):
         """ Check string item, with quantifier, in alternate alt. (Extended by subclass.)"""
         if item == '':
-            raise Error('Misplaced quantifier', alt.filepath, alt.linenum)
+            raise Error('Misplaced quantifier', alt)
         if item[0] in quote_chars:      # terminal node: literal
             if item[0] != item[-1]:
-                message = 'Mismatched quotes in item (%s)' % item
-                raise Error(message, alt.filepath, alt.linenum)
+                raise Error('Mismatched quotes in item (%s)' % item, alt)
             if len(item) < 3:
-                message = 'Empty literal not allowed (%s)' % item
-                raise Error(message, alt.filepath, alt.linenum)
+                raise Error('Empty literal not allowed (%s)' % item, alt)
         elif item.isupper():            # terminal, handled by subclasses
             pass
         elif item in self.nonterms:     # item should be name of nonterminal
             pass
         else:
-            raise Error('Unrecognized item (%s)' % item, alt.filepath, alt.linenum)
+            raise Error('Unrecognized item (%s)' % item, alt)
 
 
 gfn = 'base.tokens'

@@ -7,8 +7,7 @@
 import sys
 import os.path
 
-from lineparsers import Error as BaseError
-from tokenize import Error
+from lineparsers import Error
 
 import syntax
 import defn
@@ -228,8 +227,9 @@ def compile_src(sourcepath, codepath='', spec_dir=None, debug=''):
             with open(codepath, 'w') as outfile:
                 outfile.write(codestring)
         return codestring
-    except (None if debug else BaseError) as exc:
+    except (None if 'b' in debug else Error) as exc:
         print exc
+        return None
 
 
 if __name__ == '__main__':

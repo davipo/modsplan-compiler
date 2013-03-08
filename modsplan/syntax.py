@@ -12,16 +12,19 @@ import grammar
 import tokenize
 import parsetree
 
+Error = grammar.Error
+
 
 class SyntaxGrammar(grammar.Grammar):
     """ Defines language syntax. """
-    def __init__(self, filename, tokenkindnames):
+    
+    def __init__(self, filepath, tokenkindnames):
         """ Load syntax grammar from file (format defined by metagrammar);
             check for valid tokenkindnames."""
         self.tokenkindnames = tokenkindnames
-        grammar.Grammar.__init__(self, filename, SyntaxItem)
+        grammar.Grammar.__init__(self, filepath, SyntaxItem)
         if not self.root:
-            raise grammar.Error('One nonterminal must be marked .root', filename)
+            raise Error('One nonterminal must be marked .root', self)
         # find prefixes for all nonterms and alternates
         for nonterm in self.nonterms.values():
             nonterm.find_prefixes(self.nonterms)
@@ -29,7 +32,7 @@ class SyntaxGrammar(grammar.Grammar):
     def check_item(self, item, quantifier, alt):
         """ Check string item, with given quantifier, in alternate alt."""
         if item.isupper() and item not in self.tokenkindnames:
-            raise tokenize.Error('Unrecognized tokenkind (%s)' % item, alt)
+            raise Error('Unrecognized tokenkind (%s)' % item, alt)
         else:
             grammar.Grammar.check_item(self, item, quantifier, alt)
 
@@ -56,16 +59,20 @@ class SyntaxParser:
             Optional debugging flags.
         """
         self.debug = debug          # debugging flags
+        
         self.tokenizer = tokenize.Tokenizer(langpath + '.tokens')
         if '2' in self.debug:
-            print 'Token spec loaded from ' + self.tokenizer.tokendef.filename
+            print 'Token spec loaded from ' + self.tokenizer.tokendef.filepath
+            
         self.syntax = SyntaxGrammar(langpath + '.syntax', self.tokenizer.tokendef.kindnames)
         if '2' in self.debug:
-            print 'Syntax spec loaded from ' + self.syntax.filename
+            print 'Syntax spec loaded from ' + self.syntax.filepath
+            
         if 's' in self.debug:
             self.syntax.show()
         if 'p' in self.debug:
             print self.syntax.show_prefixes()
+            
         self.source_path = ''       # last source file parsed
         self.maxtokens = 0          # greatest number of tokens parsed before a parse failure
         self.expected = None        # grammar item expected at furthest failure
@@ -79,6 +86,7 @@ class SyntaxParser:
         """
         self.source_path = filepath
         self.tokens = self.tokenizer.get_tokens(filepath)
+        
         if 'o' in self.debug:
             print '\nTokens from ' + filepath + ':\n'
             for tkn in self.tokens:
@@ -98,12 +106,15 @@ class SyntaxParser:
             self.newtoken = True
             failure, nt = self.parse_nonterm(numtokens, nonterm, parse_tree)
             numtokens += nt
+            
             if numtokens < len(self.tokens):
-                print '\nParsed %d tokens of %d total' % (self.maxtokens, len(self.tokens))
+                message = '\nParsed %d tokens of %d total for %s'
+                print message % (self.maxtokens, len(self.tokens), filepath)
                 token = self.tokens[self.maxtokens]
                 self.syntax_error(token, self.expected)
             elif '1' in self.debug:
                 print '\n%s parsed successfully (%d tokens)' % (filepath, len(self.tokens))
+                
         if 't' in self.debug:
             print '\nTree:\n'
             print parse_tree.show()
@@ -114,7 +125,8 @@ class SyntaxParser:
         message = 'Syntax error at %s token "%s"' % (token.name, token.text)
         if expect:
             message += ': expecting %s' % expect
-        raise tokenize.Error(message, token)
+        show = token.line() + '\n%*s' % (token.column, '^')   # show source line & position
+        raise Error(message, token, extra=show)
 
 
     def parse_comments(self, start, node):
@@ -147,6 +159,7 @@ class SyntaxParser:
         if self.newtoken:
             self.log(3, token)      # display new token once
             self.newtoken = False
+        
         if not self.inprefixes(token, nonterm.prefixes):
             failure = nonterm       # fail, nonterm not possible with this token
         else:
@@ -243,9 +256,11 @@ class SyntaxParser:
         numtokens = 0           # number of tokens matching syntax
         if start == len(self.tokens):
             return item, numtokens          # fail: no tokens left
+        
         if item.isterminal():
             token = self.tokens[start]
             node.set_location(token)
+            
             # literal item matches token text; tokenkind matches token name
             match_text = token.text if item.isliteral() else token.name
             if match_text == item.text():
@@ -261,6 +276,7 @@ class SyntaxParser:
             else:
                 self.log(5, '    %s not found' % item, node)
                 failure = item      # item not found
+            
         else:   # nonterminal
             nonterm = self.syntax.nonterms[item.text()]
             nonterm_node = node.add_child(nonterm.name)
@@ -282,18 +298,18 @@ def listtokens(tokens):
 
 parser = None
 
-def test(source_filename, grammar_dir=None, debug=''):
+def test(source_filepath, grammar_dir=None, debug=''):
     global parser
     if grammar_dir == None:
         grammar_dir = 'modspecs/'
-    srcname, sep, langname = source_filename.rpartition('.')
+    srcname, sep, langname = source_filepath.rpartition('.')
     tree = None
     try:
-        print '\nParsing %s ... \n' % source_filename
+        print '\nParsing %s ... \n' % source_filepath
         parser = SyntaxParser(os.path.join(grammar_dir, langname), debug)
-        tree = parser.parse(source_filename)
+        tree = parser.parse(source_filepath)
         print "\n**** Syntax test done ****"
-    except grammar.Error as exc:
+    except Error as exc:
         print exc
     print
     return tree
@@ -316,5 +332,5 @@ if __name__ == '__main__':
                 grammar_dir = arg
         tree = test(sourcepath, grammar_dir, debug)
     else:
-        print 'Usage: ./syntax.py <source_filename> [<grammar_dir>] [-<debug_flags>]'
+        print 'Usage: ./syntax.py <source_filepath> [<grammar_dir>] [-<debug_flags>]'
 

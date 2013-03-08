@@ -8,16 +8,35 @@ import os
 
 
 """ These parsers offer convenient iteration over lines of text.
+    Each inherits features of previous.
         LineParser tracks current line number.
         IndentParser tracks indentation level.
         FileParser reads lines from a file.
         ImportParser handles importing lines from other files.
+        LineInfoParser provides source location of each (possibly imported) line.
 """
 
 import_command = 'use '
 
+
 class Error(Exception):
-    pass
+    """ Convenient error reporting."""
+    def __init__(self, message, location=None, extra=''):
+        """ If location has nonempty filepath, linenum, column, add these to message.
+            If extra nonempty, append it as an additional line."""
+        self.message = message
+        if location:
+            for attribname, format in [ ('filepath', ' in %s'), 
+                                        ('linenum', ' at line %d'), 
+                                        ('column', ', column %d') ]:
+                value = getattr(location, attribname, None)
+                if value:
+                    self.message += format % value
+            if extra:
+                self.message += '\n' + extra
+
+    def __str__(self):
+        return self.message
 
 
 class LineParser(object):
@@ -50,12 +69,6 @@ class LineParser(object):
         """ Return list of remaining lines, each terminated with '\n'."""
         return ['%s\n' % line for line in self.generator()]
     
-    def error(self, message):
-        """ Return Error containing message; append line number if nonzero."""
-        if self.linenum:
-            message += ' in line %d' % self.linenum
-        return Error(message)
-
 
 class IndentParser(LineParser):
     """ Serves lines of text from an iterator of strings; 
@@ -86,7 +99,7 @@ class IndentParser(LineParser):
                 # not first indent, check that indent is multiple of first indent
                 self.level, extra = divmod(len(indentstr), len(self.indent))
                 if not indentstr.startswith(self.indent) or extra != 0:
-                    raise self.error('Indent is not a multiple of first indent')
+                    raise Error('Indent is not a multiple of first indent', self)
             else:
                 # this is first indent, set indent string for current text
                 self.indent = indentstr
@@ -102,7 +115,7 @@ class IndentParser(LineParser):
         if whitespace:
             first = whitespace[0]
             if first not in (' ', '\t') or any(char != first for char in whitespace):
-                raise self.error('Bad indentation, must be all tabs or all spaces')
+                raise Error('Bad indentation, must be all tabs or all spaces', self)
         return whitespace
     
 
@@ -111,24 +124,16 @@ class FileParser(IndentParser):
         tracks line number. Lines served without line end chars.
         Option to track indentation (see IndentParser), disabled by default."""
     
-    def __init__(self, sourcepath, track_indent=False):
-        """ Create line parser from text file at sourcepath.
+    def __init__(self, filepath, track_indent=False):
+        """ Create line parser from text file at filepath.
             Option to track indentation (see IndentParser), disabled by default."""
-        self.sourcepath = sourcepath
+        self.filepath = filepath
         try:
-            sourcetext = open(sourcepath).read()
+            filetext = open(filepath).read()
         except IOError as exc:
-            raise Error('Error loading file ' + sourcepath + '\n' + str(exc))
-        lines = sourcetext.splitlines()
+            raise Error('Error loading file ' + filepath, extra=str(exc))
+        lines = filetext.splitlines()
         IndentParser.__init__(self, lines, track_indent)
-
-    def error(self, message):
-        """ Return Error with message; append current filepath, & line number if nonzero."""
-        message += ' in '
-        if self.linenum:
-            message += 'line %d of ' % self.linenum
-        message += self.sourcepath
-        return Error(message)
 
 
 class ImportParser(FileParser):
@@ -138,32 +143,32 @@ class ImportParser(FileParser):
             keeping a list of imports to avoid repeats and loops.
         Option to track indentation level."""
     
-    def __init__(self, sourcepath, track_indent=False, imported=None):
-        """ Create import parser from text file at sourcepath.
+    def __init__(self, filepath, track_indent=False, imported=None):
+        """ Create import parser from text file at filepath.
             Option to track indentation (see IndentParser), disabled by default.
             Optional param 'imported' is a list of filepaths already imported.
-            Yields (line, info), info has attributes linenum, (indent) level, sourcepath.
+            Yields (line, info), info has attributes linenum, (indent) level, filepath.
         """
-        FileParser.__init__(self, sourcepath, track_indent)
+        FileParser.__init__(self, filepath, track_indent)
         if imported == None:
             imported = []
         self.imported = imported                # list of already imported filepaths
-        self.imported.append(sourcepath)
-        self.source_dir = os.path.dirname(sourcepath)
-        self.extension = os.path.splitext(sourcepath)[1]
+        self.imported.append(filepath)
+        self.directory = os.path.dirname(filepath)
+        self.extension = os.path.splitext(filepath)[1]
 
     def process_line(self, line):
         """ Generator of processed lines. If a line begins <import_command> <import>,
             yield lines of file <import>.ext in place of this line, else yield line. 
             Imported file uses directory and extension of parent file.
-            Yields (line, info), info has attributes linenum, (indent) level, sourcepath.
+            Yields (line, info), info has attributes linenum, (indent) level, filepath.
         """
         # overriding FileParser.process_line(), so do its processing first
         for pline in FileParser.process_line(self, line):
             if pline.startswith(import_command):
                 pline = pline.partition('#')[0]     # remove any comment
                 importname = pline[len(import_command):].strip()
-                importpath = os.path.join(self.source_dir, importname) + self.extension
+                importpath = os.path.join(self.directory, importname) + self.extension
                 if importpath not in self.imported:
                     importer = ImportParser(importpath, self.track_indent, self.imported)
                     for import_line in importer:
@@ -180,39 +185,29 @@ class LineInfoParser(LineParser):
             keeping a list of imports to avoid repeats and loops.
         Option to track indentation level."""
     
-    def __init__(self, sourcepath, track_indent=False):
-        """ Create line parser from text file at sourcepath.
+    def __init__(self, filepath, track_indent=False):
+        """ Create line parser from text file at filepath.
             Option to track indentation (see IndentParser), disabled by default."""
-        self.parser = ImportParser(sourcepath, track_indent)
+        self.parser = ImportParser(filepath, track_indent)
         # line info, updated for each line served
         self.linenum = 0
         self.level = 0
-        self.sourcepath = sourcepath
+        self.filepath = filepath
         self.info = self.parser
            
     def generator(self):
-        """ Generator (iterator) of lines of source."""
+        """ Generator (iterator) of lines of file."""
         for line, info in self.parser:
             self.linenum = info.linenum
             self.level = info.level
-            self.sourcepath = info.sourcepath
+            self.filepath = info.filepath
             self.info = info
             yield line
 
-    def error(self, message):
-        """ Return Error with message; append current filepath, & line number if nonzero."""
-        return self.info.error(message)
 
-
-def test_parse(sourcepath):
-    lines = LineInfoParser(sourcepath, track_indent=True)
+def test_parse(filepath):
+    lines = LineInfoParser(filepath, track_indent=True)
     for line in lines:
-        filename = os.path.basename(lines.sourcepath)
+        filename = os.path.basename(lines.filepath)
         print '%20s %2d %1d %s' % (filename, lines.linenum, lines.level, line)
-
-
-sp = 'sample_source/' + 'simplepy.L0'
-ra = 'sample_source/' + 'reassemble.py'
-rt = 'sample_source/' + 'reassemble_tabbed.py'
-it = 'sample_source/' + 'import_test.L0'
 

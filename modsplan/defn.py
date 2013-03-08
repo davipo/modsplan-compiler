@@ -39,7 +39,8 @@ class Definitions:
         """ Load definitions from langpath.defn file."""
         # Use a SyntaxParser to load definitions into a parse tree.
         self.defn_tree = self.defn_parser.parse(langpath + '.defn')
-        self.defn_tree.linenum = 0      # suppress line number in errors at top
+        self.defn_tree.linenum = 0      # suppress line & column numbers in errors at top
+        self.defn_tree.column = 0
 
         # Extract definitions from tree
         self.defns.clear()

@@ -6,6 +6,8 @@
 import grammar
 import lineparsers
 
+Error = lineparsers.Error
+
 
 class Token:
     """ One symbol from source text; 
@@ -14,8 +16,9 @@ class Token:
     def __init__(self, name, text, info, column):
         self.name = name                    # name for the kind (the category) of the token
         self.text = text                    # string of chars from source
-        self.linenum = info.linenum         # line number where found in source
-        self.filepath = info.sourcepath     # filepath of source
+        self.linenum = info.linenum         # line number where found in source (1-origin)
+        self.filepath = info.filepath       # source file
+        self.lines = info.info.iterator     # list of source lines
         self.column = column                # column number of first char of token in source
     
     def __str__(self):
@@ -29,14 +32,19 @@ class Token:
             result = "'" + self.text + "'"
         return result
 
+    def line(self):
+        """ Return line of source file containing this token."""
+        return self.lines[self.linenum - 1]     # linenum starts at 1
+
 
 class TokenGrammar(grammar.Grammar):
     """ Defines token syntax, kinds of tokens. Token definitions read from file."""
-    def __init__(self, filename):
+    
+    def __init__(self, filepath):
         """ Load token grammar from file (format defined by tokens.metagrammar).
             Compute prefixes, and possible token kinds for each prefix.
         """
-        grammar.Grammar.__init__(self, filename, TokenItem)
+        grammar.Grammar.__init__(self, filepath, TokenItem)
         
         # nonterminals with uppercase names specify a kind of token
         # self.nonterms is an OrderedDict, so this preserves order of definition
@@ -85,6 +93,7 @@ class TokenGrammar(grammar.Grammar):
 
 class TokenItem(grammar.Item):
     """ One item of a production: character class, literal, or nonterm."""
+    
     def __init__(self, element=None, quantifier='1', separator=''):
         grammar.Item.__init__(self, element, quantifier, separator)
         
@@ -94,17 +103,6 @@ class TokenItem(grammar.Item):
 
     def isterminal(self):
         return self.isliteral() or self.ischarclass()
-
-
-class Error(grammar.Error):
-    """ Convenient error reporting."""
-
-    def __init__(self, message, location):
-        """ Create error with message; location supplies filepath, line number, column."""
-        column = 0
-        if hasattr(location, 'column'):
-            column = location.column
-        grammar.Error.__init__(self, message, location.filepath, location.linenum, column)
         
 
 class Tokenizer:
@@ -144,14 +142,17 @@ class Tokenizer:
         # Read lines from source, tokenize
         tokens = []
         indentlevel = 0
+        
         for line in lines:
             tokens += self.indents(lines.level - indentlevel, lines)
             indentlevel = lines.level
             col = 0             # column of line
             viewcol = 1         # column as viewed in source (1-origin, expand tabs)
+            
             while col < len(line):
                 char = line[col]
                 chclass = charclass(char)
+                
                 # search for match among tokenkinds that can begin with this char class
                 kinds = self.tokendef.prefix_map.get(chclass, [])   # empty list if none
                 for kind in kinds:
@@ -163,11 +164,13 @@ class Tokenizer:
                         col += length
                         viewcol += length
                         break           # look for next token
+                        
                 else:  # no match found for any kind starting with char
                     if not char.isspace():          # skip whitespace
                         tokens.append(Token('', char, lines, viewcol))  # punctuation
                     col += 1
                     viewcol += tabsize if char == '\t' else 1
+                    
             if enable_newline:
                 tokens.append(Token('NEWLINE', '', lines, viewcol))     # mark end of line
 
@@ -194,6 +197,7 @@ class Tokenizer:
         for alt in nonterm.alternates:
             col = 0             # index to text
             skip = False
+            
             for item in alt.items:
                 if item.ischarclass() and item.text() == 'P':       # assumes P*
                     skip = True
@@ -258,6 +262,7 @@ class Tokenizer:
             if length <= 0:
                 return col
             col += length
+            
             if item.separator and col < len(text):       
                 # if item has separator, next char must be separator, or no repeat
                 if text[col] == item.separator:
@@ -286,6 +291,7 @@ def reassemble(tokens):
     level = 0
     result = ''
     lastkind = 'NEWLINE'
+    
     for token in tokens:
         kind = token.name
         if kind == 'NEWLINE':
