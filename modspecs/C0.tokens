@@ -18,10 +18,10 @@ use expr
 STORAGESPEC => 'extern'
 STORAGESPEC => 'static'
 
-TYPESPECIFIER => 'int'
-TYPESPECIFIER => 'void'
-TYPESPECIFIER => 'char'
-TYPESPECIFIER => 'float'
+TYPESPEC => 'int'
+TYPESPEC => 'void'
+TYPESPEC => 'char'
+TYPESPEC => 'float'
 
 TYPEQUALIFIER => 'const'
 TYPEQUALIFIER => 'volatile'

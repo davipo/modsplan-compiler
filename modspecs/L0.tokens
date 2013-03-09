@@ -5,8 +5,6 @@
 enable newline
 enable indent
 
-# include these token specs 
-use expr
 use string
 
 # use base below -- must include after BOOL_OP, KEYWORD, ATTRIBUTE
@@ -33,4 +31,4 @@ ATTRIBUTE => 'integer'
 
 
 use base        # include after alphabetic tokens
-
+use expr        # include after base: ASSIGN(+=) before ADD_OP(+)

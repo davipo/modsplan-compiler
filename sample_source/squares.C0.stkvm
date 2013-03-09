@@ -1,19 +1,33 @@
 ;/* squares.C0 */
 	.addsymbol   print, extern, void
+	.addsymbol   i, int
 	.getsymbol   i
-	const        1
+	const        0
 	store        
-while6:
+for6:
 	.load        i
-	const        20
+	const        25
 	cmp          le
-	br           whiletrue6, whileend6
-whiletrue6:
+	br           forbegin6, forend6
+forbegin6:
+;// for (int i = 0; i <= 20; i++) {
+//     print(i, i * i);
+// }
+// i = 1;
+// while (i <= 20) {
+//     print(i, i * i);
+//     i++;
+// }
 	.load        i
 	.load        i
 	.load        i
 	mul          
 	.getsymbol   print
 	call         
-	br           while6
-whileend6:
+	.getsymbol   i
+	.load        i
+	const        1
+	add          
+	store        
+	br           for6
+forend6:

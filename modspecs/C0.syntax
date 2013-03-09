@@ -5,21 +5,37 @@
 use expr        # common expression syntax
 
 
-program.root => extdecl+
+translationunit.root => extdecl+
 
+extdecl => declaration
 ## extdecl => funcdef
 extdecl => statement        ## until we implement functions
 
-extdecl => declaration
+declaration => declspecifier initdeclarator,+ ';'
 
-declaration => declspecifier+ initdeclarator,* ';'
+declspecifier => STORAGESPEC? TYPEQUALIFIER* typespecifier
 
-declspecifier => STORAGESPEC
-declspecifier => TYPESPECIFIER
-declspecifier => TYPEQUALIFIER
+typespecifier => TYPESPEC
+## typespecifier => structspecifier
+## typespecifier => enumspecifier
 
-# initdeclarator => declarator '=' initializer
+initdeclarator => declarator '=' initializer
 initdeclarator => declarator
+
+initializer => constantexpr
+initializer => '{' designationinitializer,+ ','? '}'
+
+designationinitializer => designation? initializer
+designation => designator+ '='
+
+designator => '[' constantexpr ']'
+designator => '.' identifier
+
+constantexpr => conditionalexpr_constant
+    ## can subtype _constant be used to restrict conditionalexpr?
+
+conditionalexpr_constant => test
+
 
 declarator => pointr* directdeclarator
 
@@ -41,9 +57,8 @@ arraydeclarator => '[' STORAGESPEC? TYPEQUALIFIER* assignexpr ']'
 arrayincomplete => '[' TYPEQUALIFIER* ']'
 arrayvarlen => '[' TYPEQUALIFIER*  '*'  ']'
 
-# functiondeclarator => '(' identifier,* ')'
-    # separated param declarations may be too hard to compile
-    
+## functiondeclarator => '(' identifier,* ')'
+    ## separated param declarations may be too hard to compile
 functiondeclarator => '(' paramdeclaration,* ellipsis? ')'
 
 ellipsis => ','  '...'
@@ -64,6 +79,7 @@ blockitem => statement
 
 statement => if
 statement => while
+statement => for
 statement => compoundstatement
 statement => expression? ';'
 
@@ -72,12 +88,15 @@ else => 'else' suite
 
 while => 'while' '(' test ')' suite
 
-suite => statement
+for => 'for' '(' expression? ';' expression? ';' expression? ')' statement
+for => 'for' '(' declaration expression? ';' expression? ')' statement
+
+suite => statement      # for compatibility with base.defn
 
 expression => assignexpr
 expression => test      # test specified in expr.syntax
 
-assignexpr => designator ASSIGN expression
+assignexpr => lvalue ASSIGN expression
 
-designator => variable
+lvalue => variable
 

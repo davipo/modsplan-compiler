@@ -184,7 +184,9 @@ class Compiler:
                     args.append(child.findtext())
                 else:
                     for arg in child.children:          # handles quantifiers
-                        args.append(arg.findtext())
+                        text = arg.findtext()
+                        if text:
+                            args.append(text)
 #                 print 'gen_args', source_node.name, child, args
             
             elif argtype.name == 'terminal':
@@ -242,7 +244,8 @@ if __name__ == '__main__':
                 debug = arg[1:]
             else:
                 spec_dir = arg
-        codestring = compile_src(sourcepath, '*', spec_dir, debug)
+        codepath = '*' if 'w' in debug else ''
+        codestring = compile_src(sourcepath, codepath, spec_dir, debug)
         print
         print codestring
     else:

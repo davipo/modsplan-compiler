@@ -12,6 +12,9 @@
 ASSIGN('=')
     store
     
+ASSIGN('+=')
+    addstore
+
 
 if(test suite else?)
     &test
@@ -86,6 +89,7 @@ call(variable arg*)     # function call
     &arg*
     &variable
     call
+##     call .numargs(arg*)
 
 parentheses(test)
     &test

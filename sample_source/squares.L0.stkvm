@@ -15,5 +15,8 @@ whiletrue6:
 	mul          
 	.getsymbol   print
 	call         
+	.getsymbol   i
+	const        1
+	addstore     
 	br           while6
 whileend6:

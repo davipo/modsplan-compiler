@@ -3,15 +3,31 @@
 use base
 
 
-declaration(declspecifier+ initdeclarator*)
-    .addsymbol(initdeclarator*, declspecifier+)
+declaration(declspecifier initdeclarator+)
+    .addsymbol(initdeclarator+, declspecifier)
+##     &initdeclarator+
 
-declspecifier(STORAGESPEC)
-    &STORAGESPEC
-
+initdeclarator(declarator initializer)
+    &declarator
+    &initializer
+    store
     
-assignexpr(designator ASSIGN expression)
-    &designator
+assignexpr(lvalue ASSIGN expression)
+    &lvalue
     &expression
     &ASSIGN
 
+## for(declaration expression? expression? statement)
+##    &declaration
+
+for(expression? expression? expression? statement)
+    &expression?
+    for:
+        &expression?            # condition
+        br forbegin, forend
+        forbegin:
+            &statement
+            &expression?        # next
+            br for
+        forend:
+    
