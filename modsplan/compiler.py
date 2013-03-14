@@ -207,10 +207,13 @@ class Compiler:
     def compiler_directive(self, source_node, directive, arg_defs, labels):
         """ Generate code per compiler directive, using source and arg definitions.
             labels[label] is label with suffix for this definition."""        
-        args_str = self.gen_args(source_node, arg_defs, labels)
-        if directive == 'getsymbol':
-            pass
-        return instr_fmt % ('.' + directive, args_str)
+        if directive == 'count':        # number of children of its argument
+            directive_arg = defn.childname(arg_defs[0])
+            codestring = str(source_node.firstchild(directive_arg).numchildren())
+        else:
+            args_str = self.gen_args(source_node, arg_defs, labels)
+            codestring = instr_fmt % ('.' + directive, args_str)
+        return codestring
 
 
 def compile_src(sourcepath, codepath='', spec_dir=None, debug=''):

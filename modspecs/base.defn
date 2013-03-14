@@ -88,19 +88,18 @@ MUL_OP('*')
 call(variable arg*)     # function call
     &arg*
     &variable
-    call
-##     call .numargs(arg*)
+    call .count(arg*)   # number of args
 
 parentheses(test)
     &test
 
 
-atom(variable)      # "variable" instead of "atom(variable)"?
+atom(variable)          ## "variable" instead of "atom(variable)"?
     .load(variable)
 
 
 identifier(NAME)
-    .getsymbol(NAME)        # compile error if NAME undefined
+    .getsymbol(NAME)    # compile error if symbol undefined
 
 
 number(INTEGER)

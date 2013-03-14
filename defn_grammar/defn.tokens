@@ -22,8 +22,7 @@ UPPERNAME => U upper+   # must be more than one char (otherwise is character cla
 upper => U
 upper => '_'
 
-INTEGER => digits
-digits => D+
+INTEGER => D+
 
 STRING => '"' P* '"'
 STRING => "'" P* "'"

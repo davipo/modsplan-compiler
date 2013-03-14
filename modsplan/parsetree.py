@@ -128,7 +128,9 @@ class NonterminalNode(BaseNode):
         for node in self.children:
             result += node.show()
         return result
-
+    
+    def numchildren(self):
+        return len(self.children)
 
     def nextchild(self, name=None):
         """ Return next unused child; if name, next matching name; if none, raise error."""
