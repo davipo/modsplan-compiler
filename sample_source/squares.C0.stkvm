@@ -10,20 +10,12 @@ for6:
 	cmp          le
 	br           forbegin6, forend6
 forbegin6:
-;// for (int i = 0; i <= 20; i++) {
-//     print(i, i * i);
-// }
-// i = 1;
-// while (i <= 20) {
-//     print(i, i * i);
-//     i++;
-// }
 	.load        i
 	.load        i
 	.load        i
 	mul          
 	.getsymbol   print
-	call         
+	call         2
 	.getsymbol   i
 	.load        i
 	const        1
@@ -31,3 +23,28 @@ forbegin6:
 	store        
 	br           for6
 forend6:
+	.getsymbol   i
+	const        1
+	store        
+while11:
+	.load        i
+	const        20
+	cmp          le
+	br           whiletrue11, whileend11
+whiletrue11:
+;// for (int i = 0; i <= 20; i++) {
+;//     print(i, i * i);
+;// }
+	.load        i
+	.load        i
+	.load        i
+	mul          
+	.getsymbol   print
+	call         2
+	.getsymbol   i
+	.load        i
+	const        1
+	add          
+	store        
+	br           while11
+whileend11:

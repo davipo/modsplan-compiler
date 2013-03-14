@@ -29,4 +29,4 @@ ifend1a:
 	.load        snape
 	.load        goop
 	.getsymbol   run
-	call         
+	call         2

@@ -2,7 +2,7 @@ while1:
 	.load        col
 	.load        text
 	.getsymbol   len
-	call         
+	call         1
 	cmp          lt
 	br           whiletrue1, whileend1
 whiletrue1:
@@ -15,7 +15,7 @@ whiletrue1:
 	.load        char_class
 	.load        char
 	.getsymbol   charclass
-	call         
+	call         1
 	cmp          eq
 	br           iftrue3, iffalse3
 iftrue3:
@@ -27,19 +27,19 @@ iffalse3:
 	.load        element
 	.load        str
 	.getsymbol   isinstance
-	call         
+	call         2
 	br           iftrue6, iffalse6
 iftrue6:
 	.load        text
 	.load        element
 	.getsymbol   startswith
-	call         
+	call         2
 	br           iftrue7, iffalse7
 iftrue7:
 	.getsymbol   length
 	.load        element
 	.getsymbol   len
-	call         
+	call         1
 	store        
 	br           ifend7
 iffalse7:

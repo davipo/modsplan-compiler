@@ -17,11 +17,11 @@ iftrue5:
 	const        3
 	mul          
 	.getsymbol   run
-	call         
+	call         2
 	br           ifend5
 iffalse5:
 	.getsymbol   exit
-	call         
+	call         0
 ifend5:
 	.load        goop
 	const        0
