@@ -8,6 +8,7 @@ COMMENT => '//' P*
     # P* = any printable characters (including space)
 
 use expr
+use float
 ## use string
 
 # use base below -- must include after alphabetic keywords

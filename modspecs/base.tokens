@@ -20,11 +20,22 @@ alphanum => D       # digit character class, matches any digit
 letter => L 	    # lower case character class
 letter => U 	    # upper case character class
 
+HEX => '0x' hexdigit+
+hexdigit => D
+hexdigit => 'A'
+hexdigit => 'B'
+hexdigit => 'C'
+hexdigit => 'D'
+hexdigit => 'E'
+hexdigit => 'F'
+hexdigit => 'a'
+hexdigit => 'b'
+hexdigit => 'c'
+hexdigit => 'd'
+hexdigit => 'e'
+hexdigit => 'f'
+
+# OCTAL => '0' D+
 
 INTEGER => D+
-
-
-ASSIGN => '='
-ASSIGN => '+='
-ASSIGN => '-='
 

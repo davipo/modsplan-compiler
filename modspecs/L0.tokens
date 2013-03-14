@@ -30,5 +30,6 @@ ATTRIBUTE => 'external'
 ATTRIBUTE => 'integer'
 
 
+use expr        ###? include after base: ASSIGN(+=) before ADD_OP(+)
+
 use base        # include after alphabetic tokens
-use expr        # include after base: ASSIGN(+=) before ADD_OP(+)

@@ -17,3 +17,7 @@ RELATION => inequality '='?
 
 inequality => '<'
 inequality => '>'
+
+ASSIGN => '='
+ASSIGN => '+='
+ASSIGN => '-='

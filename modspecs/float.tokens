@@ -4,12 +4,11 @@
 
 # Must appear before INTEGER => D+
 
-FLOAT => real
-FLOAT => real exponent
+FLOAT => real exponent?
 FLOAT => D+ exponent
 
 real => D+ '.' D+
-exponent => 'E' sign D+
-exponent => 'e' sign D+
+exponent => 'E' sign? D+
+exponent => 'e' sign? D+
 sign => '+'
 sign => '-'
