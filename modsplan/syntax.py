@@ -140,9 +140,7 @@ class SyntaxParser:
                 numtokens += 1
             else:
                 break
-        if comments:            # don't wipe out initial comments
-            node.comment = '\n'.join(comments)
-            self.log(6, 'comment added to %s: %s' % (node.name, node.comment))
+        node.comments += comments
         return numtokens
         
 

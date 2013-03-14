@@ -55,9 +55,7 @@ class Compiler:
     def codegen(self, source_node):
         """ Generate code from source_node, using definitions loaded for language.
             Return list of target code instructions (strings)."""
-        code = []
-        if source_node.comment:
-            code.append(';' + source_node.comment)
+        code = [';' + comment for comment in source_node.comments]
         # Traverse in preorder, generating code for any defns found
         definition = self.defs.get_defn(source_node)    # find definition matching this node
         if definition:
@@ -150,10 +148,10 @@ class Compiler:
                 raise Error(message, self.defs.first_alternate(instr.name))
                 ### Error may be in a subsequent alternate, too hard to find which one
             
-            if instr.comment and 'm' in self.debug:         # output defn comment
-                text = '  ;(' + self.langname + ')' + instr.comment
+            if instr.comments and 'm' in self.debug:         # output defn comment
+                text = '   ;(' + self.langname + ')' + ', '.join(instr.comments)
                 if code:
-                    code[-1] = code[-1] +  text
+                    code[-1] += text
                 else:
                     code.append(text)
                 
@@ -167,6 +165,7 @@ class Compiler:
         """ Generate string of code for instruction args from source and arg definitions.
             labels[label] is label with suffix for this definition."""        
         args = []
+        comments = []
         for argdef in arg_defs:
             argtype = argdef.firstchild()
             argtext = argtype.findtext()
@@ -201,7 +200,14 @@ class Compiler:
                 message = 'Unrecognized argument kind "%s"' % argtype.name
                 raise Error(message, self.defs.first_alternate(argtype.name))
                 ### Error may be in a subsequent alternate, too hard to find which one
-        return ', '.join(args)
+            
+            if argtype.comments and 'm' in self.debug:      # output defn comment
+                comments += argtype.comments
+        
+        argstring = ', '.join(args)
+        if comments:
+            argstring += '    ;(' + self.langname + ')' + ', '.join(comments)
+        return argstring
         
 
     def compiler_directive(self, source_node, directive, arg_defs, labels):
