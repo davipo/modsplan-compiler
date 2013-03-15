@@ -107,26 +107,28 @@ class SyntaxParser:
             failure, nt = self.parse_nonterm(numtokens, nonterm, parse_tree)
             numtokens += nt
             
-            if numtokens < len(self.tokens):
+            if numtokens < len(self.tokens):    # end not reached, syntax error
                 message = '\nParsed %d tokens of %d total for %s'
-                print message % (self.maxtokens, len(self.tokens), filepath)
-                token = self.tokens[self.maxtokens]
-                self.syntax_error(token, self.expected)
+                print message % (numtokens, len(self.tokens), filepath)
+                if self.maxtokens < len(self.tokens):
+                    token = self.tokens[self.maxtokens]
+                    message = 'Syntax error at %s token "%s"' % (token.name, token.text)
+                    column = token.column
+                else:
+                    token = self.tokens[self.maxtokens - 1]
+                    message = 'Syntax error at end of file'
+                    column = 1 + len(token.line())
+                message += ': expecting %s' % self.expected
+                show = token.line() + '\n%*s' % (column, '^')   # source line & position
+                raise Error(message, token, extra=show)
+                    
             elif '1' in self.debug:
-                print '\n%s parsed successfully (%d tokens)' % (filepath, len(self.tokens))
+                print '\n%s parsed successfully (%d tokens)' % (filepath, numtokens)
                 
         if 't' in self.debug:
             print '\nTree:\n'
             print parse_tree.show()
         return parse_tree
-
-
-    def syntax_error(self, token, expect=None):
-        message = 'Syntax error at %s token "%s"' % (token.name, token.text)
-        if expect:
-            message += ': expecting %s' % expect
-        show = token.line() + '\n%*s' % (token.column, '^')   # show source line & position
-        raise Error(message, token, extra=show)
 
 
     def parse_comments(self, start, node):
