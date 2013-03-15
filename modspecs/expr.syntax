@@ -36,3 +36,5 @@ identifier => NAME
 literal => number
 
 number => INTEGER
+number => FLOAT
+number => HEX

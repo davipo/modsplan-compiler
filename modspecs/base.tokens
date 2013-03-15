@@ -9,6 +9,7 @@
 KEYWORD => 'if'
 KEYWORD => 'else'
 KEYWORD => 'while'
+KEYWORD => 'for'
 
 
 NAME => letter alphanum*

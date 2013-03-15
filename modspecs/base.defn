@@ -102,5 +102,5 @@ identifier(NAME)
     .getsymbol(NAME)    # compile error if symbol undefined
 
 
-number(INTEGER)
-    const INTEGER
+literal(number)
+    const &number

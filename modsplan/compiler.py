@@ -173,10 +173,9 @@ class Compiler:
             if argtype.name in ('constant', 'otherarg'):
                 args.append(argtext)
             
-#             elif argtype.name == 'nonterm':         # for compiler directives
-#                 args.append(source_node.firstchild(argtext).findtext())
+            elif argtype.name == 'nonterm':     # substitute first text in nonterm
+                args.append(source_node.firstchild(argtext).findtext())
             
-            ### revert to previous, but with '&' prefix for nonterm
             elif argtype.name == 'child':
                 child = source_node.nextchild(defn.childname(argtype))
                 if child.isterminal():
