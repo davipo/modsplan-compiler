@@ -156,7 +156,7 @@ class Tokenizer:
                 # search for match among tokenkinds that can begin with this char class
                 kinds = self.tokendef.prefix_map.get(chclass, [])   # empty list if none
                 for kind in kinds:
-                    length = self.match(line[col:], kind)
+                    length = self.match_nonterm(line[col:], kind)
                     if length > 0:
                         # match found, length is number of chars matched
                         text = line[col:col + length]
@@ -188,7 +188,7 @@ class Tokenizer:
             return (- change) * [Token('DEDENT', '', line_info, 1)]     # [] if change >= 0
 
 
-    def match(self, text, nonterm):
+    def match_nonterm(self, text, nonterm):
         """ Look for match with nonterm at start of text.
             Return number of chars matched (-1 if no match).
         """
@@ -202,12 +202,11 @@ class Tokenizer:
                 if item.ischarclass() and item.text() == 'P':       # assumes P*
                     skip = True
                     continue            # on to next item
-                length = self.match_item(text[col:], item, skip, alt)
+                length = self.match_item(text[col:], item, skip)
                 if length == -1:        # if item fails to match
                     break                   # try next alternate
-                skip &= (length == 0)   # skip until we match a terminal literal
+                skip &= (length == 0)   # stop skip if literal found
                 col += length
-                assert col <= len(text)     # no overshoot I hope
             else:               # end of alt, it matched
                 if skip:            # P* was last item in alternate,
                     col = len(text)     # so it matches the rest of the text
@@ -215,43 +214,30 @@ class Tokenizer:
         return -1   # end of alternates, failed to match
 
 
-    def match_item(self, text, item, skip, alt):
+    def match_item(self, text, item, skip):
         """ Look for match with item at start of text, return # of chars matched,
             or -1 if no match. If skip, skip chars until item is found, or end.
-            Use alt to report error location.
         """
         if debug > 2:
             print '   match_item %s with "%s"' % (item, text)
         if text == '':
-            return 0 if item.quantifier in '?*' else -1
+            return (0 if item.quantifier in '?*' else -1)
         col = 0
         item_text = item.text()
 
         if skip:
-            # last item was character class P*, so match any chars before this item
-            #   (this item must be a literal, checked when grammar loaded)
+            # last item was character class P*, so match any chars before current item
+            #   (current item must be a literal, checked when grammar loaded)
             col = text.find(item_text)
             if col == -1:       # item not found; but it may have zero occurrences, so
                 col = 0         #   don't fail, just no progress (try next item)
             else:
-                col += len(item_text)   # found it, move past it
-            return col            
+                return col + len(item_text)     # found it, move past it
         
         # repeat item as quantifier allows
         while col < len(text):
-            length = -1         # failure unless otherwise determined
-            if item.ischarclass():
-                if item_text == charclass(text[col]):
-                    length = 1
-            elif item.isliteral():
-                if text[col:].startswith(item_text):
-                    length = len(item_text)
-            else:   # item must be a nonterminal
-                nonterm = self.tokendef.nonterms[item_text]
-                length = self.match(text[col:], nonterm)    # (0 is a match)
-            # we have a match unless length == -1
-            if debug > 3:
-                print '  ', col, length, item
+            length = self.match_single(text[col:], item)
+                # we have a match unless length == -1
                 
             # handle quantifier repetitions
             if item.quantifier in '?*' or (item.quantifier == '+' and col > 0):
@@ -270,8 +256,25 @@ class Tokenizer:
                 else:
                     return col
         return col
-                
     
+    
+    def match_single(self, text, item):
+        """ Match text with single occurence of item, 
+            return number of chars matched or -1 if no match."""
+        length = -1         # failure unless otherwise determined
+        item_text = item.text()
+        if item.ischarclass():
+            if item_text == charclass(text[0]):
+                length = 1
+        elif item.isliteral():
+            if text.startswith(item_text):
+                length = len(item_text)
+        else:   # item must be a nonterminal
+            nonterm = self.tokendef.nonterms[item_text]
+            length = self.match_nonterm(text, nonterm)
+        return length
+    
+
 def charclass(char):
     """ Return character class of char. See base.metagrammar for character classes."""
     if char.islower():
