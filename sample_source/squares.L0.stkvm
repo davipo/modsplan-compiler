@@ -14,7 +14,7 @@ whiletrue6:
 	.load        i
 	mul          
 	.getsymbol   print
-	call         
+	call         2
 	.getsymbol   i
 	const        1
 	addstore     

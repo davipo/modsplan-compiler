@@ -153,17 +153,21 @@ class Tokenizer:
                 char = line[col]
                 chclass = charclass(char)
                 
-                # search for match among tokenkinds that can begin with this char class
+                # find longest match among tokenkinds that can begin with this char class
                 kinds = self.tokendef.prefix_map.get(chclass, [])   # empty list if none
+                maxlength = 0           # length of longest token matched
+                kindname = ''           # remember kind of longest token
                 for kind in kinds:
                     length = self.match_nonterm(line[col:], kind)
-                    if length > 0:
-                        # match found, length is number of chars matched
-                        text = line[col:col + length]
-                        tokens.append(Token(kind.name, text, lines, viewcol))
-                        col += length
-                        viewcol += length
-                        break           # look for next token
+                    if length > maxlength:
+                        maxlength = length
+                        kindname = kind.name
+                        
+                if maxlength > 0:       # match found
+                    text = line[col:col + maxlength]
+                    tokens.append(Token(kindname, text, lines, viewcol))
+                    col += maxlength
+                    viewcol += maxlength
                         
                 else:  # no match found for any kind starting with char
                     if not char.isspace():          # skip whitespace
@@ -194,6 +198,7 @@ class Tokenizer:
         """
         if debug > 2:
             print 'match nonterm %s with "%s":' % (nonterm.name, text)
+        maxchars = -1       # length of longest token that matched
         for alt in nonterm.alternates:
             col = 0             # index to text
             skip = False
@@ -210,8 +215,8 @@ class Tokenizer:
             else:               # end of alt, it matched
                 if skip:            # P* was last item in alternate,
                     col = len(text)     # so it matches the rest of the text
-                return col
-        return -1   # end of alternates, failed to match
+                maxchars = max(col, maxchars)   # remember longest of alternates
+        return maxchars
 
 
     def match_item(self, text, item, skip):
