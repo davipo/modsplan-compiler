@@ -108,7 +108,7 @@ class Compiler:
             if instr.name == 'directive':   # compiler directive, generates one instruction
                 directive = instr.findtext()
                 arg_defs = instr.findall('carg')
-                code.append(self.compiler_directive(source_node, directive, arg_defs, labels))
+                code.append(self.compiler_directive(source_node, directive, arg_defs))
                 
             elif instr.name == 'expansion':     # expand next unused child with this name
                 child = source_node.nextchild(defn.childname(instr))
@@ -140,7 +140,7 @@ class Compiler:
                 
             elif instr.name == 'operation':     # generate single instruction
                 opcode = instr.findtext()
-                args_str = self.gen_args(source_node, instr.findall('oparg'), labels)
+                args_str = self.gen_args(source_node, instr.findall('oparg'))
                 code.append(instr_fmt % (opcode, args_str))
                 
             else:
@@ -161,9 +161,8 @@ class Compiler:
         return code
         
 
-    def gen_args(self, source_node, arg_defs, labels):
-        """ Generate string of code for instruction args from source and arg definitions.
-            labels[label] is label with suffix for this definition."""        
+    def gen_args(self, source_node, arg_defs):
+        """ Generate string of args from source and arg definitions."""        
         args = []
         comments = []
         for argdef in arg_defs:
@@ -193,7 +192,7 @@ class Compiler:
                 
             elif argtype.name == 'directive':
                 arg_defs = argtype.findall('carg')
-                args.append(self.compiler_directive(source_node, argtext, arg_defs, labels))
+                args.append(self.compiler_directive(source_node, argtext, arg_defs))
                 
             else:
                 message = 'Unrecognized argument kind "%s"' % argtype.name
@@ -209,14 +208,13 @@ class Compiler:
         return argstring
         
 
-    def compiler_directive(self, source_node, directive, arg_defs, labels):
-        """ Generate code per compiler directive, using source and arg definitions.
-            labels[label] is label with suffix for this definition."""        
+    def compiler_directive(self, source_node, directive, arg_defs):
+        """ Generate code per compiler directive, using source and arg definitions."""        
         if directive == 'count':        # number of children of its argument
             directive_arg = defn.childname(arg_defs[0])
             codestring = str(source_node.firstchild(directive_arg).numchildren())
         else:
-            args_str = self.gen_args(source_node, arg_defs, labels)
+            args_str = self.gen_args(source_node, arg_defs)
             codestring = instr_fmt % ('.' + directive, args_str)
         return codestring
 
