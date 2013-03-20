@@ -46,7 +46,7 @@ class LineParser(object):
     def __init__(self, iterator):
         """ Create line parser from iterator of strings (one per line);
             linenum attribute gives line number of last line served (starting at 1)."""
-        self.iterator = iterator
+        self.lines = iterator
         self.linenum = 0        # number of lines generated (also current line number)
         
     def __iter__(self):
@@ -55,7 +55,7 @@ class LineParser(object):
         
     def generator(self):
         """ Generator (iterator) of lines of source."""
-        for line in self.iterator:
+        for line in self.lines:
             self.linenum += 1
             for procline in self.process_line(line):
                 yield procline
