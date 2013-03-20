@@ -25,7 +25,6 @@ class TestCompiler(unittest.TestCase):
         self.check_src('squares.L0')
         self.check_src('squares.C0')
 #         self.check_import('import_test.L0')
-        self.check_src('import_test.L0')
     
     
     def check_src(self, sourcename):

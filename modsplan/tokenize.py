@@ -129,15 +129,17 @@ class Tokenizer:
         return text + '\n'
 
 
-    def get_tokens(self, sourcepath, tabsize=4):
+    def get_tokens(self, sourcepath, tabsize=4, enable_imports=False):
         """ Tokenize source from sourcepath, return a list of Token.
             tabsize is # of spaces per tab char, to report accurate column #s.
+            If imports enabled, source may import other source files.
         """
         self.sourcepath = sourcepath
         self.tabsize = tabsize              # for reporting column number in errors
         enable_newline = 'newline' in self.tokendef.options
         enable_indent = 'indent' in self.tokendef.options
-        lines = lineparsers.LineInfoParser(sourcepath, track_indent=enable_indent)
+        lineparser = lineparsers.LineInfoParser if enable_imports else lineparsers.FileParser
+        lines = lineparser(sourcepath, track_indent=enable_indent)
         
         # Read lines from source, tokenize
         tokens = []

@@ -80,12 +80,13 @@ class SyntaxParser:
         self.newtoken = False       # True when new token will be parsed (for trace display)
 
         
-    def parse(self, filepath):
+    def parse(self, filepath, enable_imports=False):
         """ Parse given source file, return root node of parse tree.
             Syntax error will raise Error exception.
+            If imports enabled, source may import other source files.
         """
         self.source_path = filepath
-        self.tokens = self.tokenizer.get_tokens(filepath)
+        self.tokens = self.tokenizer.get_tokens(filepath, enable_imports=enable_imports)
         
         if 'o' in self.debug:
             print '\nTokens from ' + filepath + ':\n'

@@ -128,6 +128,7 @@ class FileParser(IndentParser):
         """ Create line parser from text file at filepath.
             Option to track indentation (see IndentParser), disabled by default."""
         self.filepath = filepath
+        self.info = self            # for compatibility with LineInfoParser
         try:
             filetext = open(filepath).read()
         except IOError as exc:
