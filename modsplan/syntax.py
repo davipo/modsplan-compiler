@@ -109,7 +109,7 @@ class SyntaxParser:
             failure, nt = self.parse_nonterm(numtokens, nonterm, parse_tree)
             numtokens += nt
             
-            if numtokens < len(self.tokens):    # end not reached, syntax error
+            if failure or numtokens < len(self.tokens):     # end not reached, syntax error
                 message = '\nParsed %d tokens of %d total for %s'
                 print message % (numtokens, len(self.tokens), filepath)
                 if self.maxtokens < len(self.tokens):
