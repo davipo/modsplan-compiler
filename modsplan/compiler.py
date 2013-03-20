@@ -147,14 +147,7 @@ class Compiler:
                 message = 'Unrecognized instruction kind "%s"' % instr.name
                 raise Error(message, self.defs.first_alternate(instr.name))
                 ### Error may be in a subsequent alternate, too hard to find which one
-            
-            if instr.comments and 'm' in self.debug:         # output defn comment
-                text = '   ;(' + self.langname + ')' + ', '.join(instr.comments)
-                if code:
-                    code[-1] += text
-                else:
-                    code.append(text)
-                
+                        
         if 'i' in self.debug:
             print '(%s:)' % source_node.name 
             print '\n'.join(code) + '\n'
@@ -164,7 +157,6 @@ class Compiler:
     def gen_args(self, source_node, arg_defs):
         """ Generate string of args from source and arg definitions."""        
         args = []
-        comments = []
         for argdef in arg_defs:
             argtype = argdef.firstchild()
             argtext = argtype.findtext()
@@ -199,13 +191,7 @@ class Compiler:
                 raise Error(message, self.defs.first_alternate(argtype.name))
                 ### Error may be in a subsequent alternate, too hard to find which one
             
-            if argtype.comments and 'm' in self.debug:      # output defn comment
-                comments += argtype.comments
-        
-        argstring = ', '.join(args)
-        if comments:
-            argstring += '    ;(' + self.langname + ')' + ', '.join(comments)
-        return argstring
+        return ', '.join(args)
         
 
     def compiler_directive(self, source_node, directive, arg_defs):
