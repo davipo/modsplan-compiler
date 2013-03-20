@@ -1,0 +1,166 @@
+Modsplan notes 2013-03-06..
+
+
+2013-03-06
+
+Took a week to get comment parsing done; didn't work on it much until yesterday. Hard to decide where to handle them (nonterm, alternate, item). Parser still needs cleanup (maxtokens, newtoken).  ###
+
+Simplified syntax specs (including defn.syntax) without COMMENT, eliminating endline.
+
+Implemented enable commands for tokens specs to turn on newline or indent/dedent tokens.
+    Default is now to suppress these.
+    Turned them both on in L0.tokens and defn.tokens, left both off in C0.tokens.
+
+
+2013-03-07
+
+Spent a lot of time on C0 specs, rewriting the not-so-readable syntax from the C11 standard. My quantifiers allow much simplification, improving clarity.
+
+The official syntax of C is way too permissive, does not express many constraints. 
+Examples:
+
+    funcdef => declspecifier+ declarator declaration* compoundstatement
+    The declarator here is a general one, might not be a function at all!
+    
+    assignment_expression
+        : conditional_expression
+        | unary_expression assignment_operator assignment_expression
+    The first alternate might not include an assignment.
+    In the second, a unary_expression can be many things that cannot be assigned to.
+    
+
+Wrote squares.{L0, C0}, revised C0 (& L0) specs to compile them correctly.
+
+Next: implement for loops; then functions?
+
+
+Decided to implement error display of source line with column pointer.
+    Not hard, requires saving lines of all current files.
+    But to format errors properly, need to clean up error code.
+
+Cleaned up error handling; using just one Error class, in lineparsers.
+Error display seems to be working. Tested all 22 errors (fixed a couple).
+
+Python unittest doc is insufficient, unclear how to test compiling a list of files as separate tests. (Can't figure out how to pass a filename in!)
+
+Added some blank lines for readability.
+
+
+2013-03-08
+
+Tackling the C language for loop. Can't rewrite to a while, because need to insert the third clause at the end of statement suite.
+
+More C syntax confusion:
+
+    Where is a declaration used without an initdeclarator? C11 spec says:
+        declaration: declaration-specifiers init-declarator-list? ;
+
+    initializer: assignment-expression
+        What does this mean? Arbitrary assignments can be done inside an initializer?
+    
+    
+Been thinking we need a way to substitute params in a rewrite instruction.
+
+
+
+To generate code for an initdeclarator with an initializer (int i = 0), we need to get the variable name to add the symbol, but also use it to do an assignment. Need to get content without consuming the node. Maybe compiler directives should not consume their args.
+
+We could add a switch to nextchild to not consume children.
+    
+Got a 'for' statement to compile correctly!
+
+Comments appear in the wrong place though.  [fixed 2013-03-19]
+
+Need to specify number of args for call. Maybe:
+    call .numargs(arg*)
+    Or push a value on stack that indicates number of args.
+
+
+Grammar ordering
+
+    To use ASSIGN('+='), had to put it after ADD_OP('+').
+    But RELATION('==') must come after ASSIGN('=').
+    This is getting messy. Can tokenizer be greedy, take longest token?  [done 2013-03-14]
+
+    Should syntax parser do the same?   ####
+
+
+2013-03-09
+
+Greedy tokenizer
+
+    Should tokenizer return token with the most chars, or token parsed from longest alternate?
+        Could these be different?
+        Longest alternate may not be most complex -- one item may be a (complex) nonterm.
+        Longest token (number of chars) is easiest to document (explain).
+        
+    Parse all viable alternates, choose longest token (number of chars).
+    
+    Want to look at more examples of complex token specs to get this right.
+        FLOAT is most complex so far. 
+        
+        Octal constants: digit strings starting with '0'
+            Used in C, Python. Java?
+            Seems LLVM does not have an octal constant.
+                Nor a hex integer constant!? (only floats?)
+            
+        Hexadecimal with "0x" prefix?
+    
+
+Interesting quotes from http://clang.llvm.org/features.html :
+
+    [Use the LLVM 'BSD' License]
+    Further, nobody makes money on compilers these days, but many people need them to get bigger goals accomplished: it makes sense for everyone to work together.
+    
+    [Conformance with C/C++/ObjC and their variants]
+    When you start work on implementing a language, you find out that there is a huge gap between how the language works and how most people understand it to work. This gap is the difference between a normal programmer and a (scary? super-natural?) "language lawyer", who knows the ins and outs of the language and can grok standardese with ease.
+    
+    
+2013-03-10
+
+Grammar syntax
+
+    Could use '|' at start of production to signify an alternate of previous nonterm.
+        But seems unnecessary syntactic sugar. Usually there are few alternates.
+        And I think repeating the nonterm reminds us that additional productions for this nonterm may appear in other files.
+
+
+2013-03-14
+
+Fixed compiler to output comments from arg nodes.
+
+Can't recognize multi-line comment yet, tokens don't span end of line.  ####
+
+Tokenizer now matches longest token, regardless of order of alternates or nonterms.
+    Might be confusing if syntax parser doesn't do the same.  ####
+
+
+Changed base.defn to handle various number literals (restored oparg => '&' nonterm):
+
+    literal(number)
+        const &number
+        
+But the comment in simplepy.L0 was lost in the process. Fix this.  [done 2013-03-19]
+    Should comments be associated with lines, not nodes?
+
+
+eof.C0 :  no error, no code?  [fixed 2013-03-19]
+
+
+2013-03-19
+
+Rewrote comment handling to output comments immediately after code from same line.
+    (Comments associated with lines, not nodes.)
+    ### Extra comments after code in squares.C0 not copied.
+
+Importing of files disabled by default in SyntaxParser and Tokenizer.
+    Not normally used for source files.
+    Enabled for parsing defn specs.
+    This was done because new comment handling can't deal with imported files.
+
+Syntax error at end of file now caught (eof.C0).
+
+To Do:  ###
+    Add ++ and -- operators to C0.
+    Compile functions.
+

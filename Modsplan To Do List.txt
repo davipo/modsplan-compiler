@@ -1,0 +1,136 @@
+Modsplan To Do List
+
+
+Applications
+
+    Use to parse anything
+        Weather data!
+        Organize as library, with documentation
+    
+    Could a version of this aid in translating natural language?
+        (Ask Owen)
+
+
+Uncategorized    
+
+    Modify all to parse unicode text?
+        All files should be unicode, because all may contain comments
+        With some restrictions, like only tabs or spaces for indenting
+        How much work is this?
+
+    BBEdit 'Run in Terminal' closes output window immediately when exception occurs --
+        can we fix this or workaround, to get traceback in output?
+        Catch and "print traceback.format_exc()" if necessary.
+
+    Use logging module for debug output
+    Add command line option to save debug output to a file
+    
+
+Testing
+
+    Add tests to verify that various syntax errors are caught
+    
+
+Compiler
+
+    Option to show source line numbers in emitted code
+
+    Translate stkvm instructions to LLVM assembler
+    
+
+Defn
+
+    Use (sub)directory per output language for .defn specs
+        These share common (higher level) .defn specs with others (imported with "use")
+        Need to allow for selecting .defn dir different from grammar dir
+    
+    Use quotes in .defn specs around literal parts of instructions being generated?
+        Could be tedious, but clearer.
+        Don't prefix arg expansions?
+       
+
+Grammar
+	
+
+Syntax parser
+
+    Parse trace
+        Simplify code for tracing output and maxtokens tracking
+        For next token display, indicate when backing up.
+
+    Use xml.etree.ElementTree instead of parsetree.py
+        Output tree to XML file
+            line, col are attributes
+            token text in attribute, or content of tag?
+            probably content
+
+	Test syntax error reporting.
+		Research how others do this?
+		
+	Should syntax parser be greedy, always match as many tokens as possible?
+		
+	Rewrite inprefixes(), etc. so it works with uppercase keywords.
+		How distinguish (in prefixes) uppercase keywords from kindnames?
+			Store a quote char in the prefix?
+			Store two prefix sets, one for kindnames, one for literals?
+				This will be more efficient in inprefixes().
+			List KEYWORD tokens in .tokens grammar?
+				Then look at token name to decide what to compare to prefixes.
+				This looks easiest to code,
+					but requires keeping .tokens up to date with .syntax.
+					Should alphabetic literals be automatically recognized as keywords?
+				Would keywords have to appear before NAME in .tokens?
+				But tokenizer classes all letters L or U,
+					so keywords will never be recognized!
+					This is a problem also for boolean operators.
+			First look for token text in prefixes, then for token name?
+		See notes 2011-06-08.
+		estimate: 3 hours
+
+	Compare syntax parser to tokenizer, examine common algorithms.
+		What are differences? Are these bugs?
+			For example, should parse_item() be able to return a zero-token match?
+			Can simplifications be made?
+			Should common code be factored out?
+		estimate: 2 hours
+
+	
+Tokenizer
+
+    Recognize multi-line comments. (May have to do this in syntax parser.)
+
+
+Lineparsers
+    
+    
+
+DONE:
+
+    [See git repository for changes since 2012-12-27]
+    
+    2013-02-15  Registered modsplan.com
+    
+    Implemented command line invocation in syntax.py
+    DONE 2013-01-02
+	
+	Fixed handling of + quantifier in parse_alt().
+    DONE 2012-12-27
+
+	Don't add literals (keywords and punctuation) to syntax tree
+		Not needed for code generation?
+	DONE 2011
+
+
+	Rewrote Item to always store a string.
+		At least give it methods to hide implementation, and do not access
+			its attributes externally (if not too difficult).
+		Need this to handle uppercase keywords properly.
+			(Keywords are literals, which will include quotes.)
+		[See notes 2011-06-01..02]
+		estimate: 2 hours
+	DONE 2011-06-15, 3 hours
+
+	Use '' (empty string) or None for name of unclassified tokens,
+		(instead of SYMBOL), in case users use SYMBOL for a tokenkindname.
+	DONE 2011-06-10, 0.5 hours
+
