@@ -13,13 +13,14 @@ class Token:
     """ One symbol from source text; 
         for example: keyword, identifier, operator, punctuation, number."""
     
-    def __init__(self, name, text, info, column):
+    def __init__(self, name, text, info, column, tabsize):
         self.name = name                    # name for the kind (the category) of the token
         self.text = text                    # string of chars from source
         self.linenum = info.linenum         # line number where found in source (1-origin)
         self.filepath = info.filepath       # source file
         self.lines = info.info.iterator     # list of source lines
         self.column = column                # column number of first char of token in source
+        self.tabsize = tabsize              # used to expand tabs to display containing line
     
     def __str__(self):
         """ If no text, return name. If no name, return quoted text.
@@ -33,9 +34,8 @@ class Token:
         return result
 
     def line(self):
-        """ Return line of source file containing this token.
-            Use Tokenizer.line() to expand tabs."""
-        return self.lines[self.linenum - 1]     # linenum starts at 1
+        """ Return line of source file containing this token, with tabs expanded."""
+        return self.lines[self.linenum - 1].replace('\t', ' ' * self.tabsize)
 
 
 class TokenGrammar(grammar.Grammar):
@@ -165,18 +165,18 @@ class Tokenizer:
                         
                 if maxlength > 0:       # match found
                     text = line[col:col + maxlength]
-                    tokens.append(Token(kindname, text, lines, viewcol))
+                    tokens.append(Token(kindname, text, lines, viewcol, tabsize))
                     col += maxlength
                     viewcol += maxlength
                         
                 else:  # no match found for any kind starting with char
                     if not char.isspace():          # skip whitespace
-                        tokens.append(Token('', char, lines, viewcol))  # punctuation
+                        tokens.append(Token('', char, lines, viewcol, tabsize))  # punctuation
                     col += 1
                     viewcol += tabsize if char == '\t' else 1
                     
             if enable_newline:
-                tokens.append(Token('NEWLINE', '', lines, viewcol))     # mark end of line
+                tokens.append(Token('NEWLINE', '', lines, viewcol, tabsize))   # end of line
 
         # close indented blocks
         tokens += self.indents(- indentlevel, lines)
@@ -187,9 +187,9 @@ class Tokenizer:
         """ Return list of indent or dedent tokens, for change in indent level."""
         # ignores multiple-level indents (usually a continuation of prev line)
         if change == 1:
-            return [Token('INDENT', '', line_info, 1)]
+            return [Token('INDENT', '', line_info, 1, self.tabsize)]
         else:
-            return (- change) * [Token('DEDENT', '', line_info, 1)]     # [] if change >= 0
+            return (- change) * [Token('DEDENT', '', line_info, 1, self.tabsize)]
 
 
     def match_nonterm(self, text, nonterm):
@@ -279,11 +279,6 @@ class Tokenizer:
             length = self.match_nonterm(text, nonterm)
         return length
     
-    
-    def line(self, token):
-        """ Return line of source file containing this token, with tabs expanded."""
-        return token.line().replace('\t', ' ' * self.tabsize)
-
 
 def charclass(char):
     """ Return character class of char. See base.metagrammar for character classes."""
