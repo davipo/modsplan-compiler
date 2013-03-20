@@ -94,7 +94,7 @@ class SyntaxParser:
         parse_tree = parsetree.new(nonterm.name, self.debug)    # root of parse tree
         self.log(3, '\n\nParse trace:\n')
         if self.tokens:
-            numtokens = self.parse_comments(0, parse_tree)
+            numtokens = self.parse_comments(0)
             self.newtoken = True
             failure, nt = self.parse_nonterm(numtokens, nonterm, parse_tree)
             numtokens += nt
@@ -124,7 +124,7 @@ class SyntaxParser:
         return parse_tree
 
 
-    def parse_comments(self, start, node):
+    def parse_comments(self, start):
         """ Parse comments from self.tokens beginning at index start;
             store list of comments in self.comments[linenum];
             return number of comment tokens."""
@@ -236,7 +236,7 @@ class SyntaxParser:
                 node.remove_children()
                 break
             else:
-                nt = self.parse_comments(start + numtokens, node)
+                nt = self.parse_comments(start + numtokens)
                     ## move to parse_item()?
                 numtokens += nt
         return failure, numtokens
