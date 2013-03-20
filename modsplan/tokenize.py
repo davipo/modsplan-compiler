@@ -18,7 +18,7 @@ class Token:
         self.text = text                    # string of chars from source
         self.linenum = info.linenum         # line number where found in source (1-origin)
         self.filepath = info.filepath       # source file
-        self.lines = info.info.lines        # list of source lines
+        self.lines = info.lines             # list of source lines
         self.column = column                # column number of first char of token in source
         self.tabsize = tabsize              # used to expand tabs to display containing line
     
