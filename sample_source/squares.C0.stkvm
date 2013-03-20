@@ -32,9 +32,6 @@ while11:
 	cmp          le
 	br           whiletrue11, whileend11
 whiletrue11:
-;// for (int i = 0; i <= 20; i++) {
-;//     print(i, i * i);
-;// }
 	.load        i
 	.load        i
 	.load        i

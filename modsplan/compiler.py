@@ -34,6 +34,8 @@ class Compiler:
         self.defs = defn.Definitions()          # initialize defn parser
         self.defs.load(langpath)                # load semantics from langname.defn
         self.labelsuffix = {}           # key is label, value is last unique suffix used
+        self.lastlinenum = 0            # line number of last source line generated
+        
         if 'e' in debug:
             print self.defs.defn_tree.show()        # parse tree of language definitions
         if 'g' in debug:
@@ -55,7 +57,12 @@ class Compiler:
     def codegen(self, source_node):
         """ Generate code from source_node, using definitions loaded for language.
             Return list of target code instructions (strings)."""
-        code = [';' + comment for comment in source_node.comments]
+        code = []
+        # Append any comments from previous line
+        for linenum in range(self.lastlinenum, source_node.linenum):
+            code += [';' + comment for comment in self.parser.comments.get(linenum, [])]
+            self.lastlinenum = source_node.linenum
+        
         # Traverse in preorder, generating code for any defns found
         definition = self.defs.get_defn(source_node)    # find definition matching this node
         if definition:

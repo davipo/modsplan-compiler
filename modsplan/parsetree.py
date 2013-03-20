@@ -26,12 +26,12 @@ class BaseNode:
         self.linenum = 0                # line number where found in source
         self.column = 0                 # column number where found in source
         self.used = False               # to keep track of nodes already compiled
-        self.comments = []              # strings of comments following node in source
 
     def set_location(self, token):
         """ Set location in source code from token."""
         self.filepath = token.filepath
-        self.linenum, self.column = token.linenum, token.column
+        if self.linenum == 0:       # set once only
+            self.linenum, self.column = token.linenum, token.column
 
     def indent(self):
         """ Return string of indentation to level of node."""
@@ -110,7 +110,9 @@ class NonterminalNode(BaseNode):
     
     def show(self):
         """ Return display (as string) of parse tree starting at this node."""
-        result = self.indent() + self.name + '  ' + '; '.join(self.comments) + '\n'
+        result = self.indent() + self.name + '\n'
+        if 'l' in self.debug:       # append location
+            result = result[:-1] + '   %d %d\n' % (self.linenum, self.column)
         for node in self.children:
             result += node.show()
         return result

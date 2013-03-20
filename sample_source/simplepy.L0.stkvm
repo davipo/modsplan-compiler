@@ -8,10 +8,10 @@ while1:
 whiletrue1:
 	.getsymbol   length
 	const        0
-;# failure unless otherwise determined
 	const        1
 	sub          
 	store        
+;# failure unless otherwise determined
 	.load        char_class
 	.load        char
 	.getsymbol   charclass

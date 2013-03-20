@@ -25,7 +25,6 @@ iftrue1a:
 	br           ifend1a
 iffalse1a:
 ifend1a:
-;# this line from goop2
 	.load        snape
 	.load        goop
 	.getsymbol   run

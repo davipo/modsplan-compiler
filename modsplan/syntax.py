@@ -78,6 +78,7 @@ class SyntaxParser:
         self.expected = None        # grammar item expected at furthest failure
         self.tokens = None          # list of tokens in source file
         self.newtoken = False       # True when new token will be parsed (for trace display)
+        self.comments = {}          # {linenum: <list of comments>}
 
         
     def parse(self, filepath, enable_imports=False):
@@ -134,16 +135,15 @@ class SyntaxParser:
 
     def parse_comments(self, start, node):
         """ Parse comments from self.tokens beginning at index start;
-            put comments in node; return number of comment tokens."""
-        comments = []
+            store list of comments in self.comments[linenum];
+            return number of comment tokens."""
         numtokens = 0
         for token in self.tokens[start:]:
             if token.name == 'COMMENT':
-                comments.append(token.text)
+                self.comments.setdefault(token.linenum, []).append(token.text)
                 numtokens += 1
             else:
                 break
-        node.comments += comments
         return numtokens
         
 
@@ -246,6 +246,7 @@ class SyntaxParser:
                 break
             else:
                 nt = self.parse_comments(start + numtokens, node)
+                    ## move to parse_item()?
                 numtokens += nt
         return failure, numtokens
     
@@ -257,11 +258,10 @@ class SyntaxParser:
         numtokens = 0           # number of tokens matching syntax
         if start == len(self.tokens):
             return item, numtokens          # fail: no tokens left
+        token = self.tokens[start]
+        node.set_location(token)
         
         if item.isterminal():
-            token = self.tokens[start]
-            node.set_location(token)
-            
             # literal item matches token text; tokenkind matches token name
             match_text = token.text if item.isliteral() else token.name
             if match_text == item.text():
