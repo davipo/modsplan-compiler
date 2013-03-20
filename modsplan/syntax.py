@@ -22,7 +22,7 @@ class SyntaxGrammar(grammar.Grammar):
         """ Load syntax grammar from file (format defined by metagrammar);
             check for valid tokenkindnames."""
         self.tokenkindnames = tokenkindnames
-        grammar.Grammar.__init__(self, filepath, SyntaxItem)
+        grammar.Grammar.__init__(self, filepath)
         if not self.root:
             raise Error('One nonterminal must be marked .root', self)
         # find prefixes for all nonterms and alternates
@@ -35,16 +35,6 @@ class SyntaxGrammar(grammar.Grammar):
             raise Error('Unrecognized tokenkind (%s)' % item, alt)
         else:
             grammar.Grammar.check_item(self, item, quantifier, alt)
-
-
-class SyntaxItem(grammar.Item):
-    """ Item extended for SyntaxGrammar."""
-    
-    def istokenkind(self):
-        return self.element.isupper() and not self.isliteral()  # may have uppercase literals
-
-    def isterminal(self):
-        return self.isliteral() or self.istokenkind()
 
 
 class SyntaxParser:

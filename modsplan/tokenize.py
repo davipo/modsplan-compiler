@@ -94,10 +94,7 @@ class TokenGrammar(grammar.Grammar):
 
 class TokenItem(grammar.Item):
     """ One item of a production: character class, literal, or nonterm."""
-    
-    def __init__(self, element=None, quantifier='1', separator=''):
-        grammar.Item.__init__(self, element, quantifier, separator)
-        
+            
     def ischarclass(self):
         """ Is item a character class specifier (one uppercase letter)?"""
         return len(self.element) == 1 and self.element.isupper()
