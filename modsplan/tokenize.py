@@ -33,7 +33,8 @@ class Token:
         return result
 
     def line(self):
-        """ Return line of source file containing this token."""
+        """ Return line of source file containing this token.
+            Use Tokenizer.line() to expand tabs."""
         return self.lines[self.linenum - 1]     # linenum starts at 1
 
 
@@ -281,6 +282,11 @@ class Tokenizer:
             length = self.match_nonterm(text, nonterm)
         return length
     
+    
+    def line(self, token):
+        """ Return line of source file containing this token, with tabs expanded."""
+        return token.line().replace('\t', ' ' * self.tabsize)
+
 
 def charclass(char):
     """ Return character class of char. See base.metagrammar for character classes."""
