@@ -111,8 +111,7 @@ class SyntaxParser:
                     message = 'Syntax error at end of file'
                     column = 1 + len(token.line())
                 message += ': expecting %s' % self.expected
-                show = token.line() + '\n%*s' % (column, '^')   # source line & position
-                raise Error(message, token, extra=show)
+                raise Error(message, token)
                     
             elif '1' in self.debug:
                 print '\n%s parsed successfully (%d tokens)' % (filepath, numtokens)

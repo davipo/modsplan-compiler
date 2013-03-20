@@ -102,6 +102,7 @@ Tokenizer
 
 Lineparsers
     
+    Create Location class, use in BaseNode, Token, Error
     
 
 DONE:

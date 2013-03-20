@@ -23,15 +23,23 @@ class BaseNode:
         self.debug = debug_flags
         self.level = 0                  # depth of node in tree
         self.filepath = ''              # filepath of source where found
+        self.lines = []                 # list of source lines of file where found
         self.linenum = 0                # line number where found in source
         self.column = 0                 # column number where found in source
+        self.tabsize = 0                # used to expand tabs to display containing line
         self.used = False               # to keep track of nodes already compiled
 
     def set_location(self, token):
         """ Set location in source code from token."""
-        self.filepath = token.filepath
         if self.linenum == 0:       # set once only
+            self.filepath = token.filepath
+            self.lines = token.lines
             self.linenum, self.column = token.linenum, token.column
+            self.tabsize = token.tabsize
+
+    def line(self):
+        """ Return line of source file containing this node, with tabs expanded."""
+        return self.lines[self.linenum - 1].replace('\t', ' ' * self.tabsize)
 
     def indent(self):
         """ Return string of indentation to level of node."""
