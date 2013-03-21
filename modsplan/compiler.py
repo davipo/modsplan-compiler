@@ -161,8 +161,9 @@ class Compiler:
         return code
         
 
-    def gen_args(self, source_node, arg_defs):
-        """ Generate string of args from source and arg definitions."""        
+    def gen_args(self, source_node, arg_defs, use=True):
+        """ Generate string of args from source and arg definitions.
+            If 'use' false, ignore use status of parse nodes."""        
         args = []
         for argdef in arg_defs:
             argtype = argdef.firstchild()
@@ -175,7 +176,7 @@ class Compiler:
                 args.append(source_node.firstchild(argtext).findtext())
             
             elif argtype.name == 'child':
-                child = source_node.nextchild(defn.childname(argtype))
+                child = source_node.nextchild(defn.childname(argtype), use)
                 if child.isterminal():
                     args.append(child.findtext())
                 else:
@@ -183,11 +184,10 @@ class Compiler:
                         text = arg.findtext()
                         if text:
                             args.append(text)
-#                 print 'gen_args', source_node.name, child, args
             
             elif argtype.name == 'terminal':
-                child = source_node.nextchild(argtext)  # argtext is tokenkind in source,
-                args.append(child.text)                 #   substitute token text
+                child = source_node.nextchild(argtext, use)  # argtext is tokenkind in source,
+                args.append(child.text)                      #   substitute token text
                 
             elif argtype.name == 'directive':
                 arg_defs = argtype.findall('carg')
@@ -202,12 +202,13 @@ class Compiler:
         
 
     def compiler_directive(self, source_node, directive, arg_defs):
-        """ Generate code per compiler directive, using source and arg definitions."""        
+        """ Generate code per compiler directive, using source and arg definitions.
+            Ignore use status of parse nodes when generating args."""        
         if directive == 'count':        # number of children of its argument
             directive_arg = defn.childname(arg_defs[0])
             codestring = str(source_node.firstchild(directive_arg).numchildren())
         else:
-            args_str = self.gen_args(source_node, arg_defs)
+            args_str = self.gen_args(source_node, arg_defs, use=False)
             codestring = instr_fmt % ('.' + directive, args_str)
         return codestring
 

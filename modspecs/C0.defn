@@ -42,11 +42,7 @@ atom(INC_OP variable)   # increment/decrement before use
 
 atom(variable INC_OP)   # increment/decrement after use
     .load(variable)         # put value on stack
-    &variable               # get address
-    .load(variable)         # put value on stack
-    const 1
-    &INC_OP                 # add or subtract
-    store                   # removes address, leaves value on stack
+    =atom(INC_OP variable)
     pop                     # remove top of stack
     
 INC_OP('++')
