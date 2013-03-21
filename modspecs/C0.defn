@@ -24,10 +24,34 @@ for(expression? expression? expression? statement)
     &expression?
     for:
         &expression?            # condition
+        .ifnocmp('cmp ne, 0')   # if last instr not cmp, insert one
         br forbegin, forend
         forbegin:
             &statement
             &expression?        # next
             br for
         forend:
+
+
+atom(INC_OP variable)   # increment/decrement before use
+    &variable               # get address
+    .load(variable)         # put value on stack
+    const 1
+    &INC_OP                 # add or subtract
+    store                   # removes address, leaves value on stack
+
+atom(variable INC_OP)   # increment/decrement after use
+    .load(variable)         # put value on stack
+    &variable               # get address
+    .load(variable)         # put value on stack
+    const 1
+    &INC_OP                 # add or subtract
+    store                   # removes address, leaves value on stack
+    pop                     # remove top of stack
     
+INC_OP('++')
+    add
+
+INC_OP('--')
+    sub
+

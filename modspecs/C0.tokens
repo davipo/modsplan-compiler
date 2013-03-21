@@ -35,3 +35,5 @@ AND_OP => '&&'
 OR_OP => '||'
 NOT_OP => '!'
 
+INC_OP => '++'
+INC_OP => '--'
