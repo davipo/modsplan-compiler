@@ -67,8 +67,6 @@ Syntax parser
 	Test syntax error reporting.
 		Research how others do this?
 		
-	Should syntax parser be greedy, always match as many tokens as possible?
-		
 	Rewrite inprefixes(), etc. so it works with uppercase keywords.
 		How distinguish (in prefixes) uppercase keywords from kindnames?
 			Store a quote char in the prefix?
