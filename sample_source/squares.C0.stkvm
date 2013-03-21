@@ -1,15 +1,41 @@
 ;/* squares.C0 */
+	.getsymbol   i
+	const        0
+	store        
+for3:
+	.load        i
+	const        20
+	cmp          le
+	.ifnocmp     'cmp ne, 0'
+	br           forbegin3, forend3
+forbegin3:
+	.load        i
+	.load        i
+	.load        i
+	mul          
+	.getsymbol   print
+	call         2
+	.load        i
+	.getsymbol   i
+	.load        i
+	const        1
+	add          
+	store        
+	pop          
+	br           for3
+forend3:
 	.addsymbol   print, extern, void
 	.addsymbol   i, int
 	.getsymbol   i
 	const        0
 	store        
-for6:
+for10:
 	.load        i
 	const        25
 	cmp          le
-	br           forbegin6, forend6
-forbegin6:
+	.ifnocmp     'cmp ne, 0'
+	br           forbegin10, forend10
+forbegin10:
 	.load        i
 	.load        i
 	.load        i
@@ -21,17 +47,17 @@ forbegin6:
 	const        1
 	add          
 	store        
-	br           for6
-forend6:
+	br           for10
+forend10:
 	.getsymbol   i
 	const        1
 	store        
-while11:
+while17:
 	.load        i
 	const        20
 	cmp          le
-	br           whiletrue11, whileend11
-whiletrue11:
+	br           whiletrue17, whileend17
+whiletrue17:
 	.load        i
 	.load        i
 	.load        i
@@ -43,5 +69,5 @@ whiletrue11:
 	const        1
 	add          
 	store        
-	br           while11
-whileend11:
+	br           while17
+whileend17:

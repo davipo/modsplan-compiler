@@ -164,3 +164,38 @@ To Do:  ###
     Add ++ and -- operators to C0.
     Compile functions.
 
+
+2013-03-20
+
+Increment (++) and decrement (--) operators added to C0 specs.
+
+
+Grammar ordering (greedy syntax parser)
+
+    Added syntax for increment/decrement operators to C0.syntax, extending the spec for atom which appears in expr.syntax. Parser did not find "atom => variable INC_OP", because "atom => variable" comes first. Seems a good example of the need for greedy syntax parsing. To extend imported specs without ordering complications, parser must try later alternates to see if they consume more tokens, which we assume to be a better parse.
+
+Modified parser to try all alternates, keep the last that parses the most tokens.
+
+What if a later alternate uses the same (number of) tokens? Which should parser keep?
+    (This is not an issue in tokenizer: which alternate doesn't matter, only nonterm.)
+    Choosing the first seems simpler.
+        Easier (quicker) to analyze productions this way.
+    Choosing the last allows later specs to modify behavior.
+        This might be useful, but also adds complexity. (Example?)
+    Let's look at examples.
+    
+    This one showed up as a bug when first testing new parser.
+            instruction => branch NEWLINE
+            instruction => operation NEWLINE
+        Parser chose operation, instead of the more specific branch.
+        Easy to reorder these here, but not if branch were added in a later spec.
+        This can be fixed with KEYWORD => 'br', to prevent branch being parsed as an operation.    
+    
+    Not clear that latest alternate is better, let's stick with first.
+        Seems harder to make parse_nonterm() use first alternate.
+        Better to do this now, see if any reason to change; easy to change back.
+        Should clarify code as well (numtokens >= maxtokens is a bit tricky).
+
+Revised parse_nonterm() to keep first alternate that parses the most tokens.
+
+

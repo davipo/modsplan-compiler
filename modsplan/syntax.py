@@ -137,38 +137,50 @@ class SyntaxParser:
         
 
     def parse_nonterm(self, start, nonterm, node):
-        """ Parse tokens from index start using syntax of nonterm; store parse tree in node. 
+        """ Parse tokens from index start using syntax of nonterm;
+                if successful, store parse tree in node. 
             Return parse item that failed (or None), number of tokens parsed.
-            Report the failure that parsed the most tokens.
+            If success, keep parse that parses the most tokens (first if tied);
+                if failure, return failure that parses the most tokens (first if tied).
         """
-        # Prefixes checked here
-        numtokens = 0           # number of tokens matching syntax
-        maxtokens = 0           # max number of tokens parsed among failed alternates
+        maxtokens = 0           # max number of tokens parsed among alternates
         token = self.tokens[start]
         node.set_location(token)
         if self.newtoken:
             self.log(3, token)      # display new token once
             self.newtoken = False
         
-        if not self.inprefixes(token, nonterm.prefixes):
-            failure = nonterm       # fail, nonterm not possible with this token
-        else:
+        if self.inprefixes(token, nonterm.prefixes):
             # token must be in prefixes of some alternate
+            numchildren = 0     # number of children parsed from longest successful alternate
+            failure = 'not set'     # replace with failed item, or None
+            
+            # Parse all alternates, retain longest (successful, if any) parse
             for alt in nonterm.alternates:
                 if self.inprefixes(token, alt.prefixes):    # this alternate may match
                     self.log(3, '%s => %s' % (nonterm, alt), node)
                     fail, numtokens = self.parse_alt(start, alt, node)
-                    if fail:
-                        if numtokens >= maxtokens:      # (>= ensures failure gets set)
-                            maxtokens = numtokens
-                            failure = fail              # save maximum-token failure
-                    else:       # success
-                        failure = None
+                    if not fail:
                         tokens = self.tokens[start:][:numtokens]
                         self.log(4, '%s: %s' % (nonterm, listtokens(tokens)), node)
-                        break
+                        
+                    if failure or not fail:     # status same or better than previous best
+                        first_alt = (failure == 'not set')
+                        if numtokens > maxtokens or (failure and not fail) or first_alt:
+                            # update best if longer, or first success, or first alternate
+                            maxtokens = numtokens
+                            failure = fail              # save result
+                            if not fail:                # remove previous alt's parse
+                                node.remove_children(numchildren)
+                                numchildren = node.numchildren()
+                    
+                    if node.numchildren() > numchildren:    # if this parse was not best,
+                        node.keep_children(numchildren)     #   discard it and keep previous
+        
+        else:   # fail, nonterm not possible with this token
+            failure = nonterm
+        
         if failure:
-            numtokens = maxtokens
             if start + maxtokens > self.maxtokens:
                 self.maxtokens = start + maxtokens      # record furthest failure
                 self.expected = failure
@@ -177,7 +189,7 @@ class SyntaxParser:
                 self.log(4, '    %s' % list(failure.prefixes), node)
             else:
                 self.log(4, '%s failed: expected %s' % (nonterm, failure), node)
-        return failure, numtokens
+        return failure, maxtokens
 
 
     @staticmethod
@@ -230,8 +242,7 @@ class SyntaxParser:
                             else:
                                 numtokens += nt             # another item parsed successfully
             
-            if failure:                 # wrong item, alternate fails
-                node.remove_children()
+            if failure:     # wrong item, alternate fails
                 break
             else:
                 nt = self.parse_comments(start + numtokens)

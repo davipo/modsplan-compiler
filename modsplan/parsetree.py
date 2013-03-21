@@ -90,21 +90,25 @@ class NonterminalNode(BaseNode):
     def __init__(self, name, debug_flags):
         BaseNode.__init__(self, name, debug_flags)
         self.children = []
+        # location must be set by caller
 
     def isterminal(self):
         return False
 
     def __str__(self):
         return self.name + '[' + ', '.join([str(child) for child in self.children]) + ']'
+    
+    def numchildren(self):
+        return len(self.children)
 
-    def add_child(self, object):
+    def add_child(self, thing):
         """ Append child node to this node's list of children.
-            If object is a string, make a nonterminal node named with it;
-            else assume object is a token, make a terminal node with it."""
-        if isinstance(object, str):
-            child = NonterminalNode(object, self.debug)
+            If thing is a string, make a nonterminal node named with it;
+            else assume thing is a token, make a terminal node with it."""
+        if isinstance(thing, str):
+            child = NonterminalNode(thing, self.debug)
         else:
-            child = TerminalNode(object, self.debug)
+            child = TerminalNode(thing, self.debug)
         child.level = self.level + 1
         self.children.append(child)
         return child
@@ -113,47 +117,40 @@ class NonterminalNode(BaseNode):
         """ Remove last child."""
         del self.children[-1]
         
-    def remove_children(self):
-        del self.children[:]
-    
+    def remove_children(self, numchildren=None):
+        """ Remove first numchildren children, or all if number not given."""
+        del self.children[:numchildren]
+        
+    def keep_children(self, numchildren):
+        """ Keep first numchildren children, discard the rest."""
+        del self.children[numchildren:]
+        
     def show(self):
         """ Return display (as string) of parse tree starting at this node."""
         result = self.indent() + self.name + '\n'
-        if 'l' in self.debug:       # append location
-            result = result[:-1] + '   %d %d\n' % (self.linenum, self.column)
         for node in self.children:
             result += node.show()
         return result
-    
-    def numchildren(self):
-        return len(self.children)
 
-    def nextchild(self, name=None):
-        """ Return next unused child; if name, next matching name; if none, raise error."""
+    def nextchild(self, name=None, use=True):
+        """ Return next unused child; if name, next matching name; if none, raise error;
+            mark child used. If use false, ignore use status, return first (matching) child.
+        """
         for child in self.children:
-            if child.used or (name and child.name != name):
+            if (use and child.used) or (name and child.name != name):
                 continue
             else:
-                child.used = True
+                child.used = child.used or use
                 return child
         # not found
-        message = 'Node "%s" has no unused child' % self.name
+        message = 'Node "%s" has no %schild' % (self.name, 'unused ' if use else '')
         if name:
             message += ' with name "%s"' % name
         raise Error(message, self)
 
     def firstchild(self, name=None):
         """ Return first child; if name, first matching name; if none, raise error."""
-        for child in self.children:
-            if name and child.name != name:
-                continue
-            else:
-                return child
-        # not found
-        message = 'Node %s has no child' % self.name
-        if name:
-            message += ' with name "%s"' % name
-        raise Error(message, self)
+        return self.nextchild(name, use=False)
 
     def find(self, name):
         """ Return first node with name in preorder traversal from this node, or None."""
