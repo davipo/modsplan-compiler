@@ -199,3 +199,38 @@ What if a later alternate uses the same (number of) tokens? Which should parser 
 Revised parse_nonterm() to keep first alternate that parses the most tokens.
 
 
+2013-03-21
+
+To Do:  ###
+    Use Location class to simplify error reporting.
+    
+Before tackling the compilation of functions, I want to see if I can generate LLVM code, which has good support for functions and other code generation needs. Been thinking about it, may be easier than I feared. 
+
+Performance (parsing speed)
+    
+    Might be able to improve performance by caching tree branches, keyed by token sequences.
+
+
+Looking for a standard for representation of AST (as XML).
+    Found OMG (Object Management Group) Abstract Syntax Tree Metamodel.
+        May be useful for writing shared defn specs.
+    
+Also discovered the "DMS Software Reengineering Toolkit" of Semantic Designs, Inc.
+    (DMS is Design Maintenance System)
+    Commercial tools for analysis and transformation of large codebases.
+    Some of their tools look quite similar to what I am implementing (and much more mature).
+
+
+Revised syntax parser to report error for an ambiguous parse.
+    Added debug switch 'a' to allow it.
+        But compiler ignores debug switches when loading defn_grammar.
+            Run syntax.py on a defn spec to use debug switches.
+    Make it a warning instead?  ###
+
+Added OPCODE => 'br' to defn.tokens (before LOWERNAME), to disambiguate branch instruction.
+
+
+To Do: Factor syntax_error() out of SyntaxParser.parse() -- again!   ####
+
+
+

@@ -55,7 +55,9 @@ carg => child
 # carg => terminal
 carg => constant
 
-operation => identifier oparg,*
+operation => opcode oparg,*
+
+opcode => LOWERNAME         ## (note: opcode is unrelated to OPCODE)
 
 # operation args
 oparg => constant

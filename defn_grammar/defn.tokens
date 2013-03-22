@@ -16,6 +16,8 @@ enable newline
 enable indent
 
 
+OPCODE => 'br'          # prevent 'br' being recognized as operation
+
 LOWERNAME => L+     # '_' not allowed (used to append subtype)
 
 UPPERNAME => U upper+   # must be more than one char (otherwise is character class)
@@ -32,4 +34,3 @@ COMMENT => '#' P*
 QUANTIFIER => '?'
 QUANTIFIER => '*'
 QUANTIFIER => '+'
-

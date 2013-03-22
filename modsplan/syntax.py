@@ -163,6 +163,9 @@ class SyntaxParser:
                     if not fail:
                         tokens = self.tokens[start:][:numtokens]
                         self.log(4, '%s: %s' % (nonterm, listtokens(tokens)), node)
+                        if numtokens == maxtokens and not failure and 'a' not in self.debug:
+                            # a second alternate matches the same tokens
+                            raise Error('Ambiguous parse of %s' % nonterm, tokens[-1])
                         
                     if failure or not fail:     # status same or better than previous best
                         first_alt = (failure == 'not set')
