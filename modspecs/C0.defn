@@ -24,7 +24,6 @@ for(expression? expression? expression? statement)
     &expression?
     for:
         &expression?            # condition
-        .ifnocmp('cmp ne, 0')   # if last instr not cmp, insert one
         br forbegin, forend
         forbegin:
             &statement

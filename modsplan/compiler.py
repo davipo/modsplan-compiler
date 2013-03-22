@@ -13,8 +13,9 @@ import syntax
 import defn
 
 
-default_spec_dir = 'modspecs/'          # default location for language specifications
-code_suffix = 'stkvm'                   # name of target language
+default_spec_dir = 'modspecs/'              # default directory for language specifications
+default_defn_grammar_dir='defn_grammar/'    # default directory for defn grammar
+code_suffix = 'stkvm'                       # name of target language
 instr_fmt = '\t%-12s %s'
 letters = '_abcdefghijklmnopqrstuvwxyz'
         
@@ -31,7 +32,7 @@ class Compiler:
             spec_dir = default_spec_dir
         langpath = os.path.join(spec_dir, langname)
         self.parser = syntax.SyntaxParser(langpath, debug)  # load langname.{tokens, syntax}
-        self.defs = defn.Definitions()          # initialize defn parser
+        self.defs = defn.Definitions(default_defn_grammar_dir)    # initialize defn parser
         self.defs.load(langpath)                # load semantics from langname.defn
         self.labelsuffix = {}           # key is label, value is last unique suffix used
         self.lastlinenum = 0            # line number of last source line generated

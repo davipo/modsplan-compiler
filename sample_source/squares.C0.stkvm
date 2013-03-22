@@ -6,7 +6,6 @@ for3:
 	.load        i
 	const        20
 	cmp          le
-	.ifnocmp     'cmp ne, 0'
 	br           forbegin3, forend3
 forbegin3:
 	.load        i
@@ -33,7 +32,6 @@ for10:
 	.load        i
 	const        25
 	cmp          le
-	.ifnocmp     'cmp ne, 0'
 	br           forbegin10, forend10
 forbegin10:
 	.load        i
