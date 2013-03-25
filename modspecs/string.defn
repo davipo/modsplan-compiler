@@ -1,0 +1,6 @@
+# string.defn
+
+
+literal(STRING)
+    const STRING
+

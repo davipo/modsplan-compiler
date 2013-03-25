@@ -1,8 +1,9 @@
 # squares.L0
 
-declare print external
+declare printf external
+declare i integer
 
 i = 1
 while i <= 20:
-    print(i, i * i)
+    printf("%2d %4d", i, i * i)
     i += 1

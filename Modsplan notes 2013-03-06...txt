@@ -206,6 +206,7 @@ To Do:  ###
     
 Before tackling the compilation of functions, I want to see if I can generate LLVM code, which has good support for functions and other code generation needs. Been thinking about it, may be easier than I feared. 
 
+
 Performance (parsing speed)
     
     Might be able to improve performance by caching tree branches, keyed by token sequences.
@@ -232,5 +233,39 @@ Added OPCODE => 'br' to defn.tokens (before LOWERNAME), to disambiguate branch i
 
 To Do: Factor syntax_error() out of SyntaxParser.parse() -- again!   ####
 
+
+EMIL: Elementary(?) Machine Instruction Language
+    (Enriched, Enhanced, Expanded, Exemplary, Elevated, Excellent?)
+    Named after Emil Post, of course.
+    LLVM includes a lot of support for modern language constructs.
+        Why included? (Needed for optimization? To facilitate compiler production?)
+        Can I assume that using this set of constructs is best practice?
+    Let's build a simple language around them.
+        What have others done?   ####
+        
+
+2013-03-24
+
+Generating LLVM
+
+I want to compile to LLVM because it seems to be a powerful popular standard. I'm attempting to generate code for it now to concretize my target language, that is, make sure I'm generating code that can be assembled, linked and executed in modern operating systems. That should help with symbol table issues and with compiling functions and structured data types.
+
+My main difficulty with LLVM is that the documentation is dense, seems written for experienced compiler writers. I have trouble understanding it.
+LLVM LangRef seems too complex; syntax hard to read; explanations not well factored; buggy.
+    See "Problems in LLVM Assembly Language Reference Manual.rtf" for examples.
+        A couple of the errors I noted two years ago have been fixed!
+
+LLVM needs a formal spec. (To write one in Modsplan, we'd need to target a simpler VM.)
+
+
+I think Compiler.compile() should return a list of Instruction objects, which contain an (optional) label, an opcode, and a list of operands. Can include other data as needed.
+
+This instruction list can be printed directly, or read by our llvm-generator.
+
+Question: Does generating LLVM need other info not easily attached to Instruction?  ####
+    Variable names, for instance.
+
+
+To print integers to stdout, seems we'll need the C stdio library printf function, which needs to handle a variable number of args -- pretty complicated.
 
 
