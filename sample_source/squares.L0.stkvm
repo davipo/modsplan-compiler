@@ -1,22 +1,24 @@
 ;# squares.L0
-	.addsymbol   print, external
+	.addsymbol   printf, external
+	.addsymbol   i, integer
 	.getsymbol   i
 	const        1
 	store        
-while6:
+while7:
 	.load        i
 	const        20
 	cmp          le
-	br           whiletrue6, whileend6
-whiletrue6:
+	br           whiletrue7, whileend7
+whiletrue7:
+	const        "%2d %4d"
 	.load        i
 	.load        i
 	.load        i
 	mul          
-	.getsymbol   print
-	call         2
+	.getsymbol   printf
+	call         3
 	.getsymbol   i
 	const        1
 	addstore     
-	br           while6
-whileend6:
+	br           while7
+whileend7:
