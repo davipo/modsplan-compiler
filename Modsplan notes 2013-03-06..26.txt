@@ -1,4 +1,4 @@
-Modsplan notes 2013-03-06..
+Modsplan notes 2013-03-06..26
 
 
 2013-03-06
@@ -277,11 +277,4 @@ Discovered K framework (k-framework.org), for specifying semantics of languages.
 llvmpy (llvmpy.org) is the successor to llvm-py, the Python bindings to LLVM API. Now maintained by Continuum Analytics. Anaconda is their Python distribution which includes it, LLVM, and many other libraries for scientific and numerical computing. Looks good. I wonder if there are downsides to using it.
 
 I don't need llvmpy -- I think I'd rather output LLVM IR text directly. But reading the llvm-py documentation helped me understand LLVM better. I _will_ need to install LLVM to run the code Modsplan generates. Maybe Anaconda is an easier way to install LLVM.
-
-
-
-
-
-
-
 
