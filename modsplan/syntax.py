@@ -172,9 +172,9 @@ class SyntaxParser:
                             raise Error('Ambiguous parse of %s' % nonterm, tokens[-1])
                         
                     if failure or not fail:     # status same or better than previous best
-                        first_alt = (failure == 'not set')
-                        if numtokens > maxtokens or (failure and not fail) or first_alt:
-                            # update best if longer, or first success, or first alternate
+                        first_alt = (failure == 'not set')          # first alternate
+                        first_success = failure and not fail
+                        if numtokens > maxtokens or first_success or first_alt:
                             maxtokens = numtokens
                             failure = fail              # save result
                             if not fail:                # remove previous alt's parse
