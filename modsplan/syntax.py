@@ -99,20 +99,8 @@ class SyntaxParser:
             failure, nt = self.parse_nonterm(numtokens, nonterm, parse_tree)
             numtokens += nt
             
-            if failure or numtokens < len(self.tokens):     # end not reached, syntax error
-                message = '\nParsed %d tokens of %d total for %s'
-                print message % (numtokens, len(self.tokens), filepath)
-                if self.maxtokens < len(self.tokens):
-                    token = self.tokens[self.maxtokens]
-                    message = 'Syntax error at %s token "%s"' % (token.name, token.text)
-                    column = token.column
-                else:
-                    token = self.tokens[self.maxtokens - 1]
-                    message = 'Syntax error at end of file'
-                    column = 1 + len(token.line())
-                message += ': expecting %s' % self.expected
-                raise Error(message, token)
-                    
+            if failure or numtokens < len(self.tokens):     # end not reached
+                self.syntax_error(numtokens)
             elif '1' in self.debug:
                 print '\n%s parsed successfully (%d tokens)' % (filepath, numtokens)
                 
@@ -121,6 +109,22 @@ class SyntaxParser:
             print parse_tree.show()
         return parse_tree
 
+
+    def syntax_error(self, numtokens):
+        """ Raise Error with appropriate message for. """
+        message = '\nParsed %d tokens of %d total for %s'
+        print message % (numtokens, len(self.tokens), self.source_path)
+        if self.maxtokens < len(self.tokens):
+           token = self.tokens[self.maxtokens]
+           message = 'Syntax error at %s token "%s"' % (token.name, token.text)
+           column = token.column
+        else:
+           token = self.tokens[self.maxtokens - 1]
+           message = 'Syntax error at end of file'
+           column = 1 + len(token.line())
+        message += ': expecting %s' % self.expected
+        raise Error(message, token)
+    
 
     def parse_comments(self, start):
         """ Parse comments from self.tokens beginning at index start;

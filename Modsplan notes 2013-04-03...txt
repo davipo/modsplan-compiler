@@ -1,3 +1,41 @@
 Modsplan notes 2013-04-03..
 
 
+Took a break from Modsplan to work on TopCoder Marathon programming contest "SnowCleaning".
+
+
+Generating LLVM IR
+
+Been thinking about ways to compile to LLVM IR.
+
+I want .defn specs to use a much simpler language, based on a stack VM seems best.
+    The defn language must be easy to learn.
+        I want to insulate most Modsplan users from the complexity of LLVM.
+    The generated code should be viewable in the stack VM language, for debugging the defn.
+
+So I don't want to modify the compiler to output LLVM IR directly.
+    That would specialize my compiler for LLVM; 
+        I'd rather allow Modsplan to target any processor, without needing an LLVM backend.
+    But I think we need the features of LLVM to compile aggregate types, functions, etc.
+
+Actually, the .defn language consists of two languages:
+    The defn spec language, with signatures, expansions, etc.;
+        and the target instructions, which may be any code.
+    For best reuse of defn specs, I want to standardize on an easy target.
+        So that target is a simplified dialect of LLVM.
+    
+Seems we need both stackvm and LLVM output.
+    Can I use my compiler to translate stackvm to LLVM?
+        That would be another nice example of using my own compiler,
+            and help me test it and develop it further.
+        We'll need some clever compiler directives to make that work.
+        Worth a try!
+    That way we can have both kinds of output,
+            and demonstrate translation from one low level language to another.
+        Would users be able to translate stackvm to their own processor instructions?
+            Maybe. Probably not easy to do functions and types without LLVM.
+
+Just trying to avoid specializing the compiler for any particular target.
+
+
+
