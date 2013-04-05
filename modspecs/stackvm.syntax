@@ -1,0 +1,36 @@
+# stackvm.syntax
+
+
+module.root => line*
+
+line => NEWLINE
+line => directive NEWLINE
+line => instruction NEWLINE
+line => label ':' NEWLINE
+
+directive => '.' identifier arg,*       # compiler directive
+
+instruction => branch NEWLINE
+instruction => operation NEWLINE
+
+branch => 'br' label,+
+
+label => LOWERNAME
+
+# compiler directive args
+carg => identifier
+carg => constant
+
+operation => opcode oparg,*
+
+opcode => LOWERNAME         ## (note: opcode is unrelated to OPCODE)
+
+# operation args
+oparg => constant
+
+identifier => LOWERNAME
+
+constant => number
+constant => STRING
+
+number => INTEGER
