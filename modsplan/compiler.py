@@ -170,7 +170,7 @@ class Compiler:
             argtype = argdef.firstchild()
             argtext = argtype.findtext()
             
-            if argtype.name in ('constant', 'otherarg'):
+            if argtype.name in ('constant', 'name'):
                 args.append(argtext)
             
             elif argtype.name == 'nonterm':     # substitute first text in nonterm

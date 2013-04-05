@@ -64,9 +64,9 @@ oparg => constant
 oparg => terminal       # substitutes text of terminal
 oparg => '&' nonterm    # substitutes first text in nonterm (like identifier name)
 oparg => directive
-oparg => otherarg
+oparg => name
 
-otherarg => LOWERNAME
+name => LOWERNAME
 
 constant => number
 constant => STRING
