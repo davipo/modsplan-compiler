@@ -8,7 +8,22 @@ line => directive NEWLINE
 line => instruction NEWLINE
 line => label ':' NEWLINE
 
-directive => '.' identifier arg,*       # compiler directive
+directive => declareext
+directive => declare
+
+declareext =>  '.' 'addsymbol' name ',' extern attributes?
+declare =>  '.' 'addsymbol' name attributes?
+
+extern => 'extern'
+extern => 'external'
+
+attributes => ',' attribute,+
+
+attribute => LOWERNAME
+
+name => identifier
+
+directive => '.' identifier carg,*       # compiler directive
 
 instruction => branch NEWLINE
 instruction => operation NEWLINE

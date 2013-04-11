@@ -20,9 +20,23 @@ So I don't want to modify the compiler to output LLVM IR directly.
 
 Actually, the .defn language consists of two languages:
     The defn spec language, with signatures, expansions, etc.;
-        and the target instructions, which may be any code.
+        and the target operations, which may be any code.
+    Can we factor out the defn spec, and import it from target spec?   ###
     For best reuse of defn specs, I want to standardize on an easy target.
-        So that target is a simplified dialect of LLVM.
+        So my target is a simplified dialect of LLVM, "stackvm".
+
+Target operations
+    Can Modsplan generate code directly for another target besides stackvm?
+        Operations may be in any (assembler) language, with some constraints:
+            Syntax must be:
+                operation => opcode oparg,*
+                Can be modified somewhat in defn spec (defn.tokens, defn.syntax).
+                    Compiler recognizes instruction types, arg types, 'oparg', 'carg'.
+            Branch instructions must be defined in defn.syntax, to process labels properly:
+                branch => 'br' label,+
+    I think stackvm must be one of my specification languages (tokens, syntax, defn/stackvm).
+        Need to standardize for compatible, reusable definition specs.
+        It can be translated to other targets, either through LLVM or directly.
     
 Seems we need both stackvm and LLVM output.
     Can I use my compiler to translate stackvm to LLVM?
@@ -34,8 +48,28 @@ Seems we need both stackvm and LLVM output.
             and demonstrate translation from one low level language to another.
         Would users be able to translate stackvm to their own processor instructions?
             Maybe. Probably not easy to do functions and types without LLVM.
+    
 
-Just trying to avoid specializing the compiler for any particular target.
+This brings back an issue I've mentioned in earlier notes:
+    Naming of defn specs for different targets.
+    <lang>.defn is the main defn spec in my defn language, which includes stackvm.
+    Do we need any other naming to compile to other targets?
+        Not now. Everything is compiled to stackvm, or a variation of it.
+    
+    To use the Modsplan compiler to translate stackvm to LLVM, we'll specify:
+        stackvm.{tokens, syntax, defn}
+    The defn will contain a lot of compiler directives to output LLVM instructions.
+        See if this is sufficient, without stretching the specification language too much.
+        
 
+Naming of values
+    How shall we name intermediate values?
+    I'd like to use something recognizable from source or syntax, with the line number.
+        (Labels use the label name from .defn, with line number.)
+    But compilation to stkvm code loses such info.
+        Could use a compiler directive to save it.
+        Or just name intermediate values by the operation that produces them.
+    
+        
 
 

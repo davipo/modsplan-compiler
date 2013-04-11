@@ -13,3 +13,8 @@ assignment(designator ASSIGN test)
     &designator
     &test
     &ASSIGN
+
+statement(call)
+    &call
+    pop         # discard result
+

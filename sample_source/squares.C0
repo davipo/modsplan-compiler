@@ -4,7 +4,7 @@ for (i = 0; i <= 20; i++) {
     print(i, i * i);
 }
 
-extern void print();
+extern printf();
 
 int i;
 for (i = 0; i <= 25; i = i + 1) {
