@@ -1,0 +1,135 @@
+# sbil.syntax
+# Stack-Based Intermediate Language
+
+# Based on LLVM
+
+
+use literals        # literal, number, integer, float, string
+
+
+module.root => definition*
+
+definition => typedef NEWLINE
+definition => constdef NEWLINE
+definition => vardef NEWLINE
+definition => funcdef NEWLINE
+definition => funcdecl NEWLINE      # external or forward declaration
+
+typedef => 'type' name '=' type
+
+name => identifier
+
+identifier => LOWERNAME
+
+
+type => numtype
+type => pointertype
+type => functype
+type => arraytype
+type => structtype
+type => packedstructtype
+type => opaquetype
+
+numtype => INTTYPE          # iN, N = integer
+numtype => floattype
+floattype => 'half'
+floattype => 'float'
+floattype => 'double'
+
+pointertype => type '*'
+
+functype => type '(' type,* ')'
+
+arraytype => '[' integer 'x' type ']'
+
+structtype => '{' type,* '}'
+packedstructtype = '<{' type,* '}>'
+
+opaquetype => 'opaque'
+
+
+constdef => 'const' name initializer    # type determined from initializer
+
+initializer => '=' literal      # integer, float, string
+## Do we need aggregate initializers?
+
+vardef => 'var' type name
+
+
+funcdecl => 'declare' rettype name params
+
+funcdef => 'func' rettype name params funcbody
+
+rettype => 'void'
+rettype => type
+
+params => '(' param,*  vararg? ')' 
+param => type name
+vararg => '...'
+
+
+funcbody => '{' NEWLINE entryblock block* '}'
+
+entryblock => INDENT instruction+ DEDENT
+
+block => label ':' NEWLINE INDENT instruction* DEDENT
+
+label => identifier
+
+instruction => directive NEWLINE
+instruction => terminator NEWLINE
+instruction => operation NEWLINE
+
+directive => '.' identifier '(' value,* ')'     # compiler directive
+
+terminator => branch
+terminator => return
+
+branch => 'br' label,+
+
+return => 'ret' 'void'
+return => 'ret' value
+
+value => directive
+value => '$' integer    # stack value (0 = top)
+value => literal        # integer, float, string
+value => variable
+
+variable => name
+variable => name subscript       # array or struct element
+
+subscript => '[' value ']'
+
+
+# All operations assume signed values
+
+operation => binop value ',' value
+operation => 'load' variable
+operation => 'store' value ',' variable
+operation => 'cmp' condition ',' value, value
+operation => 'call' name '(' arg,* ')'
+
+arg => value
+
+# Arithmetic operations (signed values)
+binop => 'add'
+binop => 'sub'
+binop => 'mul'
+binop => 'div'
+binop => 'rem'
+
+# Bitwise operations
+binop => 'shl'
+binop => 'lshr'
+binop => 'ashr'
+binop => 'and'
+binop => 'or'
+binop => 'xor'
+
+condition => 'eq'
+condition => 'ne'
+condition => 'lt'
+condition => 'le'
+condition => 'gt'
+condition => 'ge'
+

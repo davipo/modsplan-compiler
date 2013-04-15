@@ -69,7 +69,83 @@ Naming of values
     But compilation to stkvm code loses such info.
         Could use a compiler directive to save it.
         Or just name intermediate values by the operation that produces them.
+
+
+2013-04-10
+
+Studied llvm-py and its newer incarnation, llvmpy.
+Could we specify LLVM structures (types, values, functions, blocks, etc) directly in .defn? 
+    This could avoid stackvm and the problem of translating it to llvm.
+    But stackvm may be easier for users to understand.
+    It would also tie Modsplan to LLVM.
     
+
+2013-04-12
+
+Sticking with stackvm for now.
+    Keep it simple, easy to use.
+    Borrow instructions from LLVM, but not much more.
+        (Will use function definition syntax, maybe declare.)
+
+
+Variables in stackvm
+    Allocate and name a storage location with
+        alloca <type> <identifier>
+    Then use "load <identifier>", "store <identifier>".
+    For assignments, do we need "getaddr <identifier>"?
+
+
+Functions in stackvm
+
+    For a function definition, we could write code to store parameters,
+            so they can be accessed the same as variables.
+        Can this code reside in stackvm.defn?
+        Maybe this can be avoided?
+
+    Probably best to use (simplified) LLVM syntax for function definitions in stackvm.
+    
+    Should we use "declare" for external function declarations?
+    
+    
+2013-04-13
+
+    Very frustrated by incomplete LLVM Language Reference.
+        What is syntax for global variable declarations?
+    
+    What is a function declaration?
+        Is "declare" always an external declaration?
+        Is it sometimes a forward declaration of a function in the same module?
+    
+    Can a named function type be used in a function definition or declaration?
+        I guess not.
+
+    
+2013-04-14
+
+SBIL: Stack-Based Intermediate Language
+
+    Need a well-defined Intermediate Representation,
+        which can be easily translated to LLVM.
         
+    Extend stackvm with variables.
+        Use subscripting for indexing aggregates.
+        Use assignment statements?
+            No -- better not to mix paradigms.
+            Load and store are usual for stack-based instructions.
+                These are needed, best to access variables in just one way.
+    
+    SBIL declarations
+        const, var, func, type
+        
+    Variables (and named constants) must be declared before use.
+        (Dynamic languages will need namespace lookup,
+            which can handle creating a variable when first assigned.)
+    
+    
+
+
+
+
+
 
 
