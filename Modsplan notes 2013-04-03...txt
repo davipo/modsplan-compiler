@@ -140,10 +140,25 @@ SBIL: Stack-Based Intermediate Language
     Variables (and named constants) must be declared before use.
         (Dynamic languages will need namespace lookup,
             which can handle creating a variable when first assigned.)
-    
+
+    Wrote first draft of sbil.syntax.
     
 
-
+2013-04-15
+    
+    First draft of SBIL included syntax for easy access to stack values:
+        value => '$' integer    # stack value (0 = top)
+    But this is not needed in defn specs. Can use "store tmp" and reference tmp instead.
+    Character symbols are scarce, let's conserve them.
+    I'm also concerned that '$' may not be easy to type on keyboards around the world.
+    Removed it from sbil.syntax.
+    
+    First draft of SBIL used explicit opargs, instead of getting them from stack.
+        This is good for writing code manually, but not so useful in defn specs.
+            (All values are created by processing terminal nodes, leaving result on stack.)
+        Changed it back to use stackvm syntax, no opargs.
+    
+    Need to rewrite defn specs to find best syntax for SBIL.
 
 
 

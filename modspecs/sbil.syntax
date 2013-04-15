@@ -28,7 +28,7 @@ type => functype
 type => arraytype
 type => structtype
 type => packedstructtype
-type => opaquetype
+# type => opaquetype
 
 numtype => INTTYPE          # iN, N = integer
 numtype => floattype
@@ -45,13 +45,10 @@ arraytype => '[' integer 'x' type ']'
 structtype => '{' type,* '}'
 packedstructtype = '<{' type,* '}>'
 
-opaquetype => 'opaque'
+# opaquetype => 'opaque'
 
 
-constdef => 'const' name initializer    # type determined from initializer
-
-initializer => '=' literal      # integer, float, string
-## Do we need aggregate initializers?
+constdef => 'const' literal     # integer, float, string (pushed on stack)
 
 vardef => 'var' type name
 
@@ -85,13 +82,12 @@ directive => '.' identifier '(' value,* ')'     # compiler directive
 terminator => branch
 terminator => return
 
-branch => 'br' label,+
+branch => 'br' label ',' label
+branch => 'br' label
 
-return => 'ret' 'void'
-return => 'ret' value
+return => 'ret'
 
 value => directive
-value => '$' integer    # stack value (0 = top)
 value => literal        # integer, float, string
 value => variable
 
@@ -103,13 +99,12 @@ subscript => '[' value ']'
 
 # All operations assume signed values
 
-operation => binop value ',' value
 operation => 'load' variable
-operation => 'store' value ',' variable
-operation => 'cmp' condition ',' value, value
-operation => 'call' name '(' arg,* ')'
+operation => 'store' variable
+operation => 'cmp' condition
+operation => 'call' name integer    # integer is number of args on stack
+operation => binop
 
-arg => value
 
 # Arithmetic operations (signed values)
 binop => 'add'
