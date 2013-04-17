@@ -1,0 +1,7 @@
+# builtins.sbil
+
+# Imported into every .sbil file
+
+
+declare i32 printf(i8*, ...)
+

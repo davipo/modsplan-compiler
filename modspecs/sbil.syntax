@@ -9,18 +9,27 @@ use literals        # literal, number, integer, float, string
 
 module.root => definition*
 
-definition => typedef NEWLINE
+definition => import NEWLINE
 definition => constdef NEWLINE
-definition => vardef NEWLINE
-definition => funcdef NEWLINE
+definition => globalvar NEWLINE
+definition => typedef NEWLINE
 definition => funcdecl NEWLINE      # external or forward declaration
+definition => funcdef NEWLINE
 
-typedef => 'type' name '=' type
+import => 'import' module
+module => identifier
+
+constdef => 'const' literal         # integer, float, string (pushed on stack)
+
+globalvar => 'var' type name        # at module level, generates a global variable
+                            
 
 name => identifier
 
 identifier => LOWERNAME
 
+
+typedef => 'type' name '=' type
 
 type => numtype
 type => pointertype
@@ -48,21 +57,16 @@ packedstructtype = '<{' type,* '}>'
 # opaquetype => 'opaque'
 
 
-constdef => 'const' literal     # integer, float, string (pushed on stack)
-
-vardef => 'var' type name
-
-
-funcdecl => 'declare' rettype name params
+funcdecl => 'declare' rettype name paramtypes   # external (or forward?) function
+paramtypes => '(' type,*  vararg? ')'
 
 funcdef => 'func' rettype name params funcbody
-
 rettype => 'void'
 rettype => type
 
-params => '(' param,*  vararg? ')' 
+params => '(' param,*  vararg? ')'
 param => type name
-vararg => '...'
+vararg => ',' '...'
 
 
 funcbody => '{' NEWLINE entryblock block* '}'
@@ -74,10 +78,13 @@ block => label ':' NEWLINE INDENT instruction* DEDENT
 label => identifier
 
 instruction => directive NEWLINE
+instruction => vardecl NEWLINE
 instruction => terminator NEWLINE
 instruction => operation NEWLINE
 
 directive => '.' identifier '(' value,* ')'     # compiler directive
+
+vardecl => 'var' type name      # inside a function, generates alloca
 
 terminator => branch
 terminator => return

@@ -161,6 +161,26 @@ SBIL: Stack-Based Intermediate Language
     Need to rewrite defn specs to find best syntax for SBIL.
 
 
+    Externals
+        Built-in functions can be imported automatically into every sbil module.
+        
+        How to handle externals?
+            Follow C?
+            
+            
+2013-04-16
 
+Decided to focus on a C modspec, since C should translate to LLVM best,
+    and this will help me design SBIL to carry the necessary intermediate info.
 
+C syntax is maddening! Was it designed to obfuscate?
 
+Seems that parameters in a C function declaration (not definition) can be just a type,
+    or a type with a name.
+The syntax uses an abstract_declarator for this.
+    Too complicated, I'll leave that out for now.
+    
+
+2013-04-17
+
+    
