@@ -1,0 +1,34 @@
+# llvm.syntax
+# Attempt to document the syntax of LLVM Assembly Language
+
+module.root => moduleitem*
+
+moduleitem => globalitem? COMMENT? NEWLINE
+
+
+globalitem => globalvardecl
+globalitem => typealias
+globalitem => functiondecl
+globalitem => functiondef
+
+
+globalvardecl => GLOBALID '=' globalproperty* type initializer?
+
+globalproperty => linkage
+globalproperty => section
+globalproperty => visibility
+globalproperty => alignment
+
+
+type => 
+
+initializer => 
+
+typealias => 
+
+functiondecl => 
+
+functiondef => 
+
+
+

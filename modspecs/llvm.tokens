@@ -1,0 +1,26 @@
+# llvm.tokens
+
+
+
+INTEGER => D+
+
+
+GLOBALID => '@' ident
+
+LOCALID => '%' ident
+
+METADATAID => '!' ident
+
+ident => firstchar followchar*
+ident => INTEGER        # unnamed value
+
+firstchar => L
+firstchar => U
+firstchar => '.'
+firstchar => '_'
+firstchar => '$'
+
+followchar => firstchar
+followchar => D
+
+
