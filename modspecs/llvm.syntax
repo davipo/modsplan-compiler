@@ -1,34 +1,77 @@
 # llvm.syntax
 # Attempt to document the syntax of LLVM Assembly Language
 
+
+use literals    # literal, number, integer, float, string
+use irtype      # specifies types
+
+
 module.root => moduleitem*
 
 moduleitem => globalitem? COMMENT? NEWLINE
 
-
-globalitem => globalvardecl
 globalitem => typealias
+globalitem => globalalias
+globalitem => globalvardecl
 globalitem => functiondecl
 globalitem => functiondef
 
+typealias => LOCALID '=' 'type' type    # type may not be void
 
-globalvardecl => GLOBALID '=' globalproperty* type initializer?
-
-globalproperty => linkage
-globalproperty => section
-globalproperty => visibility
-globalproperty => alignment
+globalalias => GLOBALID '=' 'alias' LINKAGE? VISIBILITY? type GLOBALID
 
 
-type => 
+globalvardecl => GLOBALID '=' globalvarprops type initializer? section? alignment?
 
-initializer => 
+globalvarprops => addrspace? LINKAGE? VISIBILITY?
+initializer => literal
+section => 'section' string
+alignment => 'align' string
 
-typealias => 
 
-functiondecl => 
+functiondecl => 'declare' funcprops resulttype GLOBALID declparams alignment? gcname?
 
-functiondef => 
+funcprops => LINKAGE? VISIBILITY? CCONV? ADDRNAMING?
+resulttype => type PARAMATTR*
+gcname => 'gc' string
 
+declparams => '(' declparam,*  vararg? ')'
+declparam => type LOCALID? PARAMATTR*           # param name is optional
+vararg => ',' '...'
+
+
+functiondef => 'define' funcprops resulttype GLOBALID params funcdefprops funcbody
+
+params => '(' param,*  vararg? ')'
+param => type LOCALID PARAMATTR*
+
+funcdefprops => FUNCATTRIBUTE* section? alignment? gcname?
+
+funcbody => '{' COMMENT? NEWLINE entryblock block* '}'
+
+entryblock => entrylabel? COMMENT? NEWLINE statement* terminatorstatement
+entrylabel => label ':'         # may not be used in a terminator instruction
+## entrylabel => 'entry' ':'       # best to use this label or no label
+
+block => label ':' COMMENT? NEWLINE statement* terminatorstatement
+label => LOCALID
+
+statement => instruction COMMENT? NEWLINE
+terminatorstatement => terminatorinstruction COMMENT? NEWLINE
+
+
+terminatorinstruction => returninstruction
+terminatorinstruction => branchinstruction
+terminatorinstruction => switchinstruction
+## ...
+
+instruction => memoryop
+instruction => binaryop
+instruction => compare
+instruction => phi
+instruction => call
+instruction => va_arg
+instruction => conversionop
+## ...
 
 

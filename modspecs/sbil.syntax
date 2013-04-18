@@ -1,10 +1,10 @@
 # sbil.syntax
 # Stack-Based Intermediate Language
-
 # Based on LLVM
 
 
-use literals        # literal, number, integer, float, string
+use literals    # literal, number, integer, float, string
+use irtype      # intermediate representation types
 
 
 module.root => definition*
@@ -31,37 +31,11 @@ identifier => LOWERNAME
 
 typedef => 'type' name '=' type
 
-type => numtype
-type => pointertype
-type => functype
-type => arraytype
-type => structtype
-type => packedstructtype
-# type => opaquetype
-
-numtype => INTTYPE          # iN, N = integer
-numtype => floattype
-floattype => 'half'
-floattype => 'float'
-floattype => 'double'
-
-pointertype => type '*'
-
-functype => type '(' type,* ')'
-
-arraytype => '[' integer 'x' type ']'
-
-structtype => '{' type,* '}'
-packedstructtype = '<{' type,* '}>'
-
-# opaquetype => 'opaque'
-
 
 funcdecl => 'declare' rettype name paramtypes   # external (or forward?) function
 paramtypes => '(' type,*  vararg? ')'
 
 funcdef => 'func' rettype name params funcbody
-rettype => 'void'
 rettype => type
 
 params => '(' param,*  vararg? ')'
@@ -69,7 +43,7 @@ param => type name
 vararg => ',' '...'
 
 
-funcbody => '{' NEWLINE entryblock block* '}'
+funcbody => '{' COMMENT? NEWLINE entryblock block* '}'
 
 entryblock => INDENT instruction+ DEDENT
 
@@ -92,7 +66,8 @@ terminator => return
 branch => 'br' label ',' label
 branch => 'br' label
 
-return => 'ret'
+return => 'ret'         # 0 or 1 value left on stack, according to rettype;
+                        #   check that type matches.
 
 value => directive
 value => literal        # integer, float, string

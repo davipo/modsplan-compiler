@@ -1,0 +1,49 @@
+# irtype.syntax
+# Intermediate representation type system
+# Based on LLVM types
+
+
+type => primitivetype
+type => pointertype
+type => functype
+type => vectortype
+type => arraytype
+type => structtype
+type => packedstructtype
+type => opaquetype
+
+primitivetype => INTTYPE        # iN, N = integer (see irtypes.tokens)
+primitivetype => floattype
+primitivetype => labeltype
+primitivetype => voidtype
+primitivetype => metadatatype
+
+floattype => 'half'
+floattype => 'float'
+floattype => 'double'
+floattype => 'fp128'
+floattype => 'x86_fp80'
+floattype => 'ppc_fp128'
+
+labeltype => 'label'
+
+voidtype => 'void'
+
+metadatatype => 'metadata'
+
+
+pointertype => type '*'
+
+functype => type '(' type,* ')'
+
+vectortype => '<' integer 'x' type '>'      # for parallel processing, not an aggregate type
+
+arraytype => '[' integer 'x' type ']'
+
+structtype => '{' type,* '}'
+
+packedstructtype = '<{' type,* '}>'
+
+opaquetype => 'opaque'
+    ##  needed?
+

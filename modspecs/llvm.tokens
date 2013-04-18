@@ -1,5 +1,6 @@
 # llvm.tokens
 
+use irtype
 
 
 INTEGER => D+

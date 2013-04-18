@@ -1,0 +1,9 @@
+# irtype.tokens
+# Tokens for an intermediate representation type system
+#   Subset of LLVM types
+
+
+INTTYPE => 'i' D+
+
+
+
