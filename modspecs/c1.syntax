@@ -7,22 +7,28 @@ use expr        ## common expression syntax
 
 translationunit.root => extdecl+
 
-extdecl => globalvardeclaration ';'
-extdecl => funcdeclaration ';'
-extdecl => funcdef
+extdecl => declaration ';'
+extdecl => funcdefinition
 
+declaration => typedef
+declaration => globalvardeclaration
+declaration => funcdeclaration
+
+typedef => 'typedef' typespecifier declarator
 
 globalvardeclaration => typespecifier initdeclarator,+
 
-
 typespecifier => TYPESPEC
 ## typespecifier => structspecifier
-## typespecifier => typedefname
+typespecifier => typedefname
+
+typedefname => identifier
+
+identifier => LOWERNAME
 
 
 initdeclarator => declarator '=' constantexpr
 initdeclarator => declarator
-
 
 constantexpr => conditionalexpr_constant
     ## use subtype _constant to restrict conditionalexpr?
@@ -49,11 +55,10 @@ arraydeclarator => '[' '*'? ']'
 
 funcdeclaration => typespecifier identifier functiondeclarator
 
-funcdef => typespecifier identifier functiondeclarator compoundstatement
+funcdefinition => typespecifier identifier functiondeclarator compoundstatement
 
 functiondeclarator => '(' paramdeclaration,* ellipsis? ')'
-    ##  This requires parameters in a function declaration to include their names,
-    ##      as well as their types.
+    ##  Requires parameters in function declaration to include name, as well as type.
 
 paramdeclaration => declspecifier+ declarator
 

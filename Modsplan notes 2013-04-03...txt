@@ -183,4 +183,56 @@ The syntax uses an abstract_declarator for this.
 
 2013-04-17
 
+The syntax of LLVM Assembly Language is not well documented, either.
+    It's easier than C, though.
     
+Wrote llvm.syntax because I need to specify the target I'm compiling for,
+    and as a step toward writing a semantically useful C syntax.
+
+
+2013-04-19
+
+Been thinking about a way to generate LLVM directly from defn spec and parse tree.
+    Can we specify LLVM objects at nodes in tree, link them using tree structure?
+As far as I can tell now, seems this would be equivalent to using SBIR,
+    but using a functional programming style syntax for defn spec.
+I don't like a lot of parentheses; that's my best excuse for not pursuing this now.  :-)
+    But really, it's hard to think about, my brain prefers an easier path.
+    Probably circle back to this again later.  ###
+
+
+Function declarations
+
+Seems the only purpose of declaring a function before defining it is for type checking.
+    Type checking could be done at any level:
+        when generating SBIL, translating to LLVM, by LLVM itself, or at runtime.
+
+Function declarations are used for forward declarations, and for external declarations.
+
+Forward declarations:
+    We should check these for languages that use them, but otherwise don't need them.
+    
+    In LLVM (and SBIL), all functions are defined globally.
+        This makes it easy to extract their signatures in a preliminary pass,
+            and check call signatures against them.
+    (Forward declarations only needed for calls that occur before their function definition,
+        used for recursive or mutually-recursive functions.)
+
+External declarations:
+    Needed to link to libraries and built-in functions, for I/O.
+    Could postpone dealing with them by prepending declarations of builtins to LLVM code.
+        That will allow use of printf(), puts(), etc.
+
+Let's focus on handling function definitions first.
+
+
+
+
+
+
+
+
+
+
+
+
