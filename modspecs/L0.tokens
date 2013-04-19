@@ -26,10 +26,9 @@ NOT_OP => 'not'
 KEYWORD => 'declare'
 
 
-# Variable attributes, used in declare statement
 # Must appear before NAME from base.tokens
-ATTRIBUTE => 'external'
-ATTRIBUTE => 'integer'
-
+TYPE => 'int'
+TYPE => 'float'
+# TYPE => 'string'
 
 use base        # include after alphabetic tokens

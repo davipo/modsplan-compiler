@@ -5,19 +5,26 @@
 use expr        # common expression syntax
 use string
 
+
 module.root => line+
 
 line => NEWLINE
 line => statement
 
 
-statement => declaration NEWLINE
+statement => extdecl NEWLINE
+statement => vardecl NEWLINE
 statement => if
 statement => while
-statement => assignment NEWLINE
+statement => funcdef
 statement => call NEWLINE
+statement => assignment NEWLINE
 
-declaration => 'declare' variable ATTRIBUTE* 
+extdecl => 'external' name      #### TYPE ??
+
+# extdecl => 'external' name '('  ')'     # external function?
+
+vardecl => 'var' name ':' TYPE 
 
 assignment => designator ASSIGN test
 
@@ -31,3 +38,9 @@ suite => INDENT line+ DEDENT
 
 
 while => 'while' test ':' NEWLINE suite
+
+
+funcdef => 'def' name params ':' NEWLINE suite
+params => '(' name,* ')'
+
+

@@ -4,9 +4,14 @@ use base
 use string
 
 
-declaration(variable ATTRIBUTE*)
-    # provides for external functions (for I/O, etc.) and variables
-    .addsymbol(variable, ATTRIBUTE*)
+extdecl(name)           # external variable
+    var 
+
+extdecl(name type,*)    # external function (for I/O, etc.)
+
+
+vardecl(name TYPE)
+    var TYPE name
 
 
 assignment(designator ASSIGN test)
