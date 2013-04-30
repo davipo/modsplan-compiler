@@ -4,14 +4,16 @@ use base
 use string
 
 
-extdecl(name)           # external variable
-    var 
+extdecl(TYPE identifier)    # external variable
+    ##    var TYPE &identifier
+    .var(TYPE, identifier)
 
-extdecl(name type,*)    # external function (for I/O, etc.)
+# extfunc(TYPE identifier)    # external function (for I/O, etc.)
 
 
-vardecl(name TYPE)
-    var TYPE name
+vardecl(TYPE identifier)
+    ##    var TYPE &identifier
+    .var(TYPE, identifier)
 
 
 assignment(designator ASSIGN test)

@@ -1,4 +1,4 @@
-declare baz external
+external int baz
 
 snape = goop - 12 + baz
 

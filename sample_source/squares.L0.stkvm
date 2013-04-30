@@ -1,6 +1,6 @@
 ;# squares.L0
-	.addsymbol   printf, external
-	.addsymbol   i, integer
+	.var         int, printf
+	.var         int, i
 	.getsymbol   i
 	const        1
 	store        
@@ -17,6 +17,7 @@ whiletrue7:
 	mul          
 	.getsymbol   printf
 	call         3
+	pop          
 	.getsymbol   i
 	const        1
 	addstore     

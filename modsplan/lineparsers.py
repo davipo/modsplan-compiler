@@ -32,7 +32,7 @@ class Error(Exception):
                 value = getattr(location, attribname, None)
                 if value:
                     self.message += format % value
-            linefunc = getattr(location, 'line')
+            linefunc = getattr(location, 'line', None)
             if linefunc and callable(linefunc):
                 self.message += '\n' + linefunc()                   # source line
                 self.message += '\n%*s' % (location.column, '^')    # position

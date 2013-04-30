@@ -20,11 +20,11 @@ statement => funcdef
 statement => call NEWLINE
 statement => assignment NEWLINE
 
-extdecl => 'external' name      #### TYPE ??
+extdecl => 'external' TYPE identifier
 
-# extdecl => 'external' name '('  ')'     # external function?
+# extfunc => 'external' TYPE identifier '('  ')'    # external function?
 
-vardecl => 'var' name ':' TYPE 
+vardecl => 'var' TYPE identifier 
 
 assignment => designator ASSIGN test
 
@@ -40,7 +40,7 @@ suite => INDENT line+ DEDENT
 while => 'while' test ':' NEWLINE suite
 
 
-funcdef => 'def' name params ':' NEWLINE suite
-params => '(' name,* ')'
+funcdef => 'def' identifier params ':' NEWLINE suite
+params => '(' identifier,* ')'
 
 

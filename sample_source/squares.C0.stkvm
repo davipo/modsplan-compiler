@@ -1,18 +1,19 @@
 ;/* squares.C0 */
+	.addsymbol   printf, extern, int
 	.getsymbol   i
 	const        0
 	store        
-for3:
+for5:
 	.load        i
 	const        20
 	cmp          le
-	br           forbegin3, forend3
-forbegin3:
+	br           forbegin5, forend5
+forbegin5:
 	.load        i
 	.load        i
 	.load        i
 	mul          
-	.getsymbol   print
+	.getsymbol   printf
 	call         2
 	.load        i
 	.getsymbol   i
@@ -21,32 +22,31 @@ forbegin3:
 	add          
 	store        
 	pop          
-	br           for3
-forend3:
-	.addsymbol   print, extern, void
+	br           for5
+forend5:
 	.addsymbol   i, int
 	.getsymbol   i
 	const        0
 	store        
-for10:
+for11:
 	.load        i
 	const        25
 	cmp          le
-	br           forbegin10, forend10
-forbegin10:
+	br           forbegin11, forend11
+forbegin11:
 	.load        i
 	.load        i
 	.load        i
 	mul          
-	.getsymbol   print
+	.getsymbol   printf
 	call         2
 	.getsymbol   i
 	.load        i
 	const        1
 	add          
 	store        
-	br           for10
-forend10:
+	br           for11
+forend11:
 	.getsymbol   i
 	const        1
 	store        
@@ -60,7 +60,7 @@ whiletrue17:
 	.load        i
 	.load        i
 	mul          
-	.getsymbol   print
+	.getsymbol   printf
 	call         2
 	.getsymbol   i
 	.load        i

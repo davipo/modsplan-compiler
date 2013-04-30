@@ -1,4 +1,4 @@
-	.addsymbol   baz, external
+	.var         int, baz
 	.getsymbol   snape
 	.load        goop
 	const        12
@@ -18,10 +18,12 @@ iftrue5:
 	mul          
 	.getsymbol   run
 	call         2
+	pop          
 	br           ifend5
 iffalse5:
 	.getsymbol   exit
 	call         0
+	pop          
 ifend5:
 	.load        goop
 	const        0
