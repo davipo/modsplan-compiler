@@ -5,18 +5,17 @@
 use expr        ## common expression syntax
 
 
-translationunit.root => extdecl+
+translationunit.root => extdeclaration+
 
-extdecl => declaration ';'
-extdecl => funcdefinition
+extdeclaration => typedef ';'
+extdeclaration => globalvardeclaration ';'
+extdeclaration => funcdeclaration ';'
+extdeclaration => funcdefinition
 
-declaration => typedef
-declaration => globalvardeclaration
-declaration => funcdeclaration
 
 typedef => 'typedef' typespecifier declarator
 
-globalvardeclaration => typespecifier initdeclarator,+
+globalvardeclaration => typespecifier identifier initializer?
 
 typespecifier => TYPESPEC
 ## typespecifier => structspecifier
@@ -26,13 +25,7 @@ typedefname => identifier
 
 identifier => LOWERNAME
 
-
-initdeclarator => declarator '=' constantexpr
-initdeclarator => declarator
-
-constantexpr => conditionalexpr_constant
-    ## use subtype _constant to restrict conditionalexpr?
-conditionalexpr_constant => test    # test defined in expr.syntax
+initializer => '=' literal
 
 
 declarator => pointr* directdeclarator
@@ -43,14 +36,9 @@ directdeclarator => identifier followdeclarator*
 
 followdeclarator => arraydeclarator
 followdeclarator => functiondeclarator
-## followdeclarator => funcdeclarator
 
 arraydeclarator => '[' expression ']'
 arraydeclarator => '[' '*'? ']'
-
-## funcdeclarator => '(' paramdecl,* ellipsis? ')'
-## paramdecl => declspecifier+ abstractdeclarator
-    # Need abstractdeclarator for parameters without name in function declarations
 
 
 funcdeclaration => typespecifier identifier functiondeclarator
@@ -60,6 +48,10 @@ funcdefinition => typespecifier identifier functiondeclarator compoundstatement
 functiondeclarator => '(' paramdeclaration,* ellipsis? ')'
     ##  Requires parameters in function declaration to include name, as well as type.
 
+## functiondeclarator => '(' paramdecl,* ellipsis? ')'     # for parameters without names
+## paramdecl => declspecifier+ abstractdeclarator
+    # Need abstractdeclarator for parameters without name in function declarations
+
 paramdeclaration => declspecifier+ declarator
 
 ellipsis => ','  '...'
@@ -68,6 +60,8 @@ ellipsis => ','  '...'
 compoundstatement => '{' blockitem* '}'
 blockitem => declaration
 blockitem => statement
+
+declaration => typespecifier identifier initializer?
 
 statement => if
 statement => while
@@ -88,7 +82,7 @@ suite => statement      # for compatibility with base.defn
 expression => assignexpr
 expression => test      # test specified in expr.syntax
 
-assignexpr => lvalue ASSIGN expression
+assignexpr => lvalue '=' expression
 
 lvalue => variable
 

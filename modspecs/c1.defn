@@ -3,33 +3,46 @@
 use base
 
 
-globalvardeclaration(typespecifier initdeclarator,+)
+typedef(typespecifier declarator)
+    'type' &declarator '=' &typespecifier
 
 
-funcdeclaration(typespecifier identifier functiondeclarator)
+globalvardeclaration(typespecifier identifier initializer?)
+    'var' &typespecifier &identifier &initializer?
+
+initializer(literal)
+    '=' &literal
 
 
-funcdef(typespecifier identifier functiondeclarator compoundstatement)
+## funcdeclaration(typespecifier identifier functiondeclarator)
 
 
-# declaration(declspecifier initdeclarator+)
-#     &declspecifier &initdeclarator+
+funcdefinition(typespecifier identifier functiondeclarator compoundstatement)
+    func &typespecifier &identifier &functiondeclarator {
+        &compoundstatement
+    }
 
-# initdeclarator(declarator constantexpr)
-#     &declarator
-#     &constantexpr
-#     store
+
+# local declaration inside a function
+declaration(typespecifier identifier initializer?)
+    'var' &typespecifier &identifier &initializer?
+
+
     
-assignexpr(lvalue ASSIGN expression)
-    &lvalue
+assignexpr(lvalue expression)
     &expression
-    &ASSIGN
+    'store' &lvalue
 
-## for(declaration expression? expression? statement)
-##    &declaration
+
+for(declaration expression? expression? statement)
+    &declaration
+    =for(expression? expression? statement)
 
 for(expression? expression? expression? statement)
     &expression?
+    =for(expression? expression? statement)
+
+for(expression? expression? statement)
     for:
         &expression?            # condition
         br forbegin, forend

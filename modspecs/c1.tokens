@@ -1,6 +1,6 @@
-# C0.tokens
-# C0 token specification
-# A minimal subset of C
+# C1.tokens
+# C1 token specification
+# A subset of C
 
 
 COMMENT => '/*' P* '*/'

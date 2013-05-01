@@ -24,6 +24,7 @@ globalalias => GLOBALID '=' 'alias' LINKAGE? VISIBILITY? type GLOBALID
 globalvardecl => GLOBALID '=' globalvarprops type initializer? section? alignment?
 
 globalvarprops => addrspace? LINKAGE? VISIBILITY?
+addrspace => 'addrspace' '(' INTEGER ')'
 initializer => literal
 section => 'section' string
 alignment => 'align' string

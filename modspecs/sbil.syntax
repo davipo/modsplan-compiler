@@ -22,7 +22,7 @@ module => identifier
 constdef => 'const' literal         # integer, float, string (pushed on stack)
 
 globalvar => 'var' type name        # at module level, generates a global variable
-                            
+globalvar => 'var' type name '=' literal    # with initializer
 
 name => identifier
 
@@ -45,20 +45,11 @@ vararg => ',' '...'
 
 funcbody => '{' COMMENT? NEWLINE entryblock block* '}'
 
-entryblock => INDENT instruction+ DEDENT
+entryblock => INDENT instruction+ terminator NEWLINE DEDENT        # no label
 
-block => label ':' NEWLINE INDENT instruction* DEDENT
+block => label ':' NEWLINE INDENT instruction* terminator NEWLINE DEDENT
 
 label => identifier
-
-instruction => directive NEWLINE
-instruction => vardecl NEWLINE
-instruction => terminator NEWLINE
-instruction => operation NEWLINE
-
-directive => '.' identifier '(' value,* ')'     # compiler directive
-
-vardecl => 'var' type name      # inside a function, generates alloca
 
 terminator => branch
 terminator => return
@@ -68,6 +59,16 @@ branch => 'br' label
 
 return => 'ret'         # 0 or 1 value left on stack, according to rettype;
                         #   check that type matches.
+
+
+instruction => directive NEWLINE
+instruction => vardecl NEWLINE
+instruction => operation NEWLINE
+
+directive => '.' identifier '(' value,* ')'     # compiler directive
+
+vardecl => 'var' type name                  # inside a function, generates alloca
+vardecl => 'var' type name '=' literal      #   with initializer
 
 value => directive
 value => literal        # integer, float, string
