@@ -104,3 +104,5 @@ identifier(NAME)
 
 literal(number)
     const &number
+literal(STRING)
+    'const' STRING

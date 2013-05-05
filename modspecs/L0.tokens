@@ -7,7 +7,6 @@ enable indent
 
 use expr
 use float
-use string
 
 # use base below -- must include after BOOL_OP, KEYWORD, ATTRIBUTE
 

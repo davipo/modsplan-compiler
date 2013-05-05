@@ -3,7 +3,6 @@
 # (A minimal subset of Python)
 
 use expr        # common expression syntax
-use string
 
 
 module.root => line+

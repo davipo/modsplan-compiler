@@ -34,6 +34,7 @@ variable => identifier
 identifier => NAME
 
 literal => number
+literal => STRING
 
 number => INTEGER
 number => FLOAT

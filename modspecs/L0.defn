@@ -1,7 +1,6 @@
 # L0.defn
 
 use base
-use string
 
 
 extdecl(TYPE identifier)    # external variable
