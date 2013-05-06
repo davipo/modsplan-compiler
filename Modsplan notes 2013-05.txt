@@ -1,0 +1,51 @@
+Modsplan notes 2013-05
+
+
+2013-05-01
+
+Been busy with LED art proposal and img2track knitting machine software.
+
+Defn language
+
+    Looks like I will need to revise the Defn language to generate SBIL and LLVM code.
+        It will have a more flexible instruction format, probably simpler, too!
+
+    Been considering allowing nested signatures; might not be hard to implement.
+
+
+2013-05-02
+
+    Should defn language use quoted strings for literal items?
+        Then nonterms and terminals don't need '&' prefix.
+        Quoting literals is consistent with syntax specs.
+
+
+2013-05-03
+
+    Use .error(message) directive to report unsupported features of source language.  ###
+
+    Been worrying about how to distinguish child expansion from substitution of its text.
+        I think this is just about when to generate multiple lines of code,
+            rather than composing pieces of a single line.
+        Thought it might work to expand only when child is the only word on a line.
+        But I'm doubting that, finding this very confusing.
+            Guess I'll have to sort it out as I implement it.
+        If needed, we can use the '&' prefix to signal expansion.
+
+
+New indenting scheme for SBIL (and LLVM):
+    Like LLVM examples I've seen, indent function bodies, except for labels.
+        Does LLVM use nested functions? Don't need them now.
+    Where handle this in code?
+        Could be done after generation, maybe better to keep formatting in one place.
+    Rules:
+        If line ends with '{', increase indent level.
+        If line ends with '}', decrease indent level.
+        If line ends with ':', decrease indent just for that line.
+        Does a comment at the end of these lines cause a problem?  ###
+    
+
+2013-05-06
+
+
+
