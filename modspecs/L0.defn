@@ -3,24 +3,33 @@
 use base
 
 
-extdecl(TYPE identifier)    # external variable
-    ##    var TYPE &identifier
-    .var(TYPE, identifier)
+extdecl(TYPE identifier)        # external variable
+    'var' TYPE identifier
 
-# extfunc(TYPE identifier)    # external function (for I/O, etc.)
-
+extfunc(TYPE identifier)        # external function (for I/O, etc.)
+    'extern' TYPE identifier '(' ')'
 
 vardecl(TYPE identifier)
-    ##    var TYPE &identifier
-    .var(TYPE, identifier)
+    'var' TYPE identifier
 
-
-assignment(designator ASSIGN test)
-    &designator
-    &test
-    &ASSIGN
 
 statement(call)
     &call
-    pop         # discard result
+    'pop'       # discard result
+
+
+funcdef(TYPE identifier params suite)
+    'func' TYPE identifier params '{'
+    .indent()
+    &suite
+    .dedent()
+    '}'
+
+params(identifier*)
+    '(' identifier* ')'
+
+
+assignment(designator ASSIGN test)
+    &test
+    'store' designator
 

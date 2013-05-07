@@ -28,6 +28,7 @@ KEYWORD => 'declare'
 # Must appear before NAME from base.tokens
 TYPE => 'int'
 TYPE => 'float'
+TYPE => 'void'
 # TYPE => 'string'
 
 use base        # include after alphabetic tokens

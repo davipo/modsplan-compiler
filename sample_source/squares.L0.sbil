@@ -1,0 +1,27 @@
+;# squares.L0
+extern int printf()
+func void squares() {
+    var int i
+    const 1
+    store i
+while9:
+    load i
+    const 20
+    cmp le
+    br whiletrue9, whileend9
+whiletrue9:
+    const "%2d %4d"
+    load i
+    load i
+    load i
+    mul
+    call printf 3
+    pop
+    ;## i += 1
+    load i
+    const 1
+    add
+    store i
+    br while9
+whileend9:
+}

@@ -1,5 +1,0 @@
-# import_test.L0
-
-use goop2
-
-run(snape, goop)
