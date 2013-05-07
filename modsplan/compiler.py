@@ -15,10 +15,11 @@ import defn
 
 default_spec_dir = 'modspecs/'              # default directory for language specifications
 default_defn_grammar_dir='defn_grammar/'    # default directory for defn grammar
-code_suffix = 'stkvm'                       # name of target language
-instr_fmt = '\t%-12s %s'
-letters = '_abcdefghijklmnopqrstuvwxyz'
-        
+code_suffix = 'sbil'                        # name of target language
+indentation = '    '                        # one indent, for target code
+letters = '_abcdefghijklmnopqrstuvwxyz'     # used as suffix to make labels unique
+
+
 class Compiler:
     """ Universal compiler: reads language specs, compiles specified language."""
     
@@ -46,13 +47,28 @@ class Compiler:
 
 
     def compile(self, source_filepath):
-        """ Compile source code for initialized language, 
-            return list of target code instructions (strings)."""
+        """ Compile source code for initialized language,
+            return lines of target code, indented appropriately."""
         if '2' in self.debug:
             print '\nParsing %s ...' % source_filepath
         self.source_tree = self.parser.parse(source_filepath)
         self.labelsuffix.clear()
-        return self.codegen(self.source_tree)
+        codelines = self.codegen(self.source_tree)
+        
+        # Indent lines of target code appropriately
+        indent = 0
+        lines = []
+        for line in codelines:
+            if line.endswith(':'):              # label, no indent
+                lines.append(line)
+            else:
+                if line == '.indent':
+                    indent += 1
+                elif line == '.dedent':
+                    indent -= 1
+                else:
+                    lines.append(indent * indentation + line)
+        return lines
 
 
     def codegen(self, source_node):
@@ -67,14 +83,13 @@ class Compiler:
         # Traverse in preorder, generating code for any defns found
         definition = self.defs.get_defn(source_node)    # find definition matching this node
         if definition:
-            code.extend(self.gen_instructions(source_node, definition))
+            code += self.gen_instructions(source_node, definition)
         else:   # no definition found; generate code for any children
             if source_node.isterminal():
-                message = 'No definition found for terminal token %s' % source_node
-                raise Error(message, self.defs.defn_tree)
+                code += [source_node.findtext()]
             else:
                 for child in source_node.children:
-                    code.extend(self.codegen(child))
+                    code += self.codegen(child)
         return code
 
 
@@ -113,20 +128,15 @@ class Compiler:
         for instruction in instruction_defs:
             instr = instruction.firstchild()
             
-            if instr.name == 'directive':   # compiler directive, generates one instruction
-                directive = instr.findtext()
-                arg_defs = instr.findall('carg')
-                code.append(self.compiler_directive(source_node, directive, arg_defs))
-                
-            elif instr.name == 'expansion':     # expand next unused child with this name
+            if instr.name == 'expansion':       # expand next unused child with this name
                 child = source_node.nextchild(defn.childname(instr))
-                code.extend(self.codegen(child))
+                code += self.codegen(child)
                 
             elif instr.name == 'rewrite':       # use instructions from another signature
                 signature = self.defs.make_signature(instr.firstchild())
                 instructions = self.defs.defns.get(signature)
                 if instructions:
-                    code.extend(self.gen_instructions(source_node, instructions, labels))
+                    code += self.gen_instructions(source_node, instructions, labels)
                 else:
                     message = 'Rewrite signature "%s" not found' % defn.sig_str(signature)
                     raise Error(message, instruction)
@@ -136,83 +146,71 @@ class Compiler:
                 code.append(label + ':')
                 ### option to indent output instructions under label?
                 instructions = instruction.find('instructions?').findall('instruction')
-                code.extend(self.gen_instructions(source_node, instructions, labels))
-
+                code += self.gen_instructions(source_node, instructions, labels)
+                
             elif instr.name == 'branch':
                 args = []
                 for arg in instr.findall('label'):
                     args.append(self.get_label(arg.findtext(), labels, source_node, instr))
-                args_str = ', '.join(args)
-                opcode = self.defs.first_alternate(instr.name).items[0].text()
-                code.append(instr_fmt % (opcode, args_str))
+                opcode = defn.remove_quotes(instr.findtext())
+                code.append(opcode + ' ' + ', '.join(args))
                 
-            elif instr.name == 'operation':     # generate single instruction
-                opcode = instr.findtext()
-                args_str = self.gen_args(source_node, instr.findall('oparg'))
-                code.append(instr_fmt % (opcode, args_str))
+            elif instr.name == 'word+':         # generate a line of code
+                words = [self.gen_word(source_node, word) for word in instr.findall('word')]
+                line = ' '.join(words)
+                line = line.replace(' ( ', '(').replace(' )', ')')      # fix paren spacing
+                code.append(line)
                 
             else:
                 message = 'Unrecognized instruction kind "%s"' % instr.name
                 raise Error(message, self.defs.first_alternate(instr.name))
                 ### Error may be in a subsequent alternate, too hard to find which one
-                        
+                
         if 'i' in self.debug:
-            print '(%s:)' % source_node.name 
-            print '\n'.join(code) + '\n'
+            print '(%s:)' % source_node.name
+            print code, '\n'
+            #print '\n'.join(code) + '\n'
         return code
-        
-
-    def gen_args(self, source_node, arg_defs, use=True):
-        """ Generate string of args from source and arg definitions.
+    
+    
+    def gen_word(self, source_node, word_def, use=True):
+        """ Generate code string from source and word definition.
             If 'use' false, ignore use status of parse nodes."""        
-        args = []
-        for argdef in arg_defs:
-            argtype = argdef.firstchild()
-            argtext = argtype.findtext()
-            
-            if argtype.name in ('constant', 'name'):
-                args.append(argtext)
-            
-            elif argtype.name == 'nonterm':     # substitute first text in nonterm
-                args.append(source_node.firstchild(argtext).findtext())
-            
-            elif argtype.name == 'child':
-                child = source_node.nextchild(defn.childname(argtype), use)
-                if child.isterminal():
-                    args.append(child.findtext())
-                else:
-                    for arg in child.children:          # handles quantifiers
-                        text = arg.findtext()
-                        if text:
-                            args.append(text)
-            
-            elif argtype.name == 'terminal':
-                child = source_node.nextchild(argtext, use)  # argtext is tokenkind in source,
-                args.append(child.text)                      #   substitute token text
-                
-            elif argtype.name == 'directive':
-                arg_defs = argtype.findall('carg')
-                args.append(self.compiler_directive(source_node, argtext, arg_defs))
-                
-            else:
-                message = 'Unrecognized argument kind "%s"' % argtype.name
-                raise Error(message, self.defs.first_alternate(argtype.name))
-                ### Error may be in a subsequent alternate, too hard to find which one
-            
-        return ', '.join(args)
+        wordtype = word_def.firstchild()
         
-
-    def compiler_directive(self, source_node, directive, arg_defs):
-        """ Generate code per compiler directive, using source and arg definitions.
-            Ignore use status of parse nodes when generating args."""        
-        if directive == 'count':        # number of children of its argument
-            directive_arg = defn.childname(arg_defs[0])
-            codestring = str(source_node.firstchild(directive_arg).numchildren())
+        if wordtype.name in ('constant', 'LITERAL'):
+            return defn.remove_quotes(wordtype.findtext())
+                
+        elif wordtype.name == 'child':
+            child = source_node.nextchild(defn.childname(wordtype), use)
+            return ' '.join(self.codegen(child))
+            
+        elif wordtype.name == 'directive':
+            return self.compiler_directive(source_node, wordtype)
+            
         else:
-            args_str = self.gen_args(source_node, arg_defs, use=False)
-            codestring = instr_fmt % ('.' + directive, args_str)
-        return codestring
+            message = 'Unrecognized word kind "%s"' % wordtype.name
+            raise Error(message, self.defs.first_alternate(wordtype.name))
+            ### Error may be in a subsequent alternate, too hard to find which one
+    
 
+    def compiler_directive(self, source_node, directive):
+        """ Generate code per compiler directive, using source and arg definitions.
+            Ignore use status of parse nodes when generating args."""
+        name = directive.findtext()
+        arg_defs = directive.findall('word')
+        if name == 'count':         # number of children of its argument
+            nodename = defn.childname(arg_defs[0])
+            codestring = str(source_node.firstchild(nodename).numchildren())
+        elif name == 'again':       # reuse child
+            codestring = self.gen_word(source_node, arg_defs[0], use=False)
+        else:
+            args = [self.gen_word(source_node, argdef, use=False) for argdef in arg_defs]
+            codestring = '.' + name
+            if args:
+                codestring += ' ' + ', '.join(args)
+        return codestring
+        
 
 def compile_src(sourcepath, codepath='', spec_dir=None, debug=''):
     """ Compile source code from sourcepath, write target code to codepath (if given),

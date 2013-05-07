@@ -15,8 +15,9 @@
 enable newline
 enable indent
 
+BR => "'br'"        # to recognize branch instructions (for label uniquing)
 
-OPCODE => 'br'          # prevent 'br' being recognized as operation
+LITERAL => "'" P* "'"
 
 LOWERNAME => L+     # '_' not allowed (used to append subtype)
 
@@ -27,7 +28,6 @@ upper => '_'
 INTEGER => D+
 
 STRING => '"' P* '"'
-STRING => "'" P* "'"
 
 COMMENT => '#' P*
 

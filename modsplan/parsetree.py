@@ -143,7 +143,7 @@ class NonterminalNode(BaseNode):
                 child.used = child.used or use
                 return child
         # not found
-        message = 'Node "%s" has no %schild' % (self.name, 'unused ' if use else '')
+        message = 'Node "%s" has no%s child' % (self.name, ' unused' if use else '')
         if name:
             message += ' with name "%s"' % name
         raise Error(message, self)

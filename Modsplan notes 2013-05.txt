@@ -47,5 +47,33 @@ New indenting scheme for SBIL (and LLVM):
 
 2013-05-06
 
+Progress on expansion/substitution; but not quite clear when expansion needed.  ###
+
+Decided to output terminals directly, no error if they don't appear in defn spec.
+    Saves writing a lot of redundant definitions.
+
+Literals in defn specs will be single-quoted. These are output literally (without quotes).
+    LITERAL => "'" P* "'"
+String contants will be double-quoted. These are output with the quotes.
+    STRING => "'" P* "'"
+
+
+Indenting
+    Using .indent() and .dedent() compiler directives (for c1.defn funcdefinition).
+        More flexible than recognizing '{' or '}' at end of line.
+
+
+For C, need to pop stack when the value of an expression is not used.  ####
+    This occurs where an expression is a statement,
+        and where expressions are used in 'for' statements.
+    Solution:
+        Expressions always leave result on stack.
+        Insert pop instruction where needed to discard value.
+
+2013-05-07
+
+
+
+
 
 

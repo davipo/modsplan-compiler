@@ -8,20 +8,13 @@
 # Specify only nonterms which generate code
 # Compiler traverses tree depth-first, matching these, generating as it goes.
 
-    
-ASSIGN('=')
-    store
-    
-ASSIGN('+=')
-    addstore
-
 
 if(test suite else?)
     &test
-    br iftrue, iffalse
+    'br' iftrue, iffalse
     iftrue:
         &suite
-        br ifend
+        'br' ifend
     iffalse:
         &else?
     ifend:
@@ -30,79 +23,73 @@ if(test suite else?)
 while(test suite)
     while:
         &test
-        br whiletrue, whileend
-        whiletrue:
-            &suite
-            br while
-        whileend:
+        'br' whiletrue, whileend
+    whiletrue:
+        &suite
+        'br' while
+    whileend:
 
 
 compare(RELATION expr)
     &expr
-    &RELATION
+    RELATION
 
 RELATION('==')
-    cmp eq
+    'cmp eq'
 
 RELATION('!=')
-    cmp ne
+    'cmp ne'
 
 RELATION('>')
-    cmp gt
+    'cmp gt'
 
 RELATION('>=')
-    cmp ge
+    'cmp ge'
 
 RELATION('<')
-    cmp lt
+    'cmp lt'
 
 RELATION('<=')
-    cmp le
+    'cmp le'
 
 
 factor(ADD_OP atom)     # handles unary '-' (and '+')
-    const 0
+    'const 0'
     &atom
-    &ADD_OP
+    ADD_OP
 
 
 addition(ADD_OP term)
     &term
-    &ADD_OP
+    ADD_OP
 
 ADD_OP('+')
-    add
+    'add'
     
 ADD_OP('-')
-    sub
+    'sub'
 
 
 multiplication(MUL_OP factor)
     &factor
-    &MUL_OP
+    MUL_OP
 
 MUL_OP('*')
-    mul
-    
+    'mul'
+
 
 call(variable arg*)     # function call
     &arg*
-    &variable
-    call .count(arg*)   # number of args
-
-parentheses(test)
-    &test
+    'call' variable .count(arg*)     # number of args
 
 
 atom(variable)          ## "variable" instead of "atom(variable)"?
-    .load(variable)
+    'load' variable
+
+atom(literal)
+    'const' literal
 
 
 identifier(NAME)
-    .getsymbol(NAME)    # compile error if symbol undefined
+    .again(NAME)        # reuse indefinitely
 
-
-literal(number)
-    const &number
-literal(STRING)
-    'const' STRING

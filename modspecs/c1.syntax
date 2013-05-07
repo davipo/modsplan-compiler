@@ -15,15 +15,16 @@ extdeclaration => funcdefinition
 
 typedef => 'typedef' typespecifier declarator
 
-globalvardeclaration => typespecifier identifier initializer?
+globalvardeclaration => declspecifier identifier initializer?
+
+declspecifier => STORAGESPEC? TYPEQUALIFIER* typespecifier
+
 
 typespecifier => TYPESPEC
 ## typespecifier => structspecifier
 typespecifier => typedefname
 
 typedefname => identifier
-
-identifier => LOWERNAME
 
 initializer => '=' literal
 
@@ -41,7 +42,7 @@ arraydeclarator => '[' expression ']'
 arraydeclarator => '[' '*'? ']'
 
 
-funcdeclaration => typespecifier identifier functiondeclarator
+funcdeclaration => declspecifier identifier functiondeclarator
 
 funcdefinition => typespecifier identifier functiondeclarator compoundstatement
 
@@ -61,13 +62,14 @@ compoundstatement => '{' blockitem* '}'
 blockitem => declaration
 blockitem => statement
 
-declaration => typespecifier identifier initializer?
+declaration => typespecifier identifier initializer? ';'
 
 statement => if
 statement => while
 statement => for
 statement => compoundstatement
-statement => expression? ';'
+statement => ';'
+statement => expression ';'
 
 if => 'if' '(' test ')' suite else?
 else => 'else' suite

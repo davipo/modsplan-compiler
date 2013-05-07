@@ -4,7 +4,7 @@ Modsplan To Do List
 Applications
 
     Use to parse anything
-        Weather data!
+        Weather data?
         Organize as library, with documentation
     
     Could a version of this aid in translating natural language?
@@ -35,18 +35,16 @@ Compiler
 
     Option to show source line numbers in emitted code
 
-    Translate stkvm instructions to LLVM assembler
+    Translate SBIL to LLVM assembler
     
 
-Defn
+Defn specs
 
     Use (sub)directory per output language for .defn specs
         These share common (higher level) .defn specs with others (imported with "use")
         Need to allow for selecting .defn dir different from grammar dir
     
-    Use quotes in .defn specs around literal parts of instructions being generated?
-        Could be tedious, but clearer.
-        Don't prefix arg expansions?
+    Make clear when to use expansion vs substitution in defn specs.  ###
        
 
 Grammar

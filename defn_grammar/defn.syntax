@@ -12,7 +12,7 @@ piece => definition
 definition => signature NEWLINE instructions
 
 signature => nonterm '(' child* ')'     # match a node with these children
-signature => terminal '(' STRING ')'    # match when terminal text == string
+signature => terminal '(' LITERAL ')'   # match when terminal text == literal string
 
 child => nonterm QUANTIFIER?
 child => terminal QUANTIFIER?
@@ -32,41 +32,28 @@ identifier => LOWERNAME     # lowercase letters only
 terminal => UPPERNAME       # uppercase letters and '_'
 
 
-instructions => INDENT NEWLINE? instruction+ NEWLINE* DEDENT
+instructions => INDENT instruction+ NEWLINE* DEDENT
 
-## instruction => NEWLINE
-instruction => directive NEWLINE
-instruction => expansion NEWLINE
+instruction => expansion NEWLINE        ### is this needed?
 instruction => rewrite NEWLINE
 instruction => branch NEWLINE
 instruction => label ':' NEWLINE instructions?
-instruction => operation NEWLINE
+instruction => word+ NEWLINE
 
-directive => '.' identifier '(' carg,* ')'      # compiler directive
-expansion => '&' child                          # generate code for child node
+expansion => '&' child          # generate code for child node
+
 rewrite => '=' signature
-branch => 'br' label,+
 
 label => LOWERNAME
 
-# compiler directive args
-carg => child
-# carg => nonterm
-# carg => terminal
-carg => constant
+branch => BR label,+
 
-operation => opcode oparg,*
+word => directive
+word => LITERAL
+word => constant
+word => child                   # substitute text of child node
 
-opcode => LOWERNAME         ## (note: opcode is unrelated to OPCODE)
-
-# operation args
-oparg => constant
-oparg => terminal       # substitutes text of terminal
-oparg => '&' nonterm    # substitutes first text in nonterm (like identifier name)
-oparg => directive
-oparg => name
-
-name => LOWERNAME
+directive => '.' identifier '(' word,* ')'      # compiler directive
 
 constant => number
 constant => STRING

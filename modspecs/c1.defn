@@ -4,34 +4,45 @@ use base
 
 
 typedef(typespecifier declarator)
-    'type' &declarator '=' &typespecifier
+    'type' declarator '=' typespecifier
 
 
-globalvardeclaration(typespecifier identifier initializer?)
-    'var' &typespecifier &identifier &initializer?
+globalvardeclaration(declspecifier identifier initializer?)
+    'var' declspecifier identifier initializer?
 
 initializer(literal)
-    '=' &literal
+    '=' literal
+
+declspecifier(STORAGESPEC? TYPEQUALIFIER* typespecifier)
+    STORAGESPEC? TYPEQUALIFIER* typespecifier
 
 
-## funcdeclaration(typespecifier identifier functiondeclarator)
-
+## specified only to concat words on one line
+funcdeclaration(declspecifier identifier functiondeclarator)
+    declspecifier identifier functiondeclarator
 
 funcdefinition(typespecifier identifier functiondeclarator compoundstatement)
-    func &typespecifier &identifier &functiondeclarator {
-        &compoundstatement
-    }
+    'func' typespecifier identifier functiondeclarator '{'
+    .indent()
+    &compoundstatement
+    .dedent()
+    '}'
+
+functiondeclarator(paramdeclaration* ellipsis?)
+    '(' paramdeclaration* ')'
+
+ellipsis()
+    .varargs()
 
 
 # local declaration inside a function
 declaration(typespecifier identifier initializer?)
-    'var' &typespecifier &identifier &initializer?
+    'var' typespecifier identifier initializer?
 
 
-    
-assignexpr(lvalue expression)
+statement(expression)
     &expression
-    'store' &lvalue
+    'pop'               # discard expression value
 
 
 for(declaration expression? expression? statement)
@@ -39,35 +50,45 @@ for(declaration expression? expression? statement)
     =for(expression? expression? statement)
 
 for(expression? expression? expression? statement)
-    &expression?
+    &expression?    # initialization, typically an assignment
+    'pop'           # discard expression value
     =for(expression? expression? statement)
 
 for(expression? expression? statement)
     for:
         &expression?            # condition
-        br forbegin, forend
-        forbegin:
-            &statement
-            &expression?        # next
-            br for
-        forend:
+        'br' forbegin, forend
+    forbegin:
+        &statement
+        &expression?            # next
+        'pop'                   # discard expression value
+        'br' for
+    forend:
+
+    
+assignexpr(lvalue expression)
+    &expression
+    'dup'               # store consumes value, leave a copy
+    'store' lvalue
 
 
 atom(INC_OP variable)   # increment/decrement before use
-    &variable               # get address
-    .load(variable)         # put value on stack
-    const 1
-    &INC_OP                 # add or subtract
-    store                   # removes address, leaves value on stack
+    'load' variable
+    'const 1'
+    INC_OP                      # add or subtract
+    'dup'                       # leave a copy on stack
+    'store' .again(variable)    # reuse variable
 
 atom(variable INC_OP)   # increment/decrement after use
-    .load(variable)         # put value on stack
-    =atom(INC_OP variable)
-    pop                     # remove top of stack
+    'load' variable
+    'dup'                       # leave a copy on stack
+    'const 1'
+    INC_OP                      # add or subtract
+    'store' .again(variable)    # reuse variable
     
 INC_OP('++')
-    add
+    'add'
 
 INC_OP('--')
-    sub
+    'sub'
 

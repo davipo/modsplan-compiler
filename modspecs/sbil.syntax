@@ -33,17 +33,17 @@ typedef => 'type' name '=' type
 
 
 funcdecl => 'declare' rettype name paramtypes   # external (or forward?) function
-paramtypes => '(' type,*  vararg? ')'
+paramtypes => '(' type,*  varargs? ')'
 
 funcdef => 'func' rettype name params funcbody
 rettype => type
 
-params => '(' param,*  vararg? ')'
+params => '(' param,*  varargs? ')'
 param => type name
-vararg => ',' '...'
+varargs => ',' '...'
 
 
-funcbody => '{' COMMENT? NEWLINE entryblock block* '}'
+funcbody => '{' NEWLINE entryblock block* '}'
 
 entryblock => INDENT instruction+ terminator NEWLINE DEDENT        # no label
 
@@ -54,7 +54,7 @@ label => identifier
 terminator => branch
 terminator => return
 
-branch => 'br' label ',' label
+branch => 'br' label ',' label      # pop value, jump to first label if true, second if false
 branch => 'br' label
 
 return => 'ret'         # 0 or 1 value left on stack, according to rettype;
@@ -83,10 +83,20 @@ subscript => '[' value ']'
 # All operations assume signed values
 
 operation => 'load' variable
-operation => 'store' variable
-operation => 'cmp' condition
+operation => 'store' variable       # pops top value from stack
+operation => 'cmp' condition        # pop 2 values, compare them, leave boolean result
 operation => 'call' name integer    # integer is number of args on stack
-operation => binop
+operation => 'pop'                  # discard value on top of stack
+operation => binop                  # binary operation: pop 2 values, leave result
+
+
+# Compare conditions
+condition => 'eq'
+condition => 'ne'
+condition => 'lt'
+condition => 'le'
+condition => 'gt'
+condition => 'ge'
 
 
 # Arithmetic operations (signed values)
@@ -103,11 +113,3 @@ binop => 'ashr'
 binop => 'and'
 binop => 'or'
 binop => 'xor'
-
-condition => 'eq'
-condition => 'ne'
-condition => 'lt'
-condition => 'le'
-condition => 'gt'
-condition => 'ge'
-
