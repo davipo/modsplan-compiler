@@ -1,0 +1,30 @@
+# sbil.tokens
+
+
+use literals    # STRING, INTEGER, FLOAT, HEX
+use irtype
+
+
+# Compare conditions
+CONDITION => 'eq'
+CONDITION => 'ne'
+CONDITION => 'lt'
+CONDITION => 'le'
+CONDITION => 'gt'
+CONDITION => 'ge'
+
+
+# Arithmetic operations (signed values)
+BINOP => 'add'
+BINOP => 'sub'
+BINOP => 'mul'
+BINOP => 'div'
+BINOP => 'rem'
+
+# Bitwise operations
+BINOP => 'shl'
+BINOP => 'lshr'
+BINOP => 'ashr'
+BINOP => 'and'
+BINOP => 'or'
+BINOP => 'xor'

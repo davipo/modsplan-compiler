@@ -70,10 +70,12 @@ For C, need to pop stack when the value of an expression is not used.  ####
         Expressions always leave result on stack.
         Insert pop instruction where needed to discard value.
 
-2013-05-07
+2013-05-11
 
+Tokenizer
 
-
+    Do we want to use tokenkinds on the right side of a production in .tokens specs?
+    
 
 
 

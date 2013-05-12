@@ -1,0 +1,26 @@
+# literals.tokens
+
+
+use float
+
+
+STRING => '"' P* '"'
+
+
+HEX => '0x' hexdigit+
+hexdigit => D
+hexdigit => 'A'
+hexdigit => 'B'
+hexdigit => 'C'
+hexdigit => 'D'
+hexdigit => 'E'
+hexdigit => 'F'
+hexdigit => 'a'
+hexdigit => 'b'
+hexdigit => 'c'
+hexdigit => 'd'
+hexdigit => 'e'
+hexdigit => 'f'
+
+
+INTEGER => D+

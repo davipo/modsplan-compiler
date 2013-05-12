@@ -3,6 +3,9 @@
 # Based on LLVM types
 
 
+use literals
+
+
 type => primitivetype
 type => pointertype
 type => functype
@@ -36,9 +39,9 @@ pointertype => type '*'
 
 functype => type '(' type,* ')'
 
-vectortype => '<' integer 'x' type '>'      # for parallel processing, not an aggregate type
+vectortype => '<' INTEGER 'x' type '>'      # for parallel processing, not an aggregate type
 
-arraytype => '[' integer 'x' type ']'
+arraytype => '[' INTEGER 'x' type ']'
 
 structtype => '{' type,* '}'
 

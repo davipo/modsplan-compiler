@@ -1,0 +1,88 @@
+# sbil.defn
+# Stack-Based Intermediate Language
+
+
+use irtype      # intermediate representation types
+
+
+definition(import)
+definition(constdef)
+definition(globalvar)
+definition(typedef)
+definition(funcdecl)
+definition(funcdef)
+
+import(module)
+module(identifier)
+
+constdef(literal)
+
+globalvar(type name)
+globalvar(type name  literal)
+
+name(identifier)
+
+identifier(LOWERNAME)
+
+
+typedef(name type)
+
+
+funcdecl(rettype name paramtypes)
+paramtypes(type,*  varargs? )
+
+funcdef(rettype name params funcbody)
+rettype(type)
+
+params(param,*  varargs? )
+param(type name)
+varargs()
+
+
+funcbody(entryblock block* )
+
+entryblock(instruction+ terminator)
+
+block(label instruction* terminator)
+
+label(identifier)
+
+terminator(branch)
+
+terminator(return)
+
+
+branch(label label)
+branch(label)
+
+
+instruction(directive)
+instruction(vardecl)
+instruction(load)
+instruction(store)
+instruction(cmp)
+instruction(call)
+instruction(pop)
+instruction(BINOP)
+
+directive(identifier  value,* )
+
+vardecl(type name)
+vardecl(type name  literal)
+
+value(directive)
+value(literal)
+value(variable)
+
+variable(name)
+variable(name subscript)
+
+subscript(value)
+
+
+load(variable)
+store(variable)
+cmp(CONDITION)
+call(name integer)
+pop()
+
