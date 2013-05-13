@@ -1,10 +1,6 @@
 # defn.syntax
 # This is the syntax for .defn specifications.
-
 # Copyright 2011-2013 by David H Post, DaviWorks.com.
-
-
-use constants       # constant, number
 
 
 defn_file.root => piece*
@@ -53,7 +49,6 @@ branch => BR label,+
 
 word => directive
 word => LITERAL
-word => constant
 word => child                   # substitute text of child node
 
 directive => '.' identifier '(' word,* ')'      # compiler directive
