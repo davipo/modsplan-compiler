@@ -92,3 +92,10 @@ INC_OP('++')
 INC_OP('--')
     'sub'
 
+
+TYPESPEC('int')
+    'i32'
+
+TYPESPEC('char')
+    'i8'
+

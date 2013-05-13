@@ -19,9 +19,9 @@ use float
 STORAGESPEC => 'extern'
 STORAGESPEC => 'static'
 
-TYPESPEC => 'int'
+TYPESPEC => 'int'       # translate to i32
 TYPESPEC => 'void'
-TYPESPEC => 'char'
+TYPESPEC => 'char'      # translate to i8
 TYPESPEC => 'float'
 
 TYPEQUALIFIER => 'const'
