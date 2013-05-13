@@ -1,0 +1,9 @@
+# constants.syntax
+
+
+constant => number
+constant => STRING
+
+number => INTEGER
+number => FLOAT
+number => HEX

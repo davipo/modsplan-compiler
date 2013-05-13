@@ -1,9 +1,0 @@
-# literals.syntax
-
-
-literal => number
-literal => STRING
-
-number => INTEGER
-number => FLOAT
-number => HEX

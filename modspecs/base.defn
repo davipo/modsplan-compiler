@@ -86,8 +86,8 @@ call(variable arg*)     # function call
 atom(variable)          ## "variable" instead of "atom(variable)"?
     'load' variable
 
-atom(literal)
-    'const' literal
+atom(constant)
+    'const' constant
 
 
 identifier(NAME)

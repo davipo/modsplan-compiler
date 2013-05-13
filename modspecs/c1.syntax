@@ -2,6 +2,7 @@
 # c1 language syntax
 # A working subset of C
 
+use constants   # constant, number
 use expr        ## common expression syntax
 
 
@@ -26,7 +27,7 @@ typespecifier => typedefname
 
 typedefname => identifier
 
-initializer => '=' literal
+initializer => '=' constant
 
 
 declarator => pointr* directdeclarator

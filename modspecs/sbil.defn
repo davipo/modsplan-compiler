@@ -15,14 +15,17 @@ definition(funcdef)
 import(module)
 module(identifier)
 
-constdef(literal)
+
+constdef(constant)
+
 
 globalvar(type name)
-globalvar(type name  literal)
 
 name(identifier)
 
 identifier(LOWERNAME)
+globalvar(type name constant)
+
 
 
 typedef(name type)
@@ -68,16 +71,15 @@ instruction(BINOP)
 directive(identifier  value,* )
 
 vardecl(type name)
-vardecl(type name  literal)
 
 value(directive)
-value(literal)
 value(variable)
 
 variable(name)
 variable(name subscript)
 
 subscript(value)
+vardecl(type name constant)
 
 
 load(variable)

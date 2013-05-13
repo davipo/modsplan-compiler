@@ -1,7 +1,7 @@
 # sbil.tokens
 
 
-use literals    # STRING, INTEGER, FLOAT, HEX
+use constants   # STRING, INTEGER, FLOAT, HEX
 use irtype
 
 

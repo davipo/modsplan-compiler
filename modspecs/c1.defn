@@ -10,8 +10,8 @@ typedef(typespecifier declarator)
 globalvardeclaration(declspecifier identifier initializer?)
     'var' declspecifier identifier initializer?
 
-initializer(literal)
-    '=' literal
+initializer(constant)
+    '=' constant
 
 declspecifier(STORAGESPEC? TYPEQUALIFIER* typespecifier)
     STORAGESPEC? TYPEQUALIFIER* typespecifier

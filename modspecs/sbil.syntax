@@ -3,7 +3,7 @@
 # Based on LLVM
 
 
-use literals    # literal, number
+use constants   # constant, number
 use irtype      # intermediate representation types
 
 
@@ -19,10 +19,10 @@ definition => funcdef NEWLINE
 import => 'import' module
 module => identifier
 
-constdef => 'const' literal         # integer, float, string (pushed on stack)
+constdef => 'const' constant        # integer, float, string (generates global variable)
 
-globalvar => 'var' type name        # at module level, generates a global variable
-globalvar => 'var' type name '=' literal    # with initializer
+globalvar => 'var' type name                # at module level, generates a global variable
+globalvar => 'var' type name '=' constant   # with initializer
 
 name => identifier
 

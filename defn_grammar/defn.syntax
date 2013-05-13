@@ -4,6 +4,9 @@
 # Copyright 2011-2013 by David H Post, DaviWorks.com.
 
 
+use constants       # constant, number
+
+
 defn_file.root => piece*
 
 piece => NEWLINE
@@ -55,7 +58,4 @@ word => child                   # substitute text of child node
 
 directive => '.' identifier '(' word,* ')'      # compiler directive
 
-constant => number
-constant => STRING
 
-number => INTEGER

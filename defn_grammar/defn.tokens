@@ -1,19 +1,15 @@
 # defn.tokens
 # This is the token specification for .defn files.
-
 # Copyright 2011-2013 David H Post. All rights reserved.
-
-
-# All characters not recognized become single-character tokens.
-# A single uppercase letter denotes a character class; see base.metagrammar.
-#   L = lowercase letter, U = uppercase letter, D = digit.
-#   P* = any printable characters, must be followed by terminal or end of line.
-#   (P may be used only with *)
 
 
 # tell tokenizer to emit NEWLINE, INDENT, DEDENT tokens
 enable newline
 enable indent
+
+
+use constants   # STRING, INTEGER, FLOAT, HEX
+
 
 BR => "'br'"        # to recognize branch instructions (for label uniquing)
 
@@ -25,9 +21,6 @@ UPPERNAME => U upper+   # must be more than one char (otherwise is character cla
 upper => U
 upper => '_'
 
-INTEGER => D+
-
-STRING => '"' P* '"'
 
 COMMENT => '#' P*
 

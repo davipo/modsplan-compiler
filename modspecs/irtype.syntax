@@ -3,7 +3,7 @@
 # Based on LLVM types
 
 
-use literals
+use constants       # constant, number
 
 
 type => primitivetype
