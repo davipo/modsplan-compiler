@@ -7,9 +7,10 @@ extdecl(TYPE identifier)        # external variable
     'var' TYPE identifier
 
 extfunc(TYPE identifier)        # external function (for I/O, etc.)
-    'extern' TYPE identifier '(' ')'
+    'declare' TYPE identifier '(' ')'
 
-vardecl(TYPE identifier)
+
+vardecl(TYPE identifier)        # (inside a function)
     'var' TYPE identifier
 
 
@@ -33,3 +34,6 @@ assignment(designator ASSIGN test)
     &test
     'store' designator
 
+
+TYPE('int')
+    'i32'

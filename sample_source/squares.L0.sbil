@@ -1,7 +1,7 @@
 ;# squares.L0
-extern int printf()
+declare i32 printf()
 func void squares() {
-    var int i
+    var i32 i
     const 1
     store i
 while9:
