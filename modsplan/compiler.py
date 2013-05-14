@@ -157,8 +157,10 @@ class Compiler:
                 
             elif instr.name == 'word+':         # generate a line of code
                 words = [self.gen_word(source_node, word) for word in instr.findall('word')]
+                words = [word for word in words if word.strip()]        # remove empty words
                 line = ' '.join(words)
-                line = line.replace(' ( ', '(').replace(' )', ')')      # fix paren spacing
+                line = line.replace(' (', '(').replace('( ', '(').replace(' )', ')')
+                    # fix paren spacing
                 code.append(line)
                 
             else:

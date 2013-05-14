@@ -15,14 +15,17 @@ initializer(constant)
 
 declspecifier(STORAGESPEC? TYPEQUALIFIER* typespecifier)
     STORAGESPEC? TYPEQUALIFIER* typespecifier
+    ### STORAGESPEC 'static' and TYPEQUALIFIER not handled
+
+STORAGESPEC('extern')
+    ''      # external is default linkage
 
 
-## specified only to concat words on one line
 funcdeclaration(declspecifier identifier functiondeclarator)
-    declspecifier identifier functiondeclarator
+    'declare' declspecifier identifier functiondeclarator
 
-funcdefinition(typespecifier identifier functiondeclarator compoundstatement)
-    'func' typespecifier identifier functiondeclarator '{'
+funcdefinition(declspecifier identifier functiondeclarator compoundstatement)
+    'func' declspecifier identifier functiondeclarator '{'
     .indent()
     &compoundstatement
     .dedent()

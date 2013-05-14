@@ -45,7 +45,7 @@ arraydeclarator => '[' '*'? ']'
 
 funcdeclaration => declspecifier identifier functiondeclarator
 
-funcdefinition => typespecifier identifier functiondeclarator compoundstatement
+funcdefinition => declspecifier identifier functiondeclarator compoundstatement
 
 functiondeclarator => '(' paramdeclaration,* ellipsis? ')'
     ##  Requires parameters in function declaration to include name, as well as type.
