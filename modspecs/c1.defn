@@ -29,10 +29,10 @@ funcdefinition(typespecifier identifier functiondeclarator compoundstatement)
     '}'
 
 functiondeclarator(paramdeclaration* ellipsis?)
-    '(' paramdeclaration* ')'
+    '(' paramdeclaration* ellipsis? ')'
 
 ellipsis()
-    .varargs()
+    ',' '...'
 
 
 # local declaration inside a function

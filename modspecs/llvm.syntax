@@ -36,14 +36,14 @@ funcprops => LINKAGE? VISIBILITY? CCONV? ADDRNAMING?
 resulttype => type PARAMATTR*
 gcname => 'gc' string
 
-declparams => '(' declparam,*  vararg? ')'
+declparams => '(' declparam,*  ellipsis? ')'
 declparam => type LOCALID? PARAMATTR*           # param name is optional
-vararg => ',' '...'
+ellipsis => ',' '...'
 
 
 functiondef => 'define' funcprops resulttype GLOBALID params funcdefprops funcbody
 
-params => '(' param,*  vararg? ')'
+params => '(' param,*  ellipsis? ')'
 param => type LOCALID PARAMATTR*
 
 funcdefprops => FUNCATTRIBUTE* section? alignment? gcname?

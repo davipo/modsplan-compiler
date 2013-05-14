@@ -27,14 +27,14 @@ typedef => 'type' TYPEID '=' type
 
 
 funcdecl => 'declare' rettype name paramtypes   # external (or forward?) function
-paramtypes => '(' type,*  varargs? ')'
+paramtypes => '(' type,*  ellipsis? ')'
 
 funcdef => 'func' rettype name params funcbody
 rettype => type
 
-params => '(' param,*  varargs? ')'
+params => '(' param,*  ellipsis? ')'
 param => type name
-varargs => ',' '...'
+ellipsis => ',' '...'
 
 
 funcbody => '{' NEWLINE entryblock block* '}'

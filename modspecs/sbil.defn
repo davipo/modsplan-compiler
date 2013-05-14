@@ -20,17 +20,19 @@ typedef(TYPEID type)
 
 
 
+paramtypes(type,*  ellipsis?)
+    '(' .commasep(type*) ellipsis? ')'
 
+ellipsis()
+    ',' '...'
 
 funcdecl(rettype name paramtypes)
-paramtypes(type,*  varargs? )
 
 funcdef(rettype name params funcbody)
 rettype(type)
 
-params(param,*  varargs? )
-param(type name)
-varargs()
+params(param,*  ellipsis?)
+    '(' .commasep(param*) ellipsis? ')'
 
 
 funcbody(entryblock block* )
