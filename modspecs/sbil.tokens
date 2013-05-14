@@ -28,3 +28,18 @@ BINOP => 'ashr'
 BINOP => 'and'
 BINOP => 'or'
 BINOP => 'xor'
+
+
+TYPEID => '%' identifier    # used for type alias
+
+IDENTIFIER => identifier
+
+identifier => firstchar followchar*
+
+firstchar => L
+firstchar => U
+firstchar => '_'
+
+followchar => firstchar
+followchar => D
+

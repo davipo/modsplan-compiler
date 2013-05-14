@@ -24,12 +24,11 @@ constdef => 'const' constant        # integer, float, string (generates global v
 globalvar => 'var' type name                # at module level, generates a global variable
 globalvar => 'var' type name '=' constant   # with initializer
 
-name => identifier
 
-identifier => LOWERNAME
+name => IDENTIFIER
 
 
-typedef => 'type' name '=' type
+typedef => 'type' TYPEID '=' type
 
 
 funcdecl => 'declare' rettype name paramtypes   # external (or forward?) function
@@ -49,7 +48,7 @@ entryblock => INDENT instruction+ terminator DEDENT         # no label
 
 block => label ':' NEWLINE INDENT instruction* terminator DEDENT
 
-label => identifier
+label => IDENTIFIER
 
 terminator => branch NEWLINE
 terminator => return NEWLINE

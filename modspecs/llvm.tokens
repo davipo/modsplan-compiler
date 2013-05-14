@@ -10,6 +10,8 @@ GLOBALID => '@' ident
 
 LOCALID => '%' ident
 
+TYPEID => '%' ident
+
 METADATAID => '!' ident
 
 ident => firstchar followchar*

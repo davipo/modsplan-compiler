@@ -16,7 +16,7 @@ globalitem => globalvardecl
 globalitem => functiondecl
 globalitem => functiondef
 
-typealias => LOCALID '=' 'type' type    # type may not be void
+typealias => TYPEID '=' 'type' type     # type may not be void
 
 globalalias => GLOBALID '=' 'alias' LINKAGE? VISIBILITY? type GLOBALID
 

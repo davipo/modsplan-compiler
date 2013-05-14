@@ -14,6 +14,7 @@ type => arraytype
 type => structtype
 type => packedstructtype
 type => opaquetype
+type => TYPEID              # named type (alias)
 
 primitivetype => INTTYPE        # iN, N = integer (see irtypes.tokens)
 primitivetype => floattype
