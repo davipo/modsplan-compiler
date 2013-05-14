@@ -18,6 +18,9 @@ typedef(TYPEID type)
     TYPEID '= type' type
 
 
+funcdecl(rettype name paramtypes)
+    .addvar(name, rettype)
+    'declare' .var(name) paramtypes
 
 paramtypes(type,*  ellipsis?)
     '(' .commasep(type*) ellipsis? ')'
@@ -25,58 +28,87 @@ paramtypes(type,*  ellipsis?)
 ellipsis()
     ',' '...'
 
-funcdecl(rettype name paramtypes)
 
 funcdef(rettype name params funcbody)
-rettype(type)
+    .addvar(name, rettype)
+    .enterscope(name)
+    'define' .var(name) params '{'
+    .indent()
+    &funcbody
+    .dedent()
+    .exitscope(name)
 
-params(param,*  ellipsis?)
+params(param,* ellipsis?)
     '(' .commasep(param*) ellipsis? ')'
 
 
-funcbody(entryblock block* )
-
-entryblock(instruction+ terminator)
+entryblock(instruction* terminator)
+    &instruction*
+    &terminator
 
 block(label instruction* terminator)
+    label ':'
+    =entryblock(instruction* terminator)
 
-label(identifier)
-
-terminator(branch)
 
 terminator(return)
-
+    ## Should functions always return a value, to be ignored when return type is void?
+    'ret' .top()
+    
 
 branch(label label)
+    'br' .top(), 'label' .unique(label), 'label' .unique(label)
+
 branch(label)
+    'br' 'label' .unique(label)
 
-
-instruction(directive)
-instruction(vardecl)
-instruction(load)
-instruction(store)
-instruction(cmp)
-instruction(call)
-instruction(pop)
-instruction(BINOP)
-
-directive(identifier  value,* )
 
 vardecl(type name)
+    .addvar(name, type)
+    .concat('%', name) '=' 'alloca' type
 
-value(directive)
-value(variable)
-
-variable(name)
-variable(name subscript)
-
-subscript(value)
 vardecl(type name constant)
+    =vardecl(type name)
+    'store' constant, .var(name)
 
+constval(constant)
+    .unique('const') '=' constant
 
 load(variable)
+    .unique(variable) '=' 'load' variable
+
 store(variable)
+    'store' .top(), variable
+
 cmp(CONDITION)
-call(name integer)
-pop()
+    .cmp(CONDITION)
+
+call(variable INTEGER)
+    .unique(variable) '=' 'call' variable '(' .fnargs(INTEGER) ')'
+
+
+instruction(BINOP)
+    .ssa(BINOP)         # generate static single assignment
+
+
+STACKOP('pop')
+    .pop()              # discard value on top of stack
+
+STACKOP('dup')
+    .dup()              # duplicate: push a copy of stack top value on stack
+
+
+variable(name)
+    .var(name)          # type and name
+    ## if name is a varargs function, also need function signature type
+
+
+variable(name subscript)
+
+
+subscript(variable)
+
+
+subscript(INTEGER)
+
 

@@ -72,10 +72,32 @@ For C, need to pop stack when the value of an expression is not used.  ####
 
 2013-05-11
 
+Renamed literals.{syntax, tokens} to constants.*, and 'literal' to 'constant' in specs,
+    to avoid confusion with grammar and defn literals.
+
+Use compiler directives for sbil 'const', 'pop', 'var', 'call', etc?
+    How recognize them? Don't want to have to put them in defn spec.
+Yikes, I'm getting sbil instructions confused with defn instructions!!
+
+
 Tokenizer
 
     Do we want to use tokenkinds on the right side of a production in .tokens specs?
+    Did I already prove that this was unnecessary?
+        Just use a nonterm instead, and add "KINDNAME => nontermname".
+    Easier for users without this restriction?   ###
     
+
+2013-05-13
+
+While generating sbil code, why not translate each instruction to LLVM?
+    May do this eventually.
+    For now, seems simpler to deal with one step at a time.
+    Good excercise to use the compiler itself again.
+    Syntax, token, and defn specs for sbil are good documentation; use them to verify them.
+        Parser will verify correct sbil syntax, produce errors.
+    
+
 
 
 

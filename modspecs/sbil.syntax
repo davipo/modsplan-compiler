@@ -38,7 +38,7 @@ ellipsis => ',' '...'
 
 funcbody => '{' NEWLINE entryblock block* '}'
 
-entryblock => INDENT instruction+ terminator DEDENT         # no label
+entryblock => INDENT instruction* terminator DEDENT         # no label
 
 block => label ':' NEWLINE INDENT instruction* terminator DEDENT
 
@@ -47,40 +47,38 @@ label => IDENTIFIER
 terminator => branch NEWLINE
 terminator => return NEWLINE
 
-branch => 'br' label ',' label      # pop value, jump to first label if true, second if false
+branch => 'br' label ',' label      # pop value, go to 1st label if true, 2nd if false
 branch => 'br' label
 
 return => 'ret'         # 0 or 1 value left on stack, according to rettype;
                         #   check that type matches.
 
 
-instruction => directive NEWLINE
 instruction => vardecl NEWLINE
+instruction => constval NEWLINE
 instruction => load NEWLINE
 instruction => store NEWLINE
 instruction => cmp NEWLINE
 instruction => call NEWLINE
-instruction => pop NEWLINE
-instruction => BINOP NEWLINE            # binary operation: pop 2 values, leave result
+instruction => STACKOP NEWLINE
+instruction => BINOP NEWLINE            # binary operation: pop 2 values, push result
 
-directive => '.' identifier '(' value,* ')'     # compiler directive
+vardecl => 'var' type name                  # (inside function) generates alloca
+vardecl => 'var' type name '=' constant     #   with initializer
 
-vardecl => 'var' type name                  # inside a function, generates alloca
-vardecl => 'var' type name '=' literal      #   with initializer
-
-value => directive
-value => literal        # integer, float, string
-value => variable
-
-variable => name
-variable => name subscript       # array or struct element
-
-subscript => '[' value ']'
-
+constval => 'const' constant        # integer, float, string (pushed on stack)
 
 load => 'load' variable
-store => 'store' variable       # pops top value from stack
-cmp => 'cmp' CONDITION          # pop 2 values, compare them, leave boolean result
-call => 'call' name integer     # integer is number of args on stack
-pop => 'pop'                    # discard value on top of stack
+store => 'store' variable           # (pops top value from stack)
+
+cmp => 'cmp' CONDITION              # pop 2 values, compare them, push boolean result
+
+call => 'call' variable INTEGER     # INTEGER gives number of args on stack
+
+
+variable => name
+variable => name subscript          # array or struct element
+
+subscript => '[' variable ']'
+subscript => '[' INTEGER ']'
 
