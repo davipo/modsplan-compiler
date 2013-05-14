@@ -9,20 +9,15 @@ use irtype      # intermediate representation types
 
 module.root => definition*
 
-definition => import NEWLINE
-definition => constdef NEWLINE
 definition => globalvar NEWLINE
 definition => typedef NEWLINE
 definition => funcdecl NEWLINE      # external or forward declaration
 definition => funcdef NEWLINE
 
-import => 'import' module
-module => identifier
-
-constdef => 'const' constant        # integer, float, string (generates global variable)
 
 globalvar => 'var' type name                # at module level, generates a global variable
-globalvar => 'var' type name '=' constant   # with initializer
+globalvar => 'var' type name '=' number     # with numeric initializer
+globalvar => 'var' type name '=' STRING     # with string initializer
 
 
 name => IDENTIFIER

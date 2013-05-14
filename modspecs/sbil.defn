@@ -2,33 +2,24 @@
 # Stack-Based Intermediate Language
 
 
-use irtype      # intermediate representation types
-
-
-definition(import)
-definition(constdef)
-definition(globalvar)
-definition(typedef)
-definition(funcdecl)
-definition(funcdef)
-
-import(module)
-module(identifier)
-
-
-constdef(constant)
-
-
 globalvar(type name)
+    .addvar(name, type)
+    .concat('@', name) '=' type
 
-name(identifier)
+globalvar(type name number)
+    .addvar(name, type)
+    .concat('@', name) '=' type number
 
-identifier(LOWERNAME)
-globalvar(type name constant)
+globalvar(type name STRING)
+    .addvar(name, type)
+    .concat('@', name) '= constant [' .len(STRING) 'x i8]' .concat('c"', STRING, '"')
+
+
+typedef(TYPEID type)
+    TYPEID '= type' type
 
 
 
-typedef(name type)
 
 
 funcdecl(rettype name paramtypes)
