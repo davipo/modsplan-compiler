@@ -1,0 +1,16 @@
+# constants.defn
+
+
+constant(STRING)
+    '[' .len(STRING) 'x i8]' .concat('c', STRING)
+
+
+number(INTEGER)
+    'i32' INTEGER
+
+number(FLOAT)
+    'float' FLOAT
+
+number(HEX)
+    'i32' HEX
+

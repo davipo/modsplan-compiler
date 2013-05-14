@@ -3,7 +3,7 @@
 # Based on LLVM
 
 
-use constants   # constant, number
+use constants   # constant, number, STRING, INTEGER, FLOAT, HEX
 use irtype      # intermediate representation types
 
 
@@ -16,8 +16,7 @@ definition => funcdef NEWLINE
 
 
 globalvar => 'var' type name                # at module level, generates a global variable
-globalvar => 'var' type name '=' number     # with numeric initializer
-globalvar => 'var' type name '=' STRING     # with string initializer
+globalvar => 'var' type name '=' constant   #   with initializer
 
 
 name => IDENTIFIER

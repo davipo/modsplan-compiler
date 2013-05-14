@@ -1,9 +1,7 @@
 # llvm.tokens
 
+use constants       # STRING, INTEGER, FLOAT, HEX
 use irtype
-
-
-INTEGER => D+
 
 
 GLOBALID => '@' ident

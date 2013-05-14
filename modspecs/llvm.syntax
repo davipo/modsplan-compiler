@@ -25,16 +25,18 @@ globalvardecl => GLOBALID '=' globalvarprops type initializer? section? alignmen
 
 globalvarprops => addrspace? LINKAGE? VISIBILITY?
 addrspace => 'addrspace' '(' INTEGER ')'
+
 initializer => constant
-section => 'section' string
-alignment => 'align' string
+
+section => 'section' STRING
+alignment => 'align' INTEGER
 
 
 functiondecl => 'declare' funcprops resulttype GLOBALID declparams alignment? gcname?
 
 funcprops => LINKAGE? VISIBILITY? CCONV? ADDRNAMING?
 resulttype => type PARAMATTR*
-gcname => 'gc' string
+gcname => 'gc' STRING
 
 declparams => '(' declparam,*  ellipsis? ')'
 declparam => type LOCALID? PARAMATTR*           # param name is optional

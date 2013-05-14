@@ -2,17 +2,16 @@
 # Stack-Based Intermediate Language
 
 
+use constants   # constant, number
+
+
 globalvar(type name)
     .addvar(name, type)
     .concat('@', name) '=' type
 
-globalvar(type name number)
+globalvar(type name constant)
     .addvar(name, type)
-    .concat('@', name) '=' type number
-
-globalvar(type name STRING)
-    .addvar(name, type)
-    .concat('@', name) '= constant [' .len(STRING) 'x i8]' .concat('c"', STRING, '"')
+    .concat('@', name) '=' type constant
 
 
 typedef(TYPEID type)
