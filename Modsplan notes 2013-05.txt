@@ -98,6 +98,17 @@ While generating sbil code, why not translate each instruction to LLVM?
         Parser will verify correct sbil syntax, produce errors.
     
 
+2013-05-15
+
+Comment as first line of defn gives error:   ###
+
+    Parsed 315 tokens of 669 total for modspecs/sbil.defn
+    Syntax error at NEWLINE token "": expecting instruction in modspecs/sbil.defn at line 55, column 87
+        ## Should functions always return a value, to be ignored when return type is void?
+
+
+Use .label() directive instead of processing branch instructions specially?
+    Problem generating llvm 'br' when it's recognized as a BR token.
 
 
 

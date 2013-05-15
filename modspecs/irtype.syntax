@@ -46,7 +46,7 @@ arraytype => '[' INTEGER 'x' type ']'
 
 structtype => '{' type,* '}'
 
-packedstructtype = '<{' type,* '}>'
+packedstructtype => '<{' type,* '}>'
 
 opaquetype => 'opaque'
     ##  needed?

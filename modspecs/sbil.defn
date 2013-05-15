@@ -22,7 +22,7 @@ funcdecl(rettype name paramtypes)
     .addvar(name, rettype)
     'declare' .var(name) paramtypes
 
-paramtypes(type,*  ellipsis?)
+paramtypes(type*  ellipsis?)
     '(' .commasep(type*) ellipsis? ')'
 
 ellipsis()
@@ -38,7 +38,7 @@ funcdef(rettype name params funcbody)
     .dedent()
     .exitscope(name)
 
-params(param,* ellipsis?)
+params(param* ellipsis?)
     '(' .commasep(param*) ellipsis? ')'
 
 
@@ -52,15 +52,16 @@ block(label instruction* terminator)
 
 
 terminator(return)
-    ## Should functions always return a value, to be ignored when return type is void?
     'ret' .top()
+    ## Should functions always return a value, to be ignored when return type is void?
     
 
 branch(label label)
-    'br' .top(), 'label' .unique(label), 'label' .unique(label)
+    .br() .top() ', label' .unique(label) ', label' .unique(label)
+##     'br' recognized as BR, can't use
 
 branch(label)
-    'br' 'label' .unique(label)
+    .br() 'label' .unique(label)
 
 
 vardecl(type name)
@@ -69,7 +70,7 @@ vardecl(type name)
 
 vardecl(type name constant)
     =vardecl(type name)
-    'store' constant, .var(name)
+    'store' constant ',' .var(name)
 
 
 constval(constant)
@@ -87,13 +88,13 @@ loadi(variable)
     '.loadi...??'
 
 store(variable)
-    'store' .top(), variable
+    'store' .top() ',' variable
 
 storei(variable)
     .unique('tmp') '= getelementptr inbounds' variable 'i32 0,' .top()
     .push('above with dereferenced type')
     # store stack(1) at index stack(0), pop both
-    'store' .top(), .top()
+    'store' .top() ',' .top()
 
 
 cmp(CONDITION)

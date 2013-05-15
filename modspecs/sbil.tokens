@@ -1,5 +1,7 @@
 # sbil.tokens
 
+enable newline
+enable indent
 
 use constants   # STRING, INTEGER, FLOAT, HEX
 use irtype
@@ -28,6 +30,11 @@ BINOP => 'ashr'
 BINOP => 'and'
 BINOP => 'or'
 BINOP => 'xor'
+
+
+# Stack pseudo-operations
+STACKOP => 'pop'        # discard value on top of stack
+STACKOP => 'dup'        # duplicate: push a copy of top value
 
 
 TYPEID => '%' identifier    # used for type alias
