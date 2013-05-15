@@ -71,25 +71,36 @@ vardecl(type name constant)
     =vardecl(type name)
     'store' constant, .var(name)
 
+
 constval(constant)
-    .unique('const') '=' constant
+    .push(constant)         # push puts type and value on stack
 
 load(variable)
-    .unique(variable) '=' 'load' variable
+    .load(variable) '=' 'load' variable
+    # .load() returns unique 'load' value, pushes it prefixed with dereferenced type
 
 store(variable)
     'store' .top(), variable
 
+
 cmp(CONDITION)
     .cmp(CONDITION)
+    # checks that top 2 values on stack have same type,
+    #   returns icmp or fcmp instruction with appropriate condition,
+    #   assigning to a unique name, and pushes name prefixed with 'i1' on stack.
+
 
 call(variable INTEGER)
-    .unique(variable) '=' 'call' variable '(' .fnargs(INTEGER) ')'
+    .call(variable) '=' 'call' variable '(' .fnargs(INTEGER) ')'
+    # .call() returns unique 'call' value, pushes it prefixed with defunced return type
 
 
 instruction(BINOP)
     .ssa(BINOP)         # generate static single assignment
-
+    # checks that top 2 values on stack have same type, 
+    #   returns appropriate ssa instruction, 
+    #   assigning to unique BINOP name, pushes it prefixed with type.
+    
 
 STACKOP('pop')
     .pop()              # discard value on top of stack
@@ -99,7 +110,7 @@ STACKOP('dup')
 
 
 variable(name)
-    .var(name)          # type and name
+    .var(name)          # pointer type and pointer to variable
     ## if name is a varargs function, also need function signature type
 
 
