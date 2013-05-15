@@ -32,6 +32,7 @@ class Compiler:
         if spec_dir == None:
             spec_dir = default_spec_dir
         langpath = os.path.join(spec_dir, langname)
+        
         self.parser = syntax.SyntaxParser(langpath, debug)  # load langname.{tokens, syntax}
         self.defs = defn.Definitions(default_defn_grammar_dir)    # initialize defn parser
         self.defs.load(langpath)                # load semantics from langname.defn
@@ -125,6 +126,7 @@ class Compiler:
         code = []
         if labels == None:
             labels = {}
+            
         for instruction in instruction_defs:
             instr = instruction.firstchild()
             
@@ -180,7 +182,7 @@ class Compiler:
             If 'use' false, ignore use status of parse nodes."""        
         wordtype = word_def.firstchild()
         
-        if wordtype.name in ('constant', 'LITERAL'):
+        if wordtype.name in ('LITERAL'):
             return defn.remove_quotes(wordtype.findtext())
                 
         elif wordtype.name == 'child':
@@ -201,16 +203,20 @@ class Compiler:
             Ignore use status of parse nodes when generating args."""
         name = directive.findtext()
         arg_defs = directive.findall('word')
+        
         if name == 'count':         # number of children of its argument
             nodename = defn.childname(arg_defs[0])
             codestring = str(source_node.firstchild(nodename).numchildren())
+            
         elif name == 'again':       # reuse child
             codestring = self.gen_word(source_node, arg_defs[0], use=False)
+            
         else:
             args = [self.gen_word(source_node, argdef, use=False) for argdef in arg_defs]
             codestring = '.' + name
             if args:
                 codestring += ' ' + ', '.join(args)
+            
         return codestring
         
 
@@ -220,6 +226,7 @@ def compile_src(sourcepath, codepath='', spec_dir=None, debug=''):
         If codepath is '*', write to sourcepath.<code_suffix>.
         Optional specification directory and debug flags."""
     langname = sourcepath.rpartition('.')[-1]
+    
     try:
         compiler = Compiler(langname, spec_dir, debug)      # initialize for langname
         code = compiler.compile(sourcepath)                 # compile source
@@ -230,6 +237,7 @@ def compile_src(sourcepath, codepath='', spec_dir=None, debug=''):
             with open(codepath, 'w') as outfile:
                 outfile.write(codestring)
         return codestring
+    
     except (None if 'b' in debug else Error) as exc:
         print exc
         return None
