@@ -56,8 +56,12 @@ return => 'ret'         # 0 or 1 value left on stack, according to rettype;
 
 instruction => vardecl NEWLINE
 instruction => constval NEWLINE
+
 instruction => load NEWLINE
+instruction => loadi NEWLINE
 instruction => store NEWLINE
+instruction => storei NEWLINE
+
 instruction => cmp NEWLINE
 instruction => call NEWLINE
 instruction => STACKOP NEWLINE
@@ -69,16 +73,14 @@ vardecl => 'var' type name '=' constant     #   with initializer
 constval => 'const' constant        # integer, float, string (pushed on stack)
 
 load => 'load' variable
+loadi => 'loadi' variable           # load variable indexed by stack top (replaced)
+
 store => 'store' variable           # (pops top value from stack)
+storei => 'storei' variable         # store stack(1) at index stack(0), pop both
 
 cmp => 'cmp' CONDITION              # pop 2 values, compare them, push boolean result
 
 call => 'call' variable INTEGER     # INTEGER gives number of args on stack
 
-
 variable => name
-variable => name subscript          # array or struct element
-
-subscript => '[' variable ']'
-subscript => '[' INTEGER ']'
 

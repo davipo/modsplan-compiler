@@ -75,12 +75,25 @@ vardecl(type name constant)
 constval(constant)
     .push(constant)         # push puts type and value on stack
 
+
 load(variable)
     .load(variable) '=' 'load' variable
     # .load() returns unique 'load' value, pushes it prefixed with dereferenced type
 
+loadi(variable)
+    # load variable indexed by stack top (replaced)
+    # .top() must be inttype, must be const if variable is struct
+    .unique('tmp') '= getelementptr inbounds' variable 'i32 0,' .top()
+    '.loadi...??'
+
 store(variable)
     'store' .top(), variable
+
+storei(variable)
+    .unique('tmp') '= getelementptr inbounds' variable 'i32 0,' .top()
+    .push('above with dereferenced type')
+    # store stack(1) at index stack(0), pop both
+    'store' .top(), .top()
 
 
 cmp(CONDITION)
@@ -112,14 +125,4 @@ STACKOP('dup')
 variable(name)
     .var(name)          # pointer type and pointer to variable
     ## if name is a varargs function, also need function signature type
-
-
-variable(name subscript)
-
-
-subscript(variable)
-
-
-subscript(INTEGER)
-
 
