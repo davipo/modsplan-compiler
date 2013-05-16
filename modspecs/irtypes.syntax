@@ -1,50 +1,89 @@
 # irtypes.syntax
 # Intermediate representation type system
-# Based on LLVM types
+# LLVM types, with minor pointer restriction to avoid recursive parsing problem
 
 
-# Firstclass types, can be produced by instructions
-type => primitivetype       # except void not firstclass
-type => pointertype
-type => vectortype
-type => arraytype           # array and struct types are aggregate types
-type => structtype
-type => packedstructtype
+type => primitivetype
+type => derivedtype
+type => TYPEID                  # named type (alias)
 
-# Not firstclass
-type => functype
-type => opaquetype
-
-type => TYPEID              # named type (alias)
-
-primitivetype => INTTYPE        # iN, N = integer (see irtypes.tokens)
-primitivetype => FLOATTYPE
+primitivetype => numerictype
 primitivetype => labeltype
+primitivetype => voidtype       # not firstclass
 primitivetype => metadatatype   # not used in derived types except as function argument
 
-primitivetype => voidtype       # not firstclass
+numerictype => INTTYPE          # iN, N = integer (see irtypes.tokens)
+numerictype => FLOATTYPE
 
 labeltype => 'label'
-metadatatype => 'metadata'
 voidtype => 'void'
+metadatatype => 'metadata'      # not used in derived types except as function argument
 
 
-pointertype => type '*'     # type may not be void or label (use i8 instead)
+derivedtype => pointertype
+derivedtype => vectortype       # for parallel processing, not an aggregate type
+derivedtype => aggregatetype
+derivedtype => functype         # not firstclass
+derivedtype => opaquetype       # not firstclass; used to create recursive structures
 
-functype => type '(' type,*  ellipsis? ')'      # return type must be firstclass or void
-                                                #    not label? functype? LangRef unclear.
 
-ellipsis => ',' '...'
+# Firstclass types can be produced by instructions.
+# They include: numeric, label, metadata, pointer, vector, and aggregate types.
 
-vectortype => '<' INTEGER 'x' type '>'      # for parallel processing, not an aggregate type
-                                            #   type must be int, float or pointer to those
-                                            #   size must be > 0
 
-arraytype => '[' INTEGER 'x' type ']'
+pointertype => pointabletype '*'        # (use i8* for label pointer)
 
-structtype => '{' type,* '}'            # type must have size (not void, label, func?)
+# Pointable types include all but void, label, metadata, opaque
+pointabletype => numerictype
+pointabletype => vectortype
+pointabletype => aggregatetype
 
-packedstructtype => '<{' type,* '}>'
+# Excluding pointer to pointer or function to avoid recursive parsing problem.
+#   Use a named type to create a pointer to these.
+# pointabletype => pointertype
+# pointabletype => functype
+
+
+vectortype => '<' INTEGER 'x' vectorelementtype '>'      
+    # for parallel processing, not an aggregate type
+    #   type must be int, float or pointer to those
+    #   size must be > 0
+
+vectorelementtype => numerictype '*'?
+
+
+aggregatetype => arraytype
+aggregatetype => structtype
+aggregatetype => packedstructtype
+
+arraytype => '[' INTEGER 'x' elementtype ']'
+
+structtype => '{' elementtype,* '}'
+
+packedstructtype => '<{' elementtype,* '}>'
+
+# Element type of aggregates "may be any type with a size".
+elementtype => numerictype
+elementtype => pointertype
+elementtype => vectortype
+elementtype => aggregatetype
+
+
+functype => returntype '(' argtype,*  ellipsis? ')'
+
+# Function return type must be firstclass or void.
+#   Not label? functype? LangRef unclear.
+# Unclear what are valid argument types.
+
+returntype => elementtype
+returntype => voidtype
+
+argtype => elementtype
+argtype => functype
+argtype => labeltype            # permitted?
+argtype => metadatatype
+
+ellipsis => ',' '...'       # indicates a variable number of args
+
 
 opaquetype => 'opaque'
-

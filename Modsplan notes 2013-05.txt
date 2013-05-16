@@ -111,7 +111,14 @@ Tried compiling squares.c1.sbil -- recursion limit exceeded.   ####
         trying all alternates to look for the longest parse.
     Want to be able to parse irtype.syntax -- this is the LLVM type syntax.
     Give up greedy parsing, or set limits on it?
-    
+
+
+2013-05-16
+
+    Unlimited recursion is a problem when an alternate begins with a direct ancestor.
+        This occurs in pointertype and functype.
+        Avoid the problem by restricting these to types other than pointer or func.
+            Can always create a named type (alias) to get the desired type.
 
 
 

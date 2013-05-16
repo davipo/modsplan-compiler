@@ -6,6 +6,12 @@ use constants   # constant, number
 use irtypes     # specifies types
 
 
+## irtypes does not include these because of recursive parsing problems.
+##      Added here for completeness.
+pointabletype => pointertype
+pointabletype => functype
+
+
 module.root => moduleitem*
 
 moduleitem => globalitem? COMMENT? NEWLINE

@@ -20,10 +20,10 @@ metadatatype => 'metadata'      # not used in derived types except as function a
 
 
 derivedtype => pointertype
-derivedtype => vectortype
+derivedtype => vectortype       # for parallel processing, not an aggregate type
 derivedtype => aggregatetype
 derivedtype => functype         # not firstclass
-derivedtype => opaquetype       # not firstclass (referenced only in structure type?)
+derivedtype => opaquetype       # not firstclass; used to create recursive structures
 
 
 # Firstclass types can be produced by instructions.
@@ -59,7 +59,10 @@ structtype => '{' elementtype,* '}'
 packedstructtype => '<{' elementtype,* '}>'
 
 # Element type of aggregates "may be any type with a size".
-elementtype => pointabletype        # include functype?
+elementtype => numerictype
+elementtype => pointertype
+elementtype => vectortype
+elementtype => aggregatetype
 
 
 functype => returntype '(' argtype,*  ellipsis? ')'
@@ -68,10 +71,11 @@ functype => returntype '(' argtype,*  ellipsis? ')'
 #   Not label? functype? LangRef unclear.
 # Unclear what are valid argument types.
 
-returntype => pointabletype
+returntype => elementtype
 returntype => voidtype
 
-argtype => pointabletype
+argtype => elementtype
+argtype => functype
 argtype => labeltype            # permitted?
 argtype => metadatatype
 
