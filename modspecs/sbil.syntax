@@ -34,7 +34,6 @@ rettype => type
 
 params => '(' param,*  ellipsis? ')'
 param => type name
-ellipsis => ',' '...'
 
 
 funcbody => '{' NEWLINE entryblock block* '}'

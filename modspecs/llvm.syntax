@@ -40,7 +40,6 @@ gcname => 'gc' STRING
 
 declparams => '(' declparam,*  ellipsis? ')'
 declparam => type LOCALID? PARAMATTR*           # param name is optional
-ellipsis => ',' '...'
 
 
 functiondef => 'define' funcprops resulttype GLOBALID params funcdefprops funcbody

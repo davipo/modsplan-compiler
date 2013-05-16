@@ -3,42 +3,48 @@
 # Based on LLVM types
 
 
-use constants       # constant, number
-
-
-type => primitivetype
+# Firstclass types, can be produced by instructions
+type => primitivetype       # except void not firstclass
 type => pointertype
-type => functype
 type => vectortype
-type => arraytype
+type => arraytype           # array and struct types are aggregate types
 type => structtype
 type => packedstructtype
+
+# Not firstclass
+type => functype
 type => opaquetype
+
 type => TYPEID              # named type (alias)
 
 primitivetype => INTTYPE        # iN, N = integer (see irtypes.tokens)
 primitivetype => FLOATTYPE
 primitivetype => labeltype
-primitivetype => voidtype
-primitivetype => metadatatype
+primitivetype => metadatatype   # not used in derived types except as function argument
+
+primitivetype => voidtype       # not firstclass
 
 labeltype => 'label'
-voidtype => 'void'
 metadatatype => 'metadata'
+voidtype => 'void'
 
 
-pointertype => type '*'
+pointertype => type '*'     # type may not be void or label (use i8 instead)
 
-functype => type '(' type,* ')'
+functype => type '(' type,*  ellipsis? ')'      # return type must be firstclass or void
+                                                #    not label? functype? LangRef unclear.
+
+ellipsis => ',' '...'
 
 vectortype => '<' INTEGER 'x' type '>'      # for parallel processing, not an aggregate type
+                                            #   type must be int, float or pointer to those
+                                            #   size must be > 0
 
 arraytype => '[' INTEGER 'x' type ']'
 
-structtype => '{' type,* '}'
+structtype => '{' type,* '}'            # type must have size (not void, label, func?)
 
 packedstructtype => '<{' type,* '}>'
 
 opaquetype => 'opaque'
-    ##  needed?
 
