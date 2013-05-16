@@ -3,7 +3,7 @@
 
 
 use constants   # constant, number
-use irtype      # specifies types
+use irtypes     # specifies types
 
 
 module.root => moduleitem*

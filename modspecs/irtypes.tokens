@@ -1,4 +1,4 @@
-# irtype.tokens
+# irtypes.tokens
 # Tokens for an intermediate representation type system
 #   Subset of LLVM types
 
