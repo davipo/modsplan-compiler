@@ -9,6 +9,7 @@ use irtype      # intermediate representation types
 
 module.root => definition*
 
+definition => NEWLINE               # handles comment lines
 definition => globalvar NEWLINE
 definition => typedef NEWLINE
 definition => funcdecl NEWLINE      # external or forward declaration

@@ -134,6 +134,7 @@ class SyntaxParser:
         for token in self.tokens[start:]:
             if token.name == 'COMMENT':
                 self.comments.setdefault(token.linenum, []).append(token.text)
+                self.log(5, 'COMMENT from line %d: %s' % (token.linenum, token.text))
                 numtokens += 1
             else:
                 break
@@ -251,10 +252,6 @@ class SyntaxParser:
             
             if failure:     # wrong item, alternate fails
                 break
-            else:
-                nt = self.parse_comments(start + numtokens)
-                    ## move to parse_item()?
-                numtokens += nt
         return failure, numtokens
     
     
@@ -281,6 +278,7 @@ class SyntaxParser:
                     self.log(3, token)      # if token display pending, show this one
                 self.log(5, '    %s found' % item, node)
                 self.newtoken = True    # show next token in trace
+                numtokens += self.parse_comments(start + numtokens)
             else:
                 self.log(5, '    %s not found' % item, node)
                 failure = item      # item not found
@@ -315,7 +313,7 @@ def test(source_filepath, grammar_dir=None, debug=''):
     try:
         print '\nParsing %s ... \n' % source_filepath
         parser = SyntaxParser(os.path.join(grammar_dir, langname), debug)
-        tree = parser.parse(source_filepath)
+        tree = parser.parse(source_filepath, enable_imports=('i' in debug))
         print "\n**** Syntax test done ****"
     except Error as exc:
         print exc
@@ -324,7 +322,7 @@ def test(source_filepath, grammar_dir=None, debug=''):
 
 
 # debugging output selectors: 
-#   o = tokens, p = prefixes, r = reassemble, s = syntax, t = tree, 
+#   o = tokens, p = prefixes, r = reassemble, s = syntax, t = tree, i = enable imports
 #   3, 4, 5 = parse trace levels
 
 if __name__ == '__main__':

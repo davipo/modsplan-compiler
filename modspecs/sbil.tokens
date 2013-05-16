@@ -50,3 +50,6 @@ firstchar => '_'
 followchar => firstchar
 followchar => D
 
+
+COMMENT => ';' P*
+

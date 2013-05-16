@@ -3,6 +3,13 @@
 use base
 
 
+## kludge to make labels more visible
+module(line+)
+    .indent()
+    &line+
+    .dedent()
+    
+
 extdecl(TYPE identifier)        # external variable
     'var' TYPE identifier
 

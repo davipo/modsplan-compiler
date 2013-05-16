@@ -31,8 +31,10 @@ identifier => LOWERNAME     # lowercase letters only
 terminal => UPPERNAME       # uppercase letters and '_'
 
 
-instructions => INDENT instruction+ NEWLINE* DEDENT
+instructions => INDENT instruction+ DEDENT
 
+instruction => NEWLINE                  # Handles a line containing only a COMMENT,
+                                        #   and extra indented blank lines at end.
 instruction => expansion NEWLINE        ### is this needed?
 instruction => rewrite NEWLINE
 instruction => branch NEWLINE

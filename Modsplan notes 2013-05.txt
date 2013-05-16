@@ -100,15 +100,19 @@ While generating sbil code, why not translate each instruction to LLVM?
 
 2013-05-15
 
-Comment as first line of defn gives error:   ###
-
-    Parsed 315 tokens of 669 total for modspecs/sbil.defn
-    Syntax error at NEWLINE token "": expecting instruction in modspecs/sbil.defn at line 55, column 87
-        ## Should functions always return a value, to be ignored when return type is void?
-
-
 Use .label() directive instead of processing branch instructions specially?
     Problem generating llvm 'br' when it's recognized as a BR token.
+
+Fixed problem with comment as first instruction in a definition.
+    Improved comment handling.
+
+Tried compiling squares.c1.sbil -- recursion limit exceeded.   ####
+    Recursive types in irtype.syntax are the problem, since parser is now greedy,
+        trying all alternates to look for the longest parse.
+    Want to be able to parse irtype.syntax -- this is the LLVM type syntax.
+    Give up greedy parsing, or set limits on it?
+    
+
 
 
 

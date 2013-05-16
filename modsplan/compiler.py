@@ -55,6 +55,8 @@ class Compiler:
         self.source_tree = self.parser.parse(source_filepath)
         self.labelsuffix.clear()
         codelines = self.codegen(self.source_tree)
+        numsourcelines = len(self.parser.tokens[0].lines)   # number of lines in source
+        codelines += self.get_comments(self.lastlinenum, numsourcelines + 1)
         
         # Indent lines of target code appropriately
         indent = 0
@@ -76,11 +78,6 @@ class Compiler:
         """ Generate code from source_node, using definitions loaded for language.
             Return list of target code instructions (strings)."""
         code = []
-        # Append any comments from previous line
-        for linenum in range(self.lastlinenum, source_node.linenum):
-            code += [';' + comment for comment in self.parser.comments.get(linenum, [])]
-            self.lastlinenum = source_node.linenum
-        
         # Traverse in preorder, generating code for any defns found
         definition = self.defs.get_defn(source_node)    # find definition matching this node
         if definition:
@@ -91,8 +88,20 @@ class Compiler:
             else:
                 for child in source_node.children:
                     code += self.codegen(child)
+        
+        # Append any comments from previous lines
+        code += self.get_comments(self.lastlinenum, source_node.linenum)
+        self.lastlinenum = max(self.lastlinenum, source_node.linenum)
         return code
 
+
+    def get_comments(self, beginlinenum, endlinenum):
+        """ Return list of comments in line number range."""
+        comments = []
+        for linenum in range(beginlinenum, endlinenum):
+            comments += [';' + comment for comment in self.parser.comments.get(linenum, [])]
+        return comments
+    
 
     def new_label(self, label, source_node, defn_node):
         """ Return a unique label for this node;
@@ -128,6 +137,8 @@ class Compiler:
             labels = {}
             
         for instruction in instruction_defs:
+            if not instruction.children:
+                continue
             instr = instruction.firstchild()
             
             if instr.name == 'expansion':       # expand next unused child with this name
