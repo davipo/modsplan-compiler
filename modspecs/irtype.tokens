@@ -5,5 +5,11 @@
 
 INTTYPE => 'i' D+
 
+FLOATTYPE => 'half'
+FLOATTYPE => 'float'
+FLOATTYPE => 'double'
+FLOATTYPE => 'fp128'
+FLOATTYPE => 'x86_fp80'
+FLOATTYPE => 'ppc_fp128'
 
 

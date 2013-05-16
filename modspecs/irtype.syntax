@@ -17,22 +17,13 @@ type => opaquetype
 type => TYPEID              # named type (alias)
 
 primitivetype => INTTYPE        # iN, N = integer (see irtypes.tokens)
-primitivetype => floattype
+primitivetype => FLOATTYPE
 primitivetype => labeltype
 primitivetype => voidtype
 primitivetype => metadatatype
 
-floattype => 'half'
-floattype => 'float'
-floattype => 'double'
-floattype => 'fp128'
-floattype => 'x86_fp80'
-floattype => 'ppc_fp128'
-
 labeltype => 'label'
-
 voidtype => 'void'
-
 metadatatype => 'metadata'
 
 
