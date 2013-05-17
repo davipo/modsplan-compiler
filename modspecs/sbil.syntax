@@ -16,24 +16,23 @@ definition => funcdecl NEWLINE      # external or forward declaration
 definition => funcdef NEWLINE
 
 
-globalvar => 'var' type name                # at module level, generates a global variable
-globalvar => 'var' type name '=' constant   #   with initializer
+globalvar => 'var' elementtype name                # (module level) makes a global variable
+globalvar => 'var' elementtype name '=' constant   #   with initializer
 
 
 name => IDENTIFIER
 
 
-typedef => 'type' TYPEID '=' type
+typedef => 'type' TYPEID '=' type           # any type except void
 
 
-funcdecl => 'declare' rettype name paramtypes   # external (or forward?) function
-paramtypes => '(' type,*  ellipsis? ')'
+funcdecl => 'declare' returntype name paramtypes    # external (or forward?) function
+paramtypes => '(' argtype,*  ellipsis? ')'
 
-funcdef => 'func' rettype name params funcbody
-rettype => type
+funcdef => 'func' returntype name params funcbody
 
 params => '(' param,*  ellipsis? ')'
-param => type name
+param => argtype name
 
 
 funcbody => '{' NEWLINE entryblock block* '}'
@@ -50,7 +49,7 @@ terminator => return NEWLINE
 branch => 'br' label ',' label      # pop value, go to 1st label if true, 2nd if false
 branch => 'br' label
 
-return => 'ret'         # 0 or 1 value left on stack, according to rettype;
+return => 'ret'         # 0 or 1 value left on stack, according to returntype;
                         #   check that type matches.
 
 
@@ -67,8 +66,8 @@ instruction => call NEWLINE
 instruction => STACKOP NEWLINE
 instruction => BINOP NEWLINE            # binary operation: pop 2 values, push result
 
-vardecl => 'var' type name                  # (inside function) generates alloca
-vardecl => 'var' type name '=' constant     #   with initializer
+vardecl => 'var' elementtype name                   # (inside function) generates alloca
+vardecl => 'var' elementtype name '=' constant      #   with initializer
 
 constval => 'const' constant        # integer, float, string (pushed on stack)
 

@@ -4,7 +4,7 @@ enable newline
 enable indent
 
 use constants   # STRING, INTEGER, FLOAT, HEX
-use irtype
+use irtypes
 
 
 # Compare conditions

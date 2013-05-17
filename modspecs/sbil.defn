@@ -5,32 +5,32 @@
 use constants   # constant, number
 
 
-globalvar(type name)
-    .addvar(name, type)
-    .concat('@', name) '=' type
+globalvar(elementtype name)
+    .addvar(name, elementtype)
+    .concat('@', name) '=' elementtype
 
-globalvar(type name constant)
-    .addvar(name, type)
-    .concat('@', name) '=' type constant
+globalvar(elementtype name constant)
+    .addvar(name, elementtype)
+    .concat('@', name) '=' elementtype constant
 
 
 typedef(TYPEID type)
     TYPEID '= type' type
 
 
-funcdecl(rettype name paramtypes)
-    .addvar(name, rettype)
+funcdecl(returntype name paramtypes)
+    .addvar(name, returntype)
     'declare' .var(name) paramtypes
 
-paramtypes(type*  ellipsis?)
-    '(' .commasep(type*) ellipsis? ')'
+paramtypes(argtype*  ellipsis?)
+    '(' .commasep(argtype*) ellipsis? ')'
 
 ellipsis()
     ',' '...'
 
 
-funcdef(rettype name params funcbody)
-    .addvar(name, rettype)
+funcdef(returntype name params funcbody)
+    .addvar(name, returntype)
     .enterscope(name)
     'define' .var(name) params '{'
     .indent()
@@ -64,12 +64,12 @@ branch(label)
     .br() 'label' .unique(label)
 
 
-vardecl(type name)
-    .addvar(name, type)
-    .concat('%', name) '=' 'alloca' type
+vardecl(elementtype name)
+    .addvar(name, elementtype)
+    .concat('%', name) '=' 'alloca' elementtype
 
-vardecl(type name constant)
-    =vardecl(type name)
+vardecl(elementtype name constant)
+    =vardecl(elementtype name)
     'store' constant ',' .var(name)
 
 
