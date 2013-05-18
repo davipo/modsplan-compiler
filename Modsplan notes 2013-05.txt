@@ -120,6 +120,47 @@ Tried compiling squares.c1.sbil -- recursion limit exceeded.   ####
         Avoid the problem by restricting these to types other than pointer or func.
             Can always create a named type (alias) to get the desired type.
 
+    Revised irtypes to constrain types appropriately.
+    Revised sbil specs to used constrained types.
+
+
+Generating LLVM
+
+    Using compiler directives to translate sbil to llvm looks difficult, messy.
+    "There's got to be a better way."
+    Can we write some kind of defn spec that will generate llvm more directly?
+    
+    Try writing llvm code in outline form, using llvmpy objects.
+    
+    Documentation for llvmpy is incomplete.
+        How do I make a function declaration?
+            Is it just a function without any basicblocks added?
+                Yes, good guess -- found that in LLVM Programmer's Manual!
+            Forward declaration may not be needed, but external declaration?
+
+
+2013-05-17
+
+    Building LLVM code with llvmpy looks easier than translating to LLVM Assembler,
+        which seems less well specified.
+    The LLVM API (and llvmpy wrapper) handles symbols and types.
+    The assembler output may also automatically generate names for temporary values,
+        but we may want to give more readable names.
+
+    Shall I create compiler directives to generate LLVM objects?
+
+    Complicated stuff is easier to specify with llvmpy objects,
+        but simple stuff (types, constants) is more complicated!
+    With string-based defn, irtypes needs no defn, types are the same as in sbil;
+        but with llvmpy defn, we need to construct Type objects.
+    
+    With llvmpy defn, we need to extract the types of params to create a function type,
+        then set their names after the function is created.
+
+    Could try a mixed approach, using Module.from_assembly() to create some objects.
+
+    Better to generate LLVM without needing to install llvmpy and LLVM.
+
 
 
 
