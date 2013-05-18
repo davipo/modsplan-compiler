@@ -38,6 +38,7 @@ STACKOP => 'dup'        # duplicate: push a copy of top value
 
 
 TYPEID => '%' identifier    # used for type alias
+## Can we eliminate the '%' marker?
 
 IDENTIFIER => identifier
 
