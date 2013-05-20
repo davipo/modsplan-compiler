@@ -149,10 +149,11 @@ class Grammar:
 
     def show_prefixes(self):
         """ Return text table of prefixes of all nonterms."""
-        text = '\nPrefixes:\n'
+        lines = ['\nPrefixes:\n']
         for name, nonterm in self.nonterms.items():
-            text += '%s: %s\n' % (name, ' '.join(nonterm.prefixes))
-        return text + '\n'
+            lines += ['%s: %s' % (name, ' '.join(nonterm.prefixes))]
+        lines.sort()
+        return '\n'.join(lines) + '\n'
     
     
     def load_grammar(self, filepath):
