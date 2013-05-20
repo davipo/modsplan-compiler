@@ -196,7 +196,7 @@ class Tokenizer:
         """ Look for match with nonterm at start of text.
             Return number of chars matched (-1 if no match).
         """
-        if debug > 2:
+        if '2' in debug:
             print 'match nonterm %s with "%s":' % (nonterm.name, text)
         maxchars = -1       # length of longest token that matched
         for alt in nonterm.alternates:
@@ -208,6 +208,8 @@ class Tokenizer:
                     skip = True
                     continue            # on to next item
                 length = self.match_item(text[col:], item, skip)
+                if '2' in debug:
+                    print '   %d chars of "%s" matched %s' % (length, text[col:], item)
                 if length == -1:        # if item fails to match
                     break                   # try next alternate
                 skip &= (length == 0)   # stop skip if literal found
@@ -223,8 +225,6 @@ class Tokenizer:
         """ Look for match with item at start of text, return # of chars matched,
             or -1 if no match. If skip, skip chars until item is found, or end.
         """
-        if debug > 2:
-            print '   match_item %s with "%s"' % (item, text)
         if text == '':
             return (0 if item.quantifier in '?*' else -1)
         col = 0
@@ -243,6 +243,9 @@ class Tokenizer:
         while col < len(text):
             length = self.match_single(text[col:], item)
                 # we have a match unless length == -1
+            if '3' in debug:
+                print '      %d chars of "%s" match %s' % (length, text[col:], item)
+                print '      col =', col
                 
             # handle quantifier repetitions
             if item.quantifier in '?*' or (item.quantifier == '+' and col > 0):
@@ -329,8 +332,7 @@ def reassemble(tokens):
     return result
 
 
-
-debug = 1
+debug = ''
 
 def test(source_filepath):
     global t
@@ -348,7 +350,7 @@ def test(source_filepath):
     print
         
     tokens = t.get_tokens(source_filepath)
-    if debug == 1:
+    if '1' in debug:
         print 'Tokens from ' + source_filepath + ':\n'
         for tkn in tokens:
             print tkn   
@@ -360,10 +362,10 @@ def test(source_filepath):
 import sys
 
 if __name__ == '__main__':
-
-    if len(sys.argv) != 2:
-        print 'Usage: %s <source_filepath>' % sys.argv[0]
-    else:    
-        source_filepath = sys.argv[1]
+    args = sys.argv[1:] + ['']
+    if len(args) in (2, 3):
+        source_filepath, debug = args[:2]
         test(source_filepath)
+    else:    
+        print 'Usage: %s <source_filepath> [<debug_flags>]' % sys.argv[0]
 
