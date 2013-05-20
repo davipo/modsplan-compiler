@@ -223,47 +223,48 @@ class Tokenizer:
 
     def match_item(self, text, item, skip):
         """ Look for match with item at start of text, return # of chars matched,
-            or -1 if no match. If skip, skip chars until item is found, or end.
+            or -1 if no match. If skip, skip chars until item is found.
         """
         if text == '':
             return (0 if item.quantifier in '?*' else -1)
-        col = 0
         item_text = item.text()
 
         if skip:
             # last item was character class P*, so match any chars before current item
             #   (current item must be a literal, checked when grammar loaded)
-            col = text.find(item_text)
-            if col == -1:       # item not found; but it may have zero occurrences, so
-                col = 0         #   don't fail, just no progress (try next item)
+            column = text.find(item_text)
+            if column == -1:
+                return column                       # not found
             else:
-                return col + len(item_text)     # found it, move past it
-        
-        # repeat item as quantifier allows
-        while col < len(text):
-            length = self.match_single(text[col:], item)
-                # we have a match unless length == -1
-            if '3' in debug:
-                print '      %d chars of "%s" match %s' % (length, text[col:], item)
-                print '      col =', col
-                
-            # handle quantifier repetitions
-            if item.quantifier in '?*' or (item.quantifier == '+' and col > 0):
-                # can do zero occurrences, so don't need to match
-                length = max(0, length)     # 0 is worst case
-            if item.quantifier not in '*+':   # can't repeat
-                return length       # first time through, col == 0
-            if length <= 0:
-                return col
-            col += length
+                return column + len(item_text)      # found it, move past it
             
-            if item.separator and col < len(text):       
+        length = self.match_single(text, item)
+        if length == -1:        # not a match
+            if item.quantifier in '?*':
+                length = 0          # zero occurrences OK, report a zero length match
+            return length
+        
+        # we have a match
+        if item.quantifier not in '*+':     # no repeat allowed
+            return length
+        if length == 0:                     # zero length match, can't repeat
+            return length
+        column = length
+
+        # repeat item as quantifier allows
+        while column < len(text):
+            length = self.match_single(text[column:], item)
+            if length <= 0:
+                return column       # done, no more repeats
+            column += length
+            
+            if item.separator and column < len(text):       
                 # if item has separator, next char must be separator, or no repeat
-                if text[col] == item.separator:
-                    col += 1
+                if text[column] == item.separator:
+                    column += 1
                 else:
-                    return col
-        return col
+                    return column   # no separator, done
+        return column
     
     
     def match_single(self, text, item):
@@ -280,6 +281,8 @@ class Tokenizer:
         else:   # item must be a nonterminal
             nonterm = self.tokendef.nonterms[item_text]
             length = self.match_nonterm(text, nonterm)
+        if '3' in debug:
+            print '      %d chars of "%s" match %s' % (length, text, item)
         return length
     
 
