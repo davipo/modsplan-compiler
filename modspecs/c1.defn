@@ -28,6 +28,8 @@ funcdefinition(declspecifier identifier functiondeclarator compoundstatement)
     'func' declspecifier identifier functiondeclarator '{'
     .indent()
     &compoundstatement
+    .return()       # if previous instruction not a terminator and func type is void,
+    #                   insert 'ret', else error.
     .dedent()
     '}'
 
@@ -68,6 +70,12 @@ for(expression? expression? statement)
         'br' for
     forend:
 
+
+return(expression?)
+    .returncheck(expression?)   # empty only if func type is void
+    &expression?
+    'ret'
+    
     
 assignexpr(lvalue expression)
     &expression

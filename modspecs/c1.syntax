@@ -70,6 +70,7 @@ statement => while
 statement => for
 statement => compoundstatement
 statement => ';'
+statement => return ';'
 statement => expression ';'
 
 if => 'if' '(' test ')' suite else?
@@ -79,6 +80,8 @@ while => 'while' '(' test ')' suite
 
 for => 'for' '(' expression? ';' expression? ';' expression? ')' statement
 for => 'for' '(' declaration expression? ';' expression? ')' statement
+
+return => 'return' expression?
 
 suite => statement      # for compatibility with base.defn
 
