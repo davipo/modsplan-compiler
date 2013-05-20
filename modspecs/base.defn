@@ -21,6 +21,7 @@ if(test suite else?)
 
 
 while(test suite)
+    'br' while          # (terminate previous block)
     while:
         &test
         'br' whiletrue, whileend

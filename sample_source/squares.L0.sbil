@@ -4,6 +4,7 @@ func void squares() {
     var i32 i
     const 1
     store i
+    br while9
 while9:
     load i
     const 20

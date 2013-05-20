@@ -24,6 +24,7 @@ forbegin6:
     br for6
 forend6:
     var i32 i = 1
+    br while11
 while11:
     load i
     const 20
