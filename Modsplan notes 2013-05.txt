@@ -162,5 +162,15 @@ Generating LLVM
     Better to generate LLVM without needing to install llvmpy and LLVM.
 
 
+Comments not working:   ####
+
+    declare  ;/* squares.c1 */ i32 printf()
+
+;# squares.L0
+declare i32 printf()
+func void squares() {
+    var i32 i
+    ;## try var int i = 1
+    ;## try var int i = 1
 
 

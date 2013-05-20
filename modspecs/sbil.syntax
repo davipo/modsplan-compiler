@@ -53,6 +53,8 @@ return => 'ret'         # 0 or 1 value left on stack, according to returntype;
                         #   check that type matches.
 
 
+instruction => NEWLINE      # allow for a line containing only a COMMENT
+
 instruction => vardecl NEWLINE
 instruction => constval NEWLINE
 
