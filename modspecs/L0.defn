@@ -10,8 +10,12 @@ use base
 #     .dedent()
     
 
-extdecl(TYPE identifier)        # external variable
+globalvar(TYPE identifier)
     'var' TYPE identifier
+
+globalvar(TYPE identifier constant)
+    'var' TYPE identifier '=' constant
+
 
 extfunc(TYPE identifier)        # external function (for I/O, etc.)
     'declare' TYPE identifier '(' ')'
@@ -20,18 +24,37 @@ extfunc(TYPE identifier)        # external function (for I/O, etc.)
 vardecl(TYPE identifier)        # (inside a function)
     'var' TYPE identifier
 
+vardecl(TYPE identifier constant)
+    'var' TYPE identifier '=' constant
+
 
 statement(call)
     &call
     'pop'       # discard result
 
 
+funcdef(VOID identifier params suite)
+    'func' VOID identifier params '{'
+    .indent()
+    &suite
+    'ret'
+    .dedent()
+    '}'
+
 funcdef(TYPE identifier params suite)
     'func' TYPE identifier params '{'
     .indent()
     &suite
+    ## check for appropriate return statement?
     .dedent()
     '}'
+
+
+return(test?)
+    .returncheck(test?)     # test must be empty only if func TYPE is void
+    &test?
+    'ret'
+
 
 params(identifier*)
     '(' identifier* ')'

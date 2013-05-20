@@ -5,40 +5,44 @@
 use expr        # common expression syntax
 
 
-module.root => line+
+module.root => declaration+
 
-line => NEWLINE
-line => statement
+declaration => NEWLINE
+declaration => globalvar NEWLINE
+declaration => extfunc NEWLINE
+declaration => funcdef
 
-
-statement => extdecl NEWLINE
-statement => extfunc NEWLINE
-statement => vardecl NEWLINE
-statement => if
-statement => while
-statement => funcdef
-statement => call NEWLINE
-statement => assignment NEWLINE
-
-extdecl => 'external' TYPE identifier
+globalvar => 'var' TYPE identifier
+globalvar => 'var' TYPE identifier '=' constant
 
 extfunc => 'external' TYPE identifier '('  ')'      # external function
 
-vardecl => 'var' TYPE identifier 
 
+funcdef => 'def' VOID identifier params ':' NEWLINE suite
+funcdef => 'def' TYPE identifier params ':' NEWLINE suite
+
+params => '(' identifier,* ')'
+
+suite => INDENT statement+ DEDENT
+
+statement => NEWLINE
+statement => vardecl
+statement => if
+statement => while
+statement => return NEWLINE
+statement => call NEWLINE
+statement => assignment NEWLINE
+
+vardecl => 'var' TYPE identifier 
+vardecl => 'var' TYPE identifier '=' constant
 
 if => 'if' test ':' NEWLINE suite else? 
 else => 'else' ':' NEWLINE suite
 
-suite => INDENT line+ DEDENT
-
-
 while => 'while' test ':' NEWLINE suite
 
-
-funcdef => 'def' TYPE identifier params ':' NEWLINE suite
-params => '(' identifier,* ')'
-
+return => 'return' test?    # return value must match return TYPE;
+                            #   no value iff TYPE is void.
 
 assignment => designator ASSIGN test
 

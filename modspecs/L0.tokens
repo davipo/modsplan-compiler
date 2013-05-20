@@ -22,13 +22,18 @@ NOT_OP => 'not'
 
 
 # Must appear before NAME from base.tokens
-KEYWORD => 'declare'
+KEYWORD => 'external'
+KEYWORD => 'var'
+KEYWORD => 'def'
+KEYWORD => 'return'
 
 
 # Must appear before NAME from base.tokens
 TYPE => 'int'
 TYPE => 'float'
-TYPE => 'void'
 # TYPE => 'string'
+
+VOID => 'void'   # special handling, not a TYPE
+
 
 use base        # include after alphabetic tokens
