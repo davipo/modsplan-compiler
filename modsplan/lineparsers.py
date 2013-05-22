@@ -1,5 +1,3 @@
-#!/usr/local/bin/python
-
 # lineparsers.py
 # Modsplan line parsers
 # Copyright 2013 by David H Post, DaviWorks.com.
@@ -19,10 +17,31 @@ import os
 import_command = 'use '
 
 
+class Location(object):
+    """ Location of a line or token in text.
+        Includes filepath, linenum (1-origin), (indent) level, column (1-origin)."""
+    
+    def __init__(self):
+        self.filepath = ''          # file containing line
+        self.lines = []             # lines of text of file
+        self.linenum = 0            # line number (1-origin)
+        self.level = 0              # indentation level of line
+        self.column = 0             # column number (1-origin)
+    
+    def line(self):
+        """ Line of text at this location."""
+        if self.linenum and self.lines:
+            return self.lines[self.linenum - 1]
+        else:
+            return ''
+
+
 class Error(Exception):
     """ Convenient error reporting."""
+    
     def __init__(self, message, location=None, extra=''):
         """ If location has nonempty filepath, linenum, column, add these to message.
+            If text of line available, append to message with column pointer.
             If extra nonempty, append it as an additional line."""
         self.message = message
         if location:
@@ -50,8 +69,13 @@ class LineParser(object):
     def __init__(self, iterator):
         """ Create line parser from iterator of strings (one per line);
             linenum attribute gives line number of last line served (starting at 1)."""
-        self.lines = iterator
-        self.linenum = 0        # number of lines generated (also current line number)
+        self.location = Location()
+        self.location.lines = iterator
+        self.location.linenum = 0       # number of lines generated (also current line number)
+
+    def error(self, message, extra=''):
+        """ Return Error exception object for current location."""
+        return Error(message, self.location, extra)
         
     def __iter__(self):
         """ Returns an iterator of lines of source."""
@@ -59,8 +83,8 @@ class LineParser(object):
         
     def generator(self):
         """ Generator (iterator) of lines of source."""
-        for line in self.lines:
-            self.linenum += 1
+        for line in self.location.lines:
+            self.location.linenum += 1
             for procline in self.process_line(line):
                 yield procline
     
@@ -88,7 +112,7 @@ class IndentParser(LineParser):
             If track_indent, level attribute gives indentation level of last line served."""
         LineParser.__init__(self, iterator)
         self.track_indent = track_indent    # set False to disable level computation
-        self.level = 0                      # indentation level
+        self.location.level = 0             # indentation level
         self.indent = ''                    # indent chars: one tab or string of spaces
     
     def process_line(self, line):
@@ -98,16 +122,16 @@ class IndentParser(LineParser):
             # compute indentation level
             indentstr = self.indentation(line)      # all the whitespace at start of line
             if len(indentstr) == 0:
-                self.level = 0
+                self.location.level = 0
             elif self.indent:
                 # not first indent, check that indent is multiple of first indent
-                self.level, extra = divmod(len(indentstr), len(self.indent))
+                self.location.level, extra = divmod(len(indentstr), len(self.indent))
                 if not indentstr.startswith(self.indent) or extra != 0:
-                    raise Error('Indent is not a multiple of first indent', self)
+                    raise self.error('Indent is not a multiple of first indent')
             else:
                 # this is first indent, set indent string for current text
                 self.indent = indentstr
-                self.level = 1
+                self.location.level = 1
         yield line
     
     def indentation(self, line):
@@ -119,7 +143,7 @@ class IndentParser(LineParser):
         if whitespace:
             first = whitespace[0]
             if first not in (' ', '\t') or any(char != first for char in whitespace):
-                raise Error('Bad indentation, must be all tabs or all spaces', self)
+                raise self.error('Bad indentation, must be all tabs or all spaces')
         return whitespace
     
 
@@ -131,18 +155,17 @@ class FileParser(IndentParser):
     def __init__(self, filepath, track_indent=False):
         """ Create line parser from text file at filepath.
             Option to track indentation (see IndentParser), disabled by default."""
-        self.filepath = filepath
         try:
             filetext = open(filepath).read()
         except IOError as exc:
             raise Error('Error loading file ' + filepath, extra=str(exc))
         lines = filetext.splitlines()
         IndentParser.__init__(self, lines, track_indent)
+        self.location.filepath = filepath
 
 
 class ImportParser(FileParser):
-    """ Serves lines of text (without line end chars) from file; 
-            implements an iterator; tracks line number.
+    """ Serves (linetext, location) from file; implements an iterator; tracks line number.
         Recursively includes other files as specified in import commands,
             keeping a list of imports to avoid repeats and loops.
         Option to track indentation level."""
@@ -151,7 +174,6 @@ class ImportParser(FileParser):
         """ Create import parser from text file at filepath.
             Option to track indentation (see IndentParser), disabled by default.
             Optional param 'imported' is a list of filepaths already imported.
-            Yields (line, info), info has attributes linenum, (indent) level, filepath.
         """
         FileParser.__init__(self, filepath, track_indent)
         if imported == None:
@@ -165,7 +187,7 @@ class ImportParser(FileParser):
         """ Generator of processed lines. If a line begins <import_command> <import>,
             yield lines of file <import>.ext in place of this line, else yield line. 
             Imported file uses directory and extension of parent file.
-            Yields (line, info), info has attributes linenum, (indent) level, filepath.
+            Yields (line, location); location is a Location object.
         """
         # overriding FileParser.process_line(), so do its processing first
         for pline in FileParser.process_line(self, line):
@@ -178,11 +200,11 @@ class ImportParser(FileParser):
                     for import_line in importer:
                         yield import_line
             else:
-                yield (pline, self)
+                yield (pline, self.location)
 
 
 class LineInfoParser(LineParser):
-    """ Simplifies access to line data, yielding line text directly.
+    """ Simplifies access to line location, while yielding line text directly.
         Serves lines of text (without line end chars) from file; 
             implements an iterator; tracks line number.
         Recursively includes other files as specified in import commands,
@@ -193,25 +215,19 @@ class LineInfoParser(LineParser):
         """ Create line parser from text file at filepath.
             Option to track indentation (see IndentParser), disabled by default."""
         self.parser = ImportParser(filepath, track_indent)
-        # line info, updated for each line served
-        self.linenum = 0
-        self.level = 0
-        self.filepath = filepath
-        self.lines = self.parser.lines
+        self.location = self.parser.location    # updated for each line served
            
     def generator(self):
         """ Generator (iterator) of lines of file."""
-        for line, info in self.parser:
-            self.linenum = info.linenum
-            self.level = info.level
-            self.filepath = info.filepath
-            self.lines = info.lines
+        for line, location in self.parser:
+            self.location = location
             yield line
 
 
 def test_parse(filepath):
     lines = LineInfoParser(filepath, track_indent=True)
     for line in lines:
-        filename = os.path.basename(lines.filepath)
-        print '%20s %2d %1d %s' % (filename, lines.linenum, lines.level, line)
+        loc = lines.location        # updated for each line
+        filename = os.path.basename(loc.filepath)
+        print '%20s %2d %1d %s' % (filename, loc.linenum, loc.level, line)
 
