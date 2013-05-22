@@ -1,17 +1,14 @@
 ;# squares.L0
 declare i32 printf()
 func void squares() {
-    var i32 i
-    ;## try var int i = 1
-    const 1
-    store i
-    br while9
-while9:
+    var i32 i = 1
+    br while7
+while7:
     load i
     const 20
     cmp le
-    br whiletrue9, whileend9
-whiletrue9:
+    br whiletrue7, whileend7
+whiletrue7:
     const "%2d %4d"
     load i
     load i
@@ -24,7 +21,7 @@ whiletrue9:
     const 1
     add
     store i
-    br while9
-whileend9:
+    br while7
+whileend7:
     ret
 }
