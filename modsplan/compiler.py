@@ -32,12 +32,13 @@ class Compiler:
         if spec_dir == None:
             spec_dir = default_spec_dir
         langpath = os.path.join(spec_dir, langname)
+        self.comments = []          # collected comments, to insert after current instruction
+        self.level = 0              # phrase level; 0 when generating whole instructions
         
         self.parser = syntax.SyntaxParser(langpath, debug)  # load langname.{tokens, syntax}
         self.defs = defn.Definitions(default_defn_grammar_dir)    # initialize defn parser
         self.defs.load(langpath)                # load semantics from langname.defn
         self.labelsuffix = {}           # key is label, value is last unique suffix used
-        self.lastlinenum = 0            # line number of last source line generated
         
         if 'e' in debug:
             print self.defs.defn_tree.show()        # parse tree of language definitions
@@ -53,10 +54,19 @@ class Compiler:
         if '2' in self.debug:
             print '\nParsing %s ...' % source_filepath
         self.source_tree = self.parser.parse(source_filepath)
+        
         self.labelsuffix.clear()
-        codelines = self.codegen(self.source_tree)
-        numsourcelines = len(self.parser.tokens[0].lines)   # number of lines in source
-        codelines += self.get_comments(self.lastlinenum, numsourcelines + 1)
+        self.comments = []
+        self.level = 0
+        codelines = []
+        
+        # Output initial comments
+        for child in self.source_tree.children:
+            if child.name == 'COMMENT':
+                codelines += [';' + child.findtext()]
+        
+        # Generate code
+        codelines += self.codegen(self.source_tree)
         
         # Indent lines of target code appropriately
         indent = 0
@@ -78,29 +88,24 @@ class Compiler:
         """ Generate code from source_node, using definitions loaded for language.
             Return list of target code instructions (strings)."""
         code = []
+        
         # Traverse in preorder, generating code for any defns found
         definition = self.defs.get_defn(source_node)    # find definition matching this node
         if definition:
             code += self.gen_instructions(source_node, definition)
+            #print 'code for ' + source_node.name
+            #print '   ', code
+            #print
+        
         else:   # no definition found; generate code for any children
             if source_node.isterminal():
-                code += [source_node.findtext()]
+                if source_node.name != 'COMMENT':
+                    code += [source_node.findtext()]    # insert text of terminal nodes
             else:
                 for child in source_node.children:
                     code += self.codegen(child)
         
-        # Append any comments from previous lines
-        code += self.get_comments(self.lastlinenum, source_node.linenum)
-        self.lastlinenum = max(self.lastlinenum, source_node.linenum)
         return code
-
-
-    def get_comments(self, beginlinenum, endlinenum):
-        """ Return list of comments in line number range."""
-        comments = []
-        for linenum in range(beginlinenum, endlinenum):
-            comments += [';' + comment for comment in self.parser.comments.get(linenum, [])]
-        return comments
     
 
     def new_label(self, label, source_node, defn_node):
@@ -135,7 +140,7 @@ class Compiler:
         code = []
         if labels == None:
             labels = {}
-            
+        
         for instruction in instruction_defs:
             if not instruction.children:
                 continue
@@ -157,7 +162,6 @@ class Compiler:
             elif instr.name == 'label':     # insert label, compile block below it
                 label = self.get_label(instr.findtext(), labels, source_node, instruction)
                 code.append(label + ':')
-                ### option to indent output instructions under label?
                 instructions = instruction.find('instructions?').findall('instruction')
                 code += self.gen_instructions(source_node, instructions, labels)
                 
@@ -168,23 +172,34 @@ class Compiler:
                 opcode = defn.remove_quotes(instr.findtext())
                 code.append(opcode + ' ' + ', '.join(args))
                 
-            elif instr.name == 'word+':         # generate a line of code
+            elif instr.name == 'word+':         # generate a phrase or line of code
+                self.level += 1
                 words = [self.gen_word(source_node, word) for word in instr.findall('word')]
-                words = [word for word in words if word.strip()]        # remove empty words
-                line = ' '.join(words)
-                line = line.replace(' (', '(').replace('( ', '(').replace(' )', ')')
+                self.level -= 1
+                words = filter(str.strip, words)    # remove empty words
+                phrase = ' '.join(words)
+                phrase = phrase.replace(' (', '(').replace('( ', '(').replace(' )', ')')
                     # fix paren spacing
-                code.append(line)
+                code.append(phrase)
                 
             else:
                 message = 'Unrecognized instruction kind "%s"' % instr.name
                 raise Error(message, self.defs.first_alternate(instr.name))
                 ### Error may be in a subsequent alternate, too hard to find which one
-                
+        
+        # Collect comments
+        if not source_node.isterminal():
+            for child in source_node.children:
+                if child.name == 'COMMENT':
+                    self.comments += [';' + child.findtext()]
+        
+        if self.level == 0:             # if generating whole instructions,
+            code += self.comments       #   output collected comments
+            self.comments = []
+        
         if 'i' in self.debug:
             print '(%s:)' % source_node.name
-            print code, '\n'
-            #print '\n'.join(code) + '\n'
+            print '\n'.join(code) + '\n'
         return code
     
     

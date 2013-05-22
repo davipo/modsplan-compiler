@@ -162,15 +162,12 @@ Generating LLVM
     Better to generate LLVM without needing to install llvmpy and LLVM.
 
 
-Comments not working:   ####
+Comments not working.
 
-    declare  ;/* squares.c1 */ i32 printf()
+2013-05-21
 
-;# squares.L0
-declare i32 printf()
-func void squares() {
-    var i32 i
-    ;## try var int i = 1
-    ;## try var int i = 1
+    Rewrote comment handling again.
+        Mostly working, but commented out lines in squares.c1 are not output.  ###
+
 
 

@@ -3,7 +3,6 @@ declare i32 printf()
 func void squares() {
     var i32 i
     ;## try var int i = 1
-    ;## try var int i = 1
     const 1
     store i
     br while9

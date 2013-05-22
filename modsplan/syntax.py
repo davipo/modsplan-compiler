@@ -68,7 +68,6 @@ class SyntaxParser:
         self.expected = None        # grammar item expected at furthest failure
         self.tokens = None          # list of tokens in source file
         self.newtoken = False       # True when new token will be parsed (for trace display)
-        self.comments = {}          # {linenum: <list of comments>}
 
         
     def parse(self, filepath, enable_imports=False):
@@ -94,7 +93,7 @@ class SyntaxParser:
         parse_tree = parsetree.new(nonterm.name, self.debug)    # root of parse tree
         self.log(3, '\n\nParse trace:\n')
         if self.tokens:
-            numtokens = self.parse_comments(0)
+            numtokens = self.parse_comments(0, parse_tree)
             self.newtoken = True
             failure, nt = self.parse_nonterm(numtokens, nonterm, parse_tree)
             numtokens += nt
@@ -126,14 +125,13 @@ class SyntaxParser:
         raise Error(message, token)
     
 
-    def parse_comments(self, start):
-        """ Parse comments from self.tokens beginning at index start;
-            store list of comments in self.comments[linenum];
+    def parse_comments(self, start, node):
+        """ Parse comments from self.tokens beginning at index start, add them to node;
             return number of comment tokens."""
         numtokens = 0
         for token in self.tokens[start:]:
             if token.name == 'COMMENT':
-                self.comments.setdefault(token.linenum, []).append(token.text)
+                node.add_child(token)
                 self.log(5, 'COMMENT from line %d: %s' % (token.linenum, token.text))
                 numtokens += 1
             else:
@@ -278,7 +276,7 @@ class SyntaxParser:
                     self.log(3, token)      # if token display pending, show this one
                 self.log(5, '    %s found' % item, node)
                 self.newtoken = True    # show next token in trace
-                numtokens += self.parse_comments(start + numtokens)
+                numtokens += self.parse_comments(start + numtokens, node)
             else:
                 self.log(5, '    %s not found' % item, node)
                 failure = item      # item not found

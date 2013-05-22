@@ -67,7 +67,8 @@ class Definitions:
             signature.append(source_node.text)
         else:
             for child in source_node.children:
-                signature.append(child.name)
+                if child.name != 'COMMENT':
+                    signature.append(child.name)
 #         print signature
 #         print '   ', self.defns.get(tuple(signature))
         return self.defns.get(tuple(signature))

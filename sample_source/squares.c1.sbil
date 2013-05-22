@@ -1,4 +1,5 @@
-declare  ;/* squares.c1 */ i32 printf()
+;/* squares.c1 */
+declare i32 printf()
 func void squares() {
     var i32 i = 0
 for6:
@@ -47,7 +48,3 @@ whiletrue11:
 whileend11:
     .return
 }
-;//     int i;
-;//     for (i = 0; i <= 25; i = i + 1) {
-;//         printf("%2d  %3d", i, i * i);
-;//     }
