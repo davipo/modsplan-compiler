@@ -29,6 +29,7 @@ class Location(object):
         self.linenum = linenum          # line number (1-origin)
         self.level = level              # indentation level of line
         self.column = column            # column number (1-origin)
+        self.tabsize = 0                # used to expand tabs to display containing line
 
     def copy(self):
         """ Return a copy of this location."""
@@ -36,10 +37,13 @@ class Location(object):
     
     def line(self):
         """ Line of text at this location."""
+        text = ''
         if self.lines and self.linenum > 0:
-            return self.lines[self.linenum - 1]
-        else:
-            return ''
+            text = self.lines[self.linenum - 1]
+        if self.tabsize:
+            text = text.replace('\t', ' ' * self.tabsize)       # expand tabs
+        return text
+
 
     def error(self, message, extra=''):
         """ Return Error exception object for this location."""

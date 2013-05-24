@@ -3,8 +3,6 @@
 # Copyright 2013 by David H Post, DaviWorks.com.
 
 
-from tokenize import Error
-
 indent_size = 3
 indent1 = ' ' * indent_size             # string to display one level of indentation
 indent2 = '|' + indent1[1:]             # every other indent contains a vertical bar
@@ -22,30 +20,19 @@ class BaseNode:
         self.name = name                # name of nonterminal or terminal
         self.debug = debug_flags
         self.level = 0                  # depth of node in tree
-        self.filepath = ''              # filepath of source where found
-        self.lines = []                 # list of source lines of file where found
-        self.linenum = 0                # line number where found in source
-        self.column = 0                 # column number where found in source
-        self.tabsize = 0                # used to expand tabs to display containing line
+        self.location = None            # (lineparsers.Location) where found in source text 
         self.used = False               # to keep track of nodes already compiled
 
     def set_location(self, token):
         """ Set location in source code from token."""
-        if self.linenum == 0:       # set once only
-            self.filepath = token.filepath
-            self.lines = token.lines
-            self.linenum, self.column = token.linenum, token.column
-            self.tabsize = token.tabsize
-
-    def line(self):
-        """ Return line of source file containing this node, with tabs expanded."""
-        return self.lines[self.linenum - 1].replace('\t', ' ' * self.tabsize)
+        if not self.location:       # set once only
+            self.location = token.location
 
     def indent(self):
         """ Return string of indentation to level of node."""
         location = ''
         if 'n' in self.debug:
-            location = '%2d %2d ' % (self.linenum, self.column)
+            location = '%2d %2d ' % (self.location.linenum, self.column)
         return location + indentation[len(location):self.level * indent_size]
 
     def find(self, name):
@@ -146,7 +133,7 @@ class NonterminalNode(BaseNode):
         message = 'Node "%s" has no%s child' % (self.name, ' unused' if use else '')
         if name:
             message += ' with name "%s"' % name
-        raise Error(message, self)
+        raise self.location.error(message)
 
     def firstchild(self, name=None):
         """ Return first child; if name, first matching name; if none, raise error."""

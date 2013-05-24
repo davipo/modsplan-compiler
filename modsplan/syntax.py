@@ -11,8 +11,7 @@ import os.path
 import grammar
 import tokenize
 import parsetree
-
-Error = grammar.Error
+from lineparsers import Error
 
 
 class SyntaxGrammar(grammar.Grammar):
@@ -24,7 +23,7 @@ class SyntaxGrammar(grammar.Grammar):
         self.tokenkindnames = tokenkindnames
         grammar.Grammar.__init__(self, filepath)
         if not self.root:
-            raise Error('One nonterminal must be marked .root', self)
+            raise Error('One nonterminal must be marked .root in file ' + filepath)
         # find prefixes for all nonterms and alternates
         for nonterm in self.nonterms.values():
             nonterm.find_prefixes(self.nonterms)
@@ -32,7 +31,7 @@ class SyntaxGrammar(grammar.Grammar):
     def check_item(self, item, quantifier, alt):
         """ Check string item, with given quantifier, in alternate alt."""
         if item.isupper() and item not in self.tokenkindnames:
-            raise Error('Unrecognized tokenkind (%s)' % item, alt)
+            raise alt.location.error('Unrecognized tokenkind (%s)' % item)
         else:
             grammar.Grammar.check_item(self, item, quantifier, alt)
 
@@ -110,19 +109,17 @@ class SyntaxParser:
 
 
     def syntax_error(self, numtokens):
-        """ Raise Error with appropriate message for. """
+        """ Raise Error with appropriate message for furthest token reached. """
         message = '\nParsed %d tokens of %d total for %s'
         print message % (numtokens, len(self.tokens), self.source_path)
         if self.maxtokens < len(self.tokens):
            token = self.tokens[self.maxtokens]
            message = 'Syntax error at %s token "%s"' % (token.name, token.text)
-           column = token.column
         else:
-           token = self.tokens[self.maxtokens - 1]
+           token = self.tokens[-1]
            message = 'Syntax error at end of file'
-           column = 1 + len(token.line())
         message += ': expecting %s' % self.expected
-        raise Error(message, token)
+        raise token.location.error(message)
     
 
     def parse_comments(self, start, node):
@@ -132,7 +129,7 @@ class SyntaxParser:
         for token in self.tokens[start:]:
             if token.name == 'COMMENT':
                 node.add_child(token)
-                self.log(5, 'COMMENT from line %d: %s' % (token.linenum, token.text))
+                self.log(5, 'COMMENT from line %d: %s' % (token.location.linenum, token.text))
                 numtokens += 1
             else:
                 break
@@ -168,7 +165,7 @@ class SyntaxParser:
                         self.log(4, '%s: %s' % (nonterm, listtokens(tokens)), node)
                         if numtokens == maxtokens and not failure and 'a' not in self.debug:
                             # a second alternate matches the same tokens
-                            raise Error('Ambiguous parse of %s' % nonterm, tokens[-1])
+                            raise tokens[-1].location.error('Ambiguous parse of %s' % nonterm)
                         
                     if failure or not fail:     # status same or better than previous best
                         first_alt = (failure == 'not set')          # first alternate

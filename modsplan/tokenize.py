@@ -4,23 +4,20 @@
 
 
 import grammar
-import lineparsers
-
-Error = lineparsers.Error
+from lineparsers import LineInfoParser, FileParser
 
 
 class Token:
     """ One symbol from source text; 
         for example: keyword, identifier, operator, punctuation, number."""
     
-    def __init__(self, name, text, info, column, tabsize):
+    def __init__(self, name, text, location, column, tabsize):
         self.name = name                    # name for the kind (the category) of the token
         self.text = text                    # string of chars from source
-        self.linenum = info.linenum         # line number where found in source (1-origin)
-        self.filepath = info.filepath       # source file
-        self.lines = info.lines             # list of source lines
-        self.column = column                # column number of first char of token in source
-        self.tabsize = tabsize              # used to expand tabs to display containing line
+        self.location = location.copy()    
+            # lineparsers.Location (filepath, linenum, column, etc)
+        self.location.column = column       # column number of first char of token in source
+        self.location.tabsize = tabsize     # used to expand tabs to display containing line
     
     def __str__(self):
         """ If no text, return name. If no name, return quoted text.
@@ -32,10 +29,6 @@ class Token:
         else:
             result = "'" + self.text + "'"
         return result
-
-    def line(self):
-        """ Return line of source file containing this token, with tabs expanded."""
-        return self.lines[self.linenum - 1].replace('\t', ' ' * self.tabsize)
 
 
 class TokenGrammar(grammar.Grammar):
@@ -85,9 +78,9 @@ class TokenGrammar(grammar.Grammar):
         """ Check string item, with given quantifier, in alternate alt."""
         if item.isupper() and len(item) == 1:       # check for valid character class
             if item not in ('L', 'U', 'D', 'P'):
-                raise Error('Unrecognized character class (%s)' % item, alt)
+                raise alt.location.error('Unrecognized character class (%s)' % item)
             elif item == 'P' and quantifier != '*':
-                raise Error('Character class P must be used with *, error', alt)
+                raise alt.location.error('Character class P must be used with *, error')
         else:
             grammar.Grammar.check_item(self, item, quantifier, alt)
 
@@ -115,7 +108,6 @@ class Tokenizer:
             Grammar commands may enable emitting of NEWLINE, INDENT & DEDENT tokens.
         """
         self.tokendef = TokenGrammar(grammar_filename)  # load token definitions
-        self.tabsize = 0                # for reporting column number, set in get_tokens()
         self.sourcepath = None          # set in get_tokens()
 
 
@@ -133,10 +125,9 @@ class Tokenizer:
             If imports enabled, source may import other source files.
         """
         self.sourcepath = sourcepath
-        self.tabsize = tabsize              # for reporting column number in errors
         enable_newline = 'newline' in self.tokendef.options
         enable_indent = 'indent' in self.tokendef.options
-        lineparser = lineparsers.LineInfoParser if enable_imports else lineparsers.FileParser
+        lineparser = LineInfoParser if enable_imports else FileParser
         lines = lineparser(sourcepath, track_indent=enable_indent)
         
         # Read lines from source, tokenize
@@ -144,8 +135,9 @@ class Tokenizer:
         indentlevel = 0
         
         for line in lines:
-            tokens += self.indents(lines.level - indentlevel, lines)
-            indentlevel = lines.level
+            loc = lines.location
+            tokens += self.indents(loc.level - indentlevel, loc, tabsize)
+            indentlevel = loc.level
             col = 0             # column of line
             viewcol = 1         # column as viewed in source (1-origin, expand tabs)
             
@@ -165,31 +157,31 @@ class Tokenizer:
                         
                 if maxlength > 0:       # match found
                     text = line[col:col + maxlength]
-                    tokens.append(Token(kindname, text, lines, viewcol, tabsize))
+                    tokens.append(Token(kindname, text, loc, viewcol, tabsize))
                     col += maxlength
                     viewcol += maxlength
                         
                 else:  # no match found for any kind starting with char
                     if not char.isspace():          # skip whitespace
-                        tokens.append(Token('', char, lines, viewcol, tabsize))  # punctuation
+                        tokens.append(Token('', char, loc, viewcol, tabsize))  # punctuation
                     col += 1
                     viewcol += tabsize if char == '\t' else 1
                     
             if enable_newline:
-                tokens.append(Token('NEWLINE', '', lines, viewcol, tabsize))   # end of line
+                tokens.append(Token('NEWLINE', '', loc, viewcol, tabsize))     # end of line
 
         # close indented blocks
-        tokens += self.indents(- indentlevel, lines)
+        tokens += self.indents(- indentlevel, loc, tabsize)
         return tokens
 
 
-    def indents(self, change, line_info):
+    def indents(self, change, location, tabsize):
         """ Return list of indent or dedent tokens, for change in indent level."""
         # ignores multiple-level indents (usually a continuation of prev line)
         if change == 1:
-            return [Token('INDENT', '', line_info, 1, self.tabsize)]
+            return [Token('INDENT', '', location, 1, tabsize)]
         else:
-            return (- change) * [Token('DEDENT', '', line_info, 1, self.tabsize)]
+            return (- change) * [Token('DEDENT', '', location, 1, tabsize)]
 
 
     def match_nonterm(self, text, nonterm):
@@ -298,10 +290,9 @@ def charclass(char):
         return char     # char is its own class
                 
 
-nametokens = ('NAME', 'KEYWORD', 'ATTRIBUTE')
-
 def reassemble(tokens):
     """ Return a string of tokens in lines similar to the original source."""
+    ### Works only for languages using NEWLINE tokens
     level = 0
     result = ''
     lastkind = 'NEWLINE'
@@ -327,10 +318,11 @@ def reassemble(tokens):
             elif kind in ('ASSIGN', 'RELATION') or kind.endswith('_OP'):
                 result += ' ' + token.text + ' '
             else:
-                if kind in nametokens and lastkind in nametokens:
+                if token.text[0].isalnum() and result[-1:].isalnum():
                     result += ' '
                 result += token.text
-                result += ' ' * (token.text in ',')     # add a space after comma
+                if token.text == ',':
+                    result += ' '
         lastkind = kind
     return result
 

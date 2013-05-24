@@ -111,14 +111,14 @@ class Compiler:
     def new_label(self, label, source_node, defn_node):
         """ Return a unique label for this node;
             use label + <source line number>, with a letter appended if needed."""
-        label += '%d' % source_node.linenum
+        label += '%d' % source_node.location.linenum
         suffix = self.labelsuffix.get(label)
         if suffix == None:                  # label not in use: use without a suffix
             suffix = ''
         else:                               # label in use: use next suffix
             index = letters.index(suffix) + 1
             if index >= len(letters):
-                raise Error('Too many labels "%s"' % label, defn_node)
+                raise defn_node.location.error('Too many labels "%s"' % label)
             suffix = letters[index]
         self.labelsuffix[label] = suffix
         return label + suffix
@@ -157,7 +157,7 @@ class Compiler:
                     code += self.gen_instructions(source_node, instructions, labels)
                 else:
                     message = 'Rewrite signature "%s" not found' % defn.sig_str(signature)
-                    raise Error(message, instruction)
+                    raise instruction.location.error(message)
                 
             elif instr.name == 'label':     # insert label, compile block below it
                 label = self.get_label(instr.findtext(), labels, source_node, instruction)
@@ -183,8 +183,8 @@ class Compiler:
                 code.append(phrase)
                 
             else:
-                message = 'Unrecognized instruction kind "%s"' % instr.name
-                raise Error(message, self.defs.first_alternate(instr.name))
+                location = self.defs.first_alternate(instr.name).location
+                raise location.error('Unrecognized instruction kind "%s"' % instr.name)
                 ### Error may be in a subsequent alternate, too hard to find which one
         
         # Collect comments
@@ -219,8 +219,8 @@ class Compiler:
             return self.compiler_directive(source_node, wordtype)
             
         else:
-            message = 'Unrecognized word kind "%s"' % wordtype.name
-            raise Error(message, self.defs.first_alternate(wordtype.name))
+            location = self.defs.first_alternate(wordtype.name).location
+            raise location.error('Unrecognized word kind "%s"' % wordtype.name)
             ### Error may be in a subsequent alternate, too hard to find which one
     
 
