@@ -21,19 +21,29 @@ class Location(object):
     """ Location of a line or token in text.
         Includes filepath, linenum (1-origin), (indent) level, column (1-origin)."""
     
-    def __init__(self):
-        self.filepath = ''          # file containing line
-        self.lines = []             # lines of text of file
-        self.linenum = 0            # line number (1-origin)
-        self.level = 0              # indentation level of line
-        self.column = 0             # column number (1-origin)
+    def __init__(self, filepath='', lines=None, linenum=0, level=0, column=0):
+        self.filepath = filepath        # file containing line
+        if lines == None:
+            lines = []
+        self.lines = lines              # lines of text of file
+        self.linenum = linenum          # line number (1-origin)
+        self.level = level              # indentation level of line
+        self.column = column            # column number (1-origin)
+
+    def copy(self):
+        """ Return a copy of this location."""
+        return Location(self.filepath, self.lines, self.linenum, self.level, self.column)
     
     def line(self):
         """ Line of text at this location."""
-        if self.linenum and self.lines:
+        if self.lines and self.linenum > 0:
             return self.lines[self.linenum - 1]
         else:
             return ''
+
+    def error(self, message, extra=''):
+        """ Return Error exception object for this location."""
+        return Error(message, self, extra)
 
 
 class Error(Exception):
@@ -51,10 +61,11 @@ class Error(Exception):
                 value = getattr(location, attribname, None)
                 if value:
                     self.message += format % value
-            linefunc = getattr(location, 'line', None)
-            if linefunc and callable(linefunc):
-                self.message += '\n' + linefunc()                   # source line
-                self.message += '\n%*s' % (location.column, '^')    # position
+            linetext = location.line()
+            if linetext:
+                self.message += '\n' + linetext                     # source line
+            if location.column:
+                self.message += '\n%*s' % (location.column, '^')    # position marker
             if extra:
                 self.message += '\n' + extra
 
@@ -68,10 +79,8 @@ class LineParser(object):
     
     def __init__(self, iterator):
         """ Create line parser from iterator of strings (one per line);
-            linenum attribute gives line number of last line served (starting at 1)."""
-        self.location = Location()
-        self.location.lines = iterator
-        self.location.linenum = 0       # number of lines generated (also current line number)
+            self.location.linenum gives line number of last line served (starting at 1)."""
+        self.location = Location(lines=iterator)
 
     def error(self, message, extra=''):
         """ Return Error exception object for current location."""
@@ -220,7 +229,7 @@ class LineInfoParser(LineParser):
     def generator(self):
         """ Generator (iterator) of lines of file."""
         for line, location in self.parser:
-            self.location = location
+            self.location = location.copy()
             yield line
 
 

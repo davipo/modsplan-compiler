@@ -7,7 +7,6 @@ from collections import OrderedDict
 
 import lineparsers
 
-Error = lineparsers.Error
 
 quote_chars = "'" + '"'
 quantifiers = '*+?'
@@ -46,11 +45,10 @@ class Nonterminal:
 
 class Alternate:
     """ Holds items of one production. """    
-    def __init__(self, production, filepath, linenum, flags=None):
+    def __init__(self, production, location, flags=None):
         self.items = production     # list of Item
         self.prefixes = None        # set of terminals that are possible prefixes
-        self.filepath = filepath    # grammar file this production was loaded from
-        self.linenum = linenum      # line number in grammar file
+        self.location = location    # lineparsers.Location of production: filepath, linenum...
         if flags == None:
             flags = []
         self.flags = flags          # list of attribute strings
@@ -171,24 +169,24 @@ class Grammar:
             else:
                 line = line.strip()
                 if line and not line.startswith('#'):   # skip blank and comment lines
-                    self.store_production(line, lines)
+                    self.store_production(line, lines.location)
         self.load_items()       # replace raw strings of production with Item
 
 
     def store_production(self, line, location):
         """ Parse a production, store in self.nonterms.
-            location has filepath and linenum attributes, for error reporting."""
+            Location object contains filepath and line number for error reporting."""
         production = line.split()
-# Would string items in grammar ever have spaces in them? (If so, don't split them.)
+# Would literal items in grammar ever have spaces in them? (If so, don't split them.)
 # If we want to save comments in terminals, don't split them.
         if len(production) < 3 or production[1] != '=>':
-            raise Error(line + '\nSyntax error in grammar', location)
+            raise location.error(line + '\nSyntax error in grammar')
         nameflags = production[0].split('.')    # flags after name, separated by '.'
         name = nameflags[0]                     # remove any flags
         flags = nameflags[1:]
         nonterm = self.nonterms.setdefault(name, Nonterminal(name))     # create if not found
         # Store raw strings for now; must create nonterms before we can point to them.
-        alt = Alternate(production[2:], location.filepath, location.linenum, flags)
+        alt = Alternate(production[2:], location, flags)
         nonterm.alternates.append(alt)
         if 'root' in flags:
             self.root = nonterm
@@ -205,7 +203,7 @@ class Grammar:
                         break                   #   (only if space before #)
                     if literal_next and (item[0] not in quote_chars):
                         message = 'Literal or end of line must follow character class P*'
-                        raise Error(message, alt)
+                        raise alt.location.error(message)
                     literal_next = (item == 'P*')       # literal must follow 'P*'
                     quantifier = '1'
                     separator = ''
@@ -223,18 +221,18 @@ class Grammar:
     def check_item(self, item, quantifier, alt):
         """ Check string item, with quantifier, in alternate alt. (Extended by subclass.)"""
         if item == '':
-            raise Error('Misplaced quantifier', alt)
+            raise alt.location.error('Misplaced quantifier')
         if item[0] in quote_chars:      # terminal node: literal
             if item[0] != item[-1]:
-                raise Error('Mismatched quotes in item (%s)' % item, alt)
+                raise alt.location.error('Mismatched quotes in item (%s)' % item)
             if len(item) < 3:
-                raise Error('Empty literal not allowed (%s)' % item, alt)
+                raise alt.location.error('Empty literal not allowed (%s)' % item)
         elif item.isupper():            # terminal, handled by subclasses
             pass
         elif item in self.nonterms:     # item should be name of nonterminal
             pass
         else:
-            raise Error('Unrecognized item (%s)' % item, alt)
+            raise alt.location.error('Unrecognized item (%s)' % item)
 
 
 gfn = 'base.tokens'
