@@ -170,4 +170,13 @@ Comments not working.
         Mostly working, but commented out lines in squares.c1 are not output.  ###
 
 
+2013-05-24
+
+lineparsers.Location object created; revised tokenizer, parser, compiler to use it.
+
+### Revise nextchild() and firstchild() to add location arg,
+        to produce more useful error messages.
+    Find all "tchild(" to revise uses of these.
+
+
 

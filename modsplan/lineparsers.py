@@ -23,8 +23,6 @@ class Location(object):
     
     def __init__(self, filepath='', lines=None, linenum=0, level=0, column=0):
         self.filepath = filepath        # file containing line
-        if lines == None:
-            lines = []
         self.lines = lines              # lines of text of file
         self.linenum = linenum          # line number (1-origin)
         self.level = level              # indentation level of line
