@@ -47,6 +47,19 @@ Defn specs
     Make clear when to use expansion vs substitution in defn specs.  ###
        
 
+Parsetree
+
+    Use xml.etree.ElementTree instead of parsetree.py
+        Output tree to XML file
+            line, col are attributes
+            token text in attribute, or content of tag?
+                probably content
+
+    Revise nextchild() and firstchild() to add location arg,
+            to produce more useful error messages.
+        (Find all "tchild(" to revise uses of these.)
+
+
 Grammar
 	
 
@@ -55,12 +68,6 @@ Syntax parser
     Parse trace
         Simplify code for tracing output and maxtokens tracking
         For next token display, indicate when backing up.
-
-    Use xml.etree.ElementTree instead of parsetree.py
-        Output tree to XML file
-            line, col are attributes
-            token text in attribute, or content of tag?
-            probably content
 
 	Test syntax error reporting.
 		Research how others do this?
@@ -98,7 +105,6 @@ Tokenizer
 
 Lineparsers
     
-    Create Location class, use in BaseNode, Token, Error
     
 
 DONE:
