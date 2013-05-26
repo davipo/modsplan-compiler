@@ -57,19 +57,19 @@ class Error(Exception):
             If extra nonempty, append it as an additional line."""
         self.message = message
         if location:
-            for attribname, format in [ ('filepath', ' in %s'), 
-                                        ('linenum', ' at line %d'), 
-                                        ('column', ', column %d') ]:
-                value = getattr(location, attribname, None)
-                if value:
-                    self.message += format % value
-            linetext = location.line()
-            if linetext:
-                self.message += '\n' + linetext                     # source line
-            if location.column:
-                self.message += '\n%*s' % (location.column, '^')    # position marker
-            if extra:
-                self.message += '\n' + extra
+            if location.filepath:
+                self.message += ' in %s' % location.filepath
+            if location.linenum:
+                self.message += ' at line %d' % location.linenum
+                if location.column:
+                    self.message += ', column %d' % location.column
+                linetext = location.line()
+                if linetext:
+                    self.message += '\n' + linetext                     # source line
+                    if location.column:
+                        self.message += '\n%*s' % (location.column, '^')   # position marker
+        if extra:
+            self.message += '\n' + extra
 
     def __str__(self):
         return self.message
