@@ -147,7 +147,7 @@ class Compiler:
             instr = instruction.firstchild()
             
             if instr.name == 'expansion':       # expand next unused child with this name
-                child = source_node.nextchild(defn.childname(instr))
+                child = source_node.nextchild(defn.childname(instr), loc=instr)
                 code += self.codegen(child)
                 
             elif instr.name == 'rewrite':       # use instructions from another signature
@@ -212,7 +212,7 @@ class Compiler:
             return defn.remove_quotes(wordtype.findtext())
                 
         elif wordtype.name == 'child':
-            child = source_node.nextchild(defn.childname(wordtype), use)
+            child = source_node.nextchild(defn.childname(wordtype), use, loc=wordtype)
             return ' '.join(self.codegen(child))
             
         elif wordtype.name == 'directive':
@@ -231,8 +231,9 @@ class Compiler:
         arg_defs = directive.findall('word')
         
         if name == 'count':         # number of children of its argument
-            nodename = defn.childname(arg_defs[0])
-            codestring = str(source_node.firstchild(nodename).numchildren())
+            firstarg = arg_defs[0]
+            nodename = defn.childname(firstarg)
+            codestring = str(source_node.firstchild(nodename, loc=firstarg).numchildren())
             
         elif name == 'again':       # reuse child
             codestring = self.gen_word(source_node, arg_defs[0], use=False)

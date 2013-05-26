@@ -53,11 +53,7 @@ Parsetree
         Output tree to XML file
             line, col are attributes
             token text in attribute, or content of tag?
-                probably content
-
-    Revise nextchild() and firstchild() to add location arg,
-            to produce more useful error messages.
-        (Find all "tchild(" to revise uses of these.)
+                (probably content)
 
 
 Grammar

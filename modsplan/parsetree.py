@@ -119,10 +119,10 @@ class NonterminalNode(BaseNode):
             result += node.show()
         return result
 
-    def nextchild(self, name=None, use=True):
+    def nextchild(self, name=None, use=True, loc=None):
         """ Return next unused child; if name, next matching name; if none, raise error;
             mark child used. If use false, ignore use status, return first (matching) child.
-        """
+            Optional loc gives node whose location to report in case of error."""
         for child in self.children:
             if (use and child.used) or (name and child.name != name):
                 continue
@@ -133,11 +133,12 @@ class NonterminalNode(BaseNode):
         message = 'Node "%s" has no%s child' % (self.name, ' unused' if use else '')
         if name:
             message += ' with name "%s"' % name
-        raise self.location.error(message)
+        raise (loc if loc else self).location.error(message)
 
-    def firstchild(self, name=None):
-        """ Return first child; if name, first matching name; if none, raise error."""
-        return self.nextchild(name, use=False)
+    def firstchild(self, name=None, loc=None):
+        """ Return first child; if name, first matching name; if none, raise error.
+            Optional loc gives node whose location to report in case of error."""
+        return self.nextchild(name, use=False, loc=loc)
 
     def find(self, name):
         """ Return first node with name in preorder traversal from this node, or None."""

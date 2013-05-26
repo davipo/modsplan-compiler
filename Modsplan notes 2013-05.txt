@@ -174,9 +174,11 @@ Comments not working.
 
 lineparsers.Location object created; revised tokenizer, parser, compiler to use it.
 
-### Revise nextchild() and firstchild() to add location arg,
-        to produce more useful error messages.
-    Find all "tchild(" to revise uses of these.
+
+2013-05-26
+
+Revised nextchild() and firstchild() in parsetree to add location arg,
+    to produce more useful error messages.
 
 
 
