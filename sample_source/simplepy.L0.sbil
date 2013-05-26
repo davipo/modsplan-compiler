@@ -1,0 +1,52 @@
+func i32 test(text, col, element) {
+    const 0
+    const 1
+    sub
+    store length
+    load col
+    load text
+    call len 1
+    cmp lt
+    br iftrue3, iffalse3
+iftrue3:
+    load text
+    load col
+    call charat 2
+    store char
+    load char_class
+    load char
+    call charclass 1
+    cmp eq
+    br iftrue5, iffalse5
+iftrue5:
+    const 1
+    store length
+    br ifend5
+iffalse5:
+    load element
+    load str
+    call isinstance 2
+    br iftrue8, iffalse8
+iftrue8:
+    load text
+    load element
+    call startswith 2
+    br iftrue9, iffalse9
+iftrue9:
+    load element
+    call len 1
+    store length
+    br ifend9
+iffalse9:
+ifend9:
+    br ifend8
+iffalse8:
+ifend8:
+ifend5:
+    br ifend3
+iffalse3:
+ifend3:
+    .returncheck
+    load length
+    ret
+}

@@ -238,6 +238,10 @@ class Compiler:
         elif name == 'again':       # reuse child
             codestring = self.gen_word(source_node, arg_defs[0], use=False)
             
+        elif name == 'commasep':    # separate children of first arg with commas
+            codestring = self.gen_word(source_node, arg_defs[0], use=False)
+            codestring = ', '.join(codestring.split())
+        
         else:
             args = [self.gen_word(source_node, argdef, use=False) for argdef in arg_defs]
             codestring = '.' + name

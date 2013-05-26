@@ -1,8 +1,11 @@
-while col < len(text):
+def int test(text, col, element):
     length = -1         # failure unless otherwise determined
-    if char_class == charclass(char):
-        length = 1
-    else:
-        if isinstance(element, str):
-            if startswith(text, element):
-                length = len(element)
+    if col < len(text):
+        char = charat(text, col)
+        if char_class == charclass(char):
+            length = 1
+        else:
+            if isinstance(element, str):
+                if startswith(text, element):
+                    length = len(element)
+    return length
