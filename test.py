@@ -21,6 +21,7 @@ class TestCompiler(unittest.TestCase):
 
     def test_compile(self):
         self.check_src('squares.L0')
+        self.check_src('simplepy.L0')
         self.check_src('squares.c1')
 #         self.check_import('import_test.L0')
     

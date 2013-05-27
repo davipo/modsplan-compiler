@@ -34,7 +34,7 @@ funcdefinition(declspecifier identifier functiondeclarator compoundstatement)
     '}'
 
 functiondeclarator(paramdeclaration* ellipsis?)
-    '(' paramdeclaration* ellipsis? ')'
+    '(' .commasep(paramdeclaration*) ellipsis? ')'
 
 ellipsis()
     ',' '...'

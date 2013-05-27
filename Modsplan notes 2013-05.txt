@@ -184,4 +184,13 @@ c1.syntax ambiguous, can't distinguish typedefname from identifier with
     "paramdeclaration => declspecifier+ declarator".
     Removed "+" to fix this.
 
+Tried testing multiple parameters of a function.
+Problem: missing commas between params.
+    Implemented .commasep() directive, then rewrote it to handle c1 params with types.
+
+
+Add type to L0 params?  ###
+
+
+
 

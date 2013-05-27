@@ -1,13 +1,17 @@
 ;/* squares.c1 */
 declare i32 printf()
-func void squares() {
-    var i32 i = 0
-for6:
+func void squares(i32 first, i32 last) {
+    var i32 i
+    load first
+    dup
+    store i
+    pop
+for7:
     load i
-    const 20
+    load last
     cmp le
-    br forbegin6, forend6
-forbegin6:
+    br forbegin7, forend7
+forbegin7:
     const "%2d  %3d"
     load i
     load i
@@ -21,30 +25,7 @@ forbegin6:
     add
     store i
     pop
-    br for6
-forend6:
-    var i32 i = 1
-    br while11
-while11:
-    load i
-    const 20
-    cmp le
-    br whiletrue11, whileend11
-whiletrue11:
-    const "%2d  %3d"
-    load i
-    load i
-    load i
-    mul
-    call printf 3
-    pop
-    load i
-    const 1
-    add
-    dup
-    store i
-    pop
-    br while11
-whileend11:
+    br for7
+forend7:
     .return
 }

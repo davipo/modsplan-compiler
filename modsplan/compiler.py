@@ -239,8 +239,11 @@ class Compiler:
             codestring = self.gen_word(source_node, arg_defs[0], use=False)
             
         elif name == 'commasep':    # separate children of first arg with commas
-            codestring = self.gen_word(source_node, arg_defs[0], use=False)
-            codestring = ', '.join(codestring.split())
+            firstarg = arg_defs[0]
+            nodename = defn.childname(firstarg)
+            childnodes = source_node.firstchild(nodename, loc=firstarg).children
+            childtexts = [' '.join(self.codegen(child)) for child in childnodes]
+            codestring = ', '.join(childtexts)
         
         else:
             args = [self.gen_word(source_node, argdef, use=False) for argdef in arg_defs]

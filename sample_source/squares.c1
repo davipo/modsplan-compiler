@@ -2,16 +2,17 @@
 
 extern int printf();
 
-void squares() {
-    for (int i = 0; i <= 20; i++) {
+void squares(int first, int last) {
+    int i;
+    for (i = first; i <= last; i++) {
         printf("%2d  %3d", i, i * i);
     }
 
-    int i = 1;
-    while (i <= 20) {
-        printf("%2d  %3d", i, i * i);
-        i = i + 1;
-    }
+//     int i = 1;
+//     while (i <= 20) {
+//         printf("%2d  %3d", i, i * i);
+//         i = i + 1;
+//     }
 
 //     int i;
 //     for (i = 0; i <= 25; i = i + 1) {
