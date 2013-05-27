@@ -180,5 +180,8 @@ lineparsers.Location object created; revised tokenizer, parser, compiler to use 
 Revised nextchild() and firstchild() in parsetree to add location arg,
     to produce more useful error messages.
 
+c1.syntax ambiguous, can't distinguish typedefname from identifier with
+    "paramdeclaration => declspecifier+ declarator".
+    Removed "+" to fix this.
 
 

@@ -54,7 +54,7 @@ functiondeclarator => '(' paramdeclaration,* ellipsis? ')'
 ## paramdecl => declspecifier+ abstractdeclarator
     # Need abstractdeclarator for parameters without name in function declarations
 
-paramdeclaration => declspecifier+ declarator
+paramdeclaration => declspecifier declarator
 
 ellipsis => ','  '...'
 
