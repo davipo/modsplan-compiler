@@ -110,28 +110,28 @@ class Compiler:
         return code
     
 
-    def new_label(self, label, source_node, defn_node):
+    def new_label(self, label, linenum):
         """ Return a unique label for this node;
-            use label + <source line number>, with a letter appended if needed."""
-        label += '%d' % source_node.location.linenum
+            use label + linenum, with a letter appended if needed."""
+        label += '%d' % linenum
         suffix = self.labelsuffix.get(label)
         if suffix == None:                  # label not in use: use without a suffix
             suffix = ''
         else:                               # label in use: use next suffix
             index = letters.index(suffix) + 1
             if index >= len(letters):
-                raise defn_node.location.error('Too many labels "%s"' % label)
+                raise Error('Too many labels "%s"' % label)
             suffix = letters[index]
         self.labelsuffix[label] = suffix
         return label + suffix
     
     
-    def get_label(self, label, labels, source_node, defn_node):
+    def get_label(self, label, labels, source_node):
         """ Return label with current suffix from labels;
             if not present, get a new one."""
         labelwith = labels.get(label)
         if labelwith == None:
-            labelwith = self.new_label(label, source_node, defn_node)
+            labelwith = self.new_label(label, source_node.location.linenum)
             labels[label] = labelwith
         return labelwith
     
@@ -163,13 +163,13 @@ class Compiler:
                     raise instruction.location.error(message)
                 
             elif instr.name == 'label':     # insert label, compile block below it
-                label = self.get_label(instr.findtext(), labels, source_node, instruction)
+                label = self.get_label(instr.findtext(), labels, source_node)
                 code.append(label + ':')
                 instructions = instruction.find('instructions?').findall('instruction')
                 code += self.gen_instructions(source_node, instructions, labels)
                 
             elif instr.name == 'branch':
-                args = [self.get_label(label.findtext(), labels, source_node, instr) 
+                args = [self.get_label(label.findtext(), labels, source_node) 
                             for label in instr.findall('label')]
                 opcode = defn.remove_quotes(instr.findtext())
                 code.append(opcode + ' ' + ', '.join(args))
@@ -257,7 +257,7 @@ class Compiler:
         elif name == 'continuebreak':   # set labels for (continue, break) jumps
             if len(arg_defs) != 2:
                 directive.location.error('continuebreak directive must have 2 arguments')
-            contbreak = [self.get_label(argdef.findtext(), labels, source_node, directive) 
+            contbreak = [self.get_label(argdef.findtext(), labels, source_node) 
                             for argdef in arg_defs]
             self.continuebreak.append(contbreak)
             codestring = '; [continue, break] labels = ' + str(contbreak)
