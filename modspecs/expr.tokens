@@ -8,6 +8,7 @@ ADD_OP => '-'
 
 MUL_OP => '*'
 MUL_OP => '/'
+MUL_OP => '%'
 ## MUL_OP => '//' 		# integer division
 
 

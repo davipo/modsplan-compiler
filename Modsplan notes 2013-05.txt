@@ -206,3 +206,18 @@ Added continue and break statements to c1.
 
 ### Create base.syntax to hold common features? (Move from expr?)
 
+
+2013-05-29
+
+### Check that labels are not reused incorrectly in nested loops
+
+Starting to test compiler on more realistic C examples. Issues:  ###
+
+    Multiple declarations on one line
+        declaration => declspecifier initdeclarator,+ ';'
+        How to apply declspecifier to multiple initdeclarators?
+            .forall() compiler directive?
+
+    Implement division and remainder operators
+        Caution: these work differently in Python   ###
+

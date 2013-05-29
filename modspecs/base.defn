@@ -79,6 +79,12 @@ multiplication(MUL_OP factor)
 MUL_OP('*')
     'mul'
 
+MUL_OP('/')     # Caution: signed div rounds toward zero,
+    'div'       #   which is different from floor division.
+
+MUL_OP('%')     # Caution: remainder not the same as modulo operation;
+    'rem'       #   remainder has sign of dividend, mod has sign of divisor.
+
 
 call(variable arg*)     # function call
     &arg*

@@ -58,5 +58,12 @@ assignment(designator ASSIGN test)
     'store' designator
 
 
+# MUL_OP('/')     # override base.defn, which implements truncated division
+# 
+# 
+# MUL_OP('%')     # override base.defn, which implements remainder
+# 
+
+
 TYPE('int')
     'i32'
