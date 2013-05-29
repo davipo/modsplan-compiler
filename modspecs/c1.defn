@@ -50,6 +50,17 @@ statement(expression)
     'pop'               # discard expression value
 
 
+do(statement expression)
+    'br' do         # terminate previous block
+    do:
+        &statement
+        'br' dowhile
+    dowhile:        # branch here to continue
+        &expression     # while condition
+        'br' do, doend
+    doend:
+
+
 for(declaration expression? expression? statement)
     &declaration
     =for(expression? expression? statement)

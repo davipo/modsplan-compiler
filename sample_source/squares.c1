@@ -9,6 +9,12 @@ void squares(int first, int last) {
     }
 
 //     int i = 1;
+//     do {
+//         printf("%2d  %3d", i, i * i);
+//         i++;
+//     } while (i <= 20);
+
+//     int i = 1;
 //     while (i <= 20) {
 //         printf("%2d  %3d", i, i * i);
 //         i = i + 1;

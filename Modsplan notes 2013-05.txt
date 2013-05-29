@@ -192,5 +192,12 @@ Problem: missing commas between params.
 Add type to L0 params?  ###
 
 
+What to do next? I want to get a demo working this week.
+    Polish c1 to demo a good portion of C?
+    Specify another language? (Subset of Java, RPython Cython, Javascript?)
+    Try to implement SBIL to LLVM translator?
 
 
+2013-05-28
+
+Added do-while statement to c1.

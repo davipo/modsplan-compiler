@@ -67,6 +67,7 @@ declaration => typespecifier identifier initializer? ';'
 
 statement => if
 statement => while
+statement => do ';'
 statement => for
 statement => compoundstatement
 statement => ';'
@@ -78,12 +79,15 @@ else => 'else' suite
 
 while => 'while' '(' test ')' suite
 
+suite => statement      # for compatibility with base.defn
+
+do => 'do' statement 'while' '(' expression ')'
+
 for => 'for' '(' expression? ';' expression? ';' expression? ')' statement
 for => 'for' '(' declaration expression? ';' expression? ')' statement
 
-return => 'return' expression?
 
-suite => statement      # for compatibility with base.defn
+return => 'return' expression?
 
 expression => assignexpr
 expression => test      # test specified in expr.syntax
