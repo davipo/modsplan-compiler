@@ -6,12 +6,14 @@ func void squares(i32 first, i32 last) {
     dup
     store i
     pop
+    br for7
 for7:
     load i
     load last
     cmp le
     br forbegin7, forend7
 forbegin7:
+    ; [continue, break] labels = ['for7', 'forend7']
     const "%2d  %3d"
     load i
     load i

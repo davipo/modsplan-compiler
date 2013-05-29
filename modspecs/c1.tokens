@@ -27,6 +27,8 @@ TYPESPEC => 'float'
 TYPEQUALIFIER => 'const'
 TYPEQUALIFIER => 'volatile'
 
+KEYWORD => 'continue'
+KEYWORD => 'break'
 
 use base        # include after alphabetic keywords
 

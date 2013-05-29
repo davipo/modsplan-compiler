@@ -69,6 +69,8 @@ statement => if
 statement => while
 statement => do ';'
 statement => for
+statement => continue ';'
+statement => break ';'
 statement => compoundstatement
 statement => ';'
 statement => return ';'
@@ -86,6 +88,8 @@ do => 'do' statement 'while' '(' expression ')'
 for => 'for' '(' expression? ';' expression? ';' expression? ')' statement
 for => 'for' '(' declaration expression? ';' expression? ')' statement
 
+continue => 'continue'
+break => 'break'
 
 return => 'return' expression?
 

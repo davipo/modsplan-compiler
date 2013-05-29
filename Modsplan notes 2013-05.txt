@@ -201,3 +201,8 @@ What to do next? I want to get a demo working this week.
 2013-05-28
 
 Added do-while statement to c1.
+Added continue and break statements to c1.
+    Added .continuebreak(), .continue(), .break() directives to compiler to handle them.
+
+### Create base.syntax to hold common features? (Move from expr?)
+

@@ -26,6 +26,7 @@ while(test suite)
         &test
         'br' whiletrue, whileend
     whiletrue:
+        .continuebreak(while, whileend)
         &suite
         'br' while
     whileend:

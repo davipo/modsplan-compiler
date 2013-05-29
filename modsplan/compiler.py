@@ -34,6 +34,7 @@ class Compiler:
         langpath = os.path.join(spec_dir, langname)
         self.comments = []          # collected comments, to insert after current instruction
         self.level = 0              # phrase level; 0 when generating whole instructions
+        self.continuebreak = []     # stack of label pairs for (continue, break) jumps
         
         self.parser = syntax.SyntaxParser(langpath, debug)  # load langname.{tokens, syntax}
         self.defs = defn.Definitions(default_defn_grammar_dir)    # initialize defn parser
@@ -58,6 +59,7 @@ class Compiler:
         self.labelsuffix.clear()
         self.comments = []
         self.level = 0
+        self.continuebreak = [()]       # empty tuple indicates no loop active
         codelines = []
         
         # Output initial comments
@@ -137,9 +139,10 @@ class Compiler:
     def gen_instructions(self, source_node, instruction_defs, labels=None):
         """ Generate list of target code instructions from source & instruction definitions.
             labels[label] is label with suffix for this definition."""        
-        code = []
         if labels == None:
             labels = {}
+        looplevel = len(self.continuebreak)     # number of surrounding loops + 1
+        code = []
         
         for instruction in instruction_defs:
             if not instruction.children:
@@ -166,15 +169,15 @@ class Compiler:
                 code += self.gen_instructions(source_node, instructions, labels)
                 
             elif instr.name == 'branch':
-                args = []
-                for arg in instr.findall('label'):
-                    args.append(self.get_label(arg.findtext(), labels, source_node, instr))
+                args = [self.get_label(label.findtext(), labels, source_node, instr) 
+                            for label in instr.findall('label')]
                 opcode = defn.remove_quotes(instr.findtext())
                 code.append(opcode + ' ' + ', '.join(args))
                 
             elif instr.name == 'word+':         # generate a phrase or line of code
                 self.level += 1
-                words = [self.gen_word(source_node, word) for word in instr.findall('word')]
+                words = [self.gen_word(source_node, word, labels) 
+                            for word in instr.findall('word')]
                 self.level -= 1
                 words = filter(str.strip, words)    # remove empty words
                 phrase = ' '.join(words)
@@ -186,6 +189,10 @@ class Compiler:
                 location = self.defs.first_alternate(instr.name).location
                 raise location.error('Unrecognized instruction kind "%s"' % instr.name)
                 ### Error may be in a subsequent alternate, too hard to find which one
+        
+        if len(self.continuebreak) > looplevel:
+            # current definition entered a continuebreak loop: exit it
+            self.continuebreak.pop()
         
         # Collect comments
         if not source_node.isterminal():
@@ -203,9 +210,10 @@ class Compiler:
         return code
     
     
-    def gen_word(self, source_node, word_def, use=True):
+    def gen_word(self, source_node, word_def, labels, use=True):
         """ Generate code string from source and word definition.
-            If 'use' false, ignore use status of parse nodes."""        
+            If 'use' false, ignore use status of parse nodes.
+            labels[label] is label with suffix for current definition."""        
         wordtype = word_def.firstchild()
         
         if wordtype.name in ('LITERAL'):
@@ -216,7 +224,7 @@ class Compiler:
             return ' '.join(self.codegen(child))
             
         elif wordtype.name == 'directive':
-            return self.compiler_directive(source_node, wordtype)
+            return self.compiler_directive(source_node, wordtype, labels)
             
         else:
             location = self.defs.first_alternate(wordtype.name).location
@@ -224,9 +232,10 @@ class Compiler:
             ### Error may be in a subsequent alternate, too hard to find which one
     
 
-    def compiler_directive(self, source_node, directive):
+    def compiler_directive(self, source_node, directive, labels):
         """ Generate code per compiler directive, using source and arg definitions.
-            Ignore use status of parse nodes when generating args."""
+            Ignore use status of parse nodes when generating args.
+            labels[label] is label with suffix for current definition."""        
         name = directive.findtext()
         arg_defs = directive.findall('word')
         
@@ -236,7 +245,7 @@ class Compiler:
             codestring = str(source_node.firstchild(nodename, loc=firstarg).numchildren())
             
         elif name == 'again':       # reuse child
-            codestring = self.gen_word(source_node, arg_defs[0], use=False)
+            codestring = self.gen_word(source_node, arg_defs[0], labels, use=False)
             
         elif name == 'commasep':    # separate children of first arg with commas
             firstarg = arg_defs[0]
@@ -245,8 +254,23 @@ class Compiler:
             childtexts = [' '.join(self.codegen(child)) for child in childnodes]
             codestring = ', '.join(childtexts)
         
+        elif name == 'continuebreak':   # set labels for (continue, break) jumps
+            if len(arg_defs) != 2:
+                directive.location.error('continuebreak directive must have 2 arguments')
+            contbreak = [self.get_label(argdef.findtext(), labels, source_node, directive) 
+                            for argdef in arg_defs]
+            self.continuebreak.append(contbreak)
+            codestring = '; [continue, break] labels = ' + str(contbreak)
+        
+        elif name in ('continue', 'break'):     # substitute appropriate label
+            if not self.continuebreak[-1]:
+                raise source_node.location.error('"%s" not valid outside a loop' % name)
+            index = ('continue', 'break').index(name)
+            codestring = 'br ' + self.continuebreak[-1][index]
+        
         else:
-            args = [self.gen_word(source_node, argdef, use=False) for argdef in arg_defs]
+            args = [self.gen_word(source_node, argdef, labels, use=False) 
+                        for argdef in arg_defs]
             codestring = '.' + name
             if args:
                 codestring += ' ' + ', '.join(args)

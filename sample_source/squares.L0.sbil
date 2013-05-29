@@ -9,6 +9,7 @@ while7:
     cmp le
     br whiletrue7, whileend7
 whiletrue7:
+    ; [continue, break] labels = ['while7', 'whileend7']
     const "%2d %4d"
     load i
     load i

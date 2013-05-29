@@ -53,6 +53,7 @@ statement(expression)
 do(statement expression)
     'br' do         # terminate previous block
     do:
+        .continuebreak(dowhile, doend)
         &statement
         'br' dowhile
     dowhile:        # branch here to continue
@@ -71,16 +72,24 @@ for(expression? expression? expression? statement)
     =for(expression? expression? statement)
 
 for(expression? expression? statement)
+    'br' for        # terminate previous block
     for:
         &expression?            # condition
         'br' forbegin, forend
     forbegin:
+        .continuebreak(for, forend)
         &statement
         &expression?            # next
         'pop'                   # discard expression value
         'br' for
     forend:
 
+
+continue()
+    .continue()
+
+break()
+    .break()
 
 return(expression?)
     .returncheck(expression?)   # empty only if func type is void
