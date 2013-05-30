@@ -55,7 +55,8 @@ class Definitions:
             signature = [signode.findtext()]
             signature += [childname(node) for node in signode.findall('child')]
         else:   # 'terminal'
-            signature = [node.findtext() for node in signode.children]
+            signature = [node.findtext() for node in signode.children
+                            if node.name != 'COMMENT']
         signature = map(remove_quotes, signature)
         ### need to get subtypes
         return tuple(signature)
