@@ -230,4 +230,25 @@ Error location reporting
     Source location seems more useful, since defn node is given in error message.
 
 
+SBIL to LLVM translator
+
+    Needed to implement:
+    
+        Symbol table with scoping
+            Handle globals
+        
+        Stack, holding name and type
+        
+        Uniquing for value names (generalize new_label() method)
+        
+        Compiler directives or code to recognize and handle various instruction types:
+            pop, dup
+            const
+            load, store
+            BINOP
+            call
+            return
+            branch
+
+
 
