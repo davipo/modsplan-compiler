@@ -92,7 +92,7 @@ break()
     .break()
 
 return(expression?)
-    .returncheck(expression?)   # empty only if func type is void
+    .returncheck()      # empty only if func type is void
     &expression?
     'ret'
     
