@@ -194,7 +194,7 @@ Add type to L0 params?  ###
 
 What to do next? I want to get a demo working this week.
     Polish c1 to demo a good portion of C?
-    Specify another language? (Subset of Java, RPython Cython, Javascript?)
+    Specify another language? (Subset of Java, RPython, Cython, Javascript, Scala, Oberon?)
     Try to implement SBIL to LLVM translator?
 
 
@@ -220,4 +220,14 @@ Starting to test compiler on more realistic C examples. Issues:  ###
 
     Implement division and remainder operators
         Caution: these work differently in Python   ###
+
+    In-place ASSIGN_OPs needed
+    
+
+Error location reporting
+    For 'no [unused] child' errors, is it better to report source or defn location?
+    (Recently added loc param to nextchild() to allow choosing error location.)
+    Source location seems more useful, since defn node is given in error message.
+
+
 

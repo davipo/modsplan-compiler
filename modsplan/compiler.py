@@ -220,7 +220,7 @@ class Compiler:
             return defn.remove_quotes(wordtype.findtext())
                 
         elif wordtype.name == 'child':
-            child = source_node.nextchild(defn.childname(wordtype), use, loc=wordtype)
+            child = source_node.nextchild(defn.childname(wordtype), use)
             return ' '.join(self.codegen(child))
             
         elif wordtype.name == 'directive':
