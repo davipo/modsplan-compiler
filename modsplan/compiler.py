@@ -86,15 +86,16 @@ class Compiler:
         return lines
 
 
-    def codegen(self, source_node):
+    def codegen(self, source_node, use=True):
         """ Generate code from source_node, using definitions loaded for language.
+            If 'use' false, ignore use status of parse nodes.
             Return list of target code instructions (strings)."""
         code = []
         
         # Traverse in preorder, generating code for any defns found
         definition = self.defs.get_defn(source_node)    # find definition matching this node
         if definition:
-            code += self.gen_instructions(source_node, definition)
+            code += self.gen_instructions(source_node, definition, use=use)
             #print 'code for ' + source_node.name
             #print '   ', code
             #print
@@ -105,7 +106,7 @@ class Compiler:
                     code += [source_node.findtext()]    # insert text of terminal nodes
             else:
                 for child in source_node.children:
-                    code += self.codegen(child)
+                    code += self.codegen(child, use)
         
         return code
     
@@ -136,9 +137,10 @@ class Compiler:
         return labelwith
     
     
-    def gen_instructions(self, source_node, instruction_defs, labels=None):
+    def gen_instructions(self, source_node, instruction_defs, labels=None, use=True):
         """ Generate list of target code instructions from source & instruction definitions.
-            labels[label] is label with suffix for this definition."""        
+            labels[label] is label with suffix for this definition.
+            If 'use' false, ignore use status of parse nodes."""        
         if labels == None:
             labels = {}
         looplevel = len(self.continuebreak)     # number of surrounding loops + 1
@@ -150,14 +152,14 @@ class Compiler:
             instr = instruction.firstchild()
             
             if instr.name == 'expansion':       # expand next unused child with this name
-                child = source_node.nextchild(defn.childname(instr), loc=instr)
-                code += self.codegen(child)
+                child = source_node.nextchild(defn.childname(instr), use, loc=instr)
+                code += self.codegen(child, use)
                 
             elif instr.name == 'rewrite':       # use instructions from another signature
                 signature = self.defs.make_signature(instr.firstchild())
                 instructions = self.defs.defns.get(signature)
                 if instructions:
-                    code += self.gen_instructions(source_node, instructions, labels)
+                    code += self.gen_instructions(source_node, instructions, labels, use)
                 else:
                     message = 'Rewrite signature "%s" not found' % defn.sig_str(signature)
                     raise instruction.location.error(message)
@@ -166,7 +168,7 @@ class Compiler:
                 label = self.get_label(instr.findtext(), labels, source_node)
                 code.append(label + ':')
                 instructions = instruction.find('instructions?').findall('instruction')
-                code += self.gen_instructions(source_node, instructions, labels)
+                code += self.gen_instructions(source_node, instructions, labels, use)
                 
             elif instr.name == 'branch':
                 args = [self.get_label(label.findtext(), labels, source_node) 
@@ -176,8 +178,7 @@ class Compiler:
                 
             elif instr.name == 'word+':         # generate a phrase or line of code
                 self.level += 1
-                words = [self.gen_word(source_node, word, labels) 
-                            for word in instr.findall('word')]
+                words = self.gen_words(source_node, instr.findall('word'), labels, use)
                 self.level -= 1
                 words = filter(str.strip, words)    # remove empty words
                 phrase = ' '.join(words)
@@ -212,8 +213,8 @@ class Compiler:
     
     def gen_word(self, source_node, word_def, labels, use=True):
         """ Generate code string from source and word definition.
-            If 'use' false, ignore use status of parse nodes.
-            labels[label] is label with suffix for current definition."""        
+            labels[label] is label with suffix for current definition.
+            If 'use' false, ignore use status of parse nodes."""
         wordtype = word_def.firstchild()
         
         if wordtype.name in ('LITERAL'):
@@ -221,7 +222,7 @@ class Compiler:
                 
         elif wordtype.name == 'child':
             child = source_node.nextchild(defn.childname(wordtype), use)
-            return ' '.join(self.codegen(child))
+            return ' '.join(self.codegen(child, use))
             
         elif wordtype.name == 'directive':
             return self.compiler_directive(source_node, wordtype, labels)
@@ -232,6 +233,13 @@ class Compiler:
             ### Error may be in a subsequent alternate, too hard to find which one
     
 
+    
+    def gen_words(self, source_node, word_defs, labels, use=True):
+        """ Generate list of words from source and word definitions.
+            labels[label] is label with suffix for current definition.
+            If 'use' false, ignore use status of parse nodes."""
+        return [self.gen_word(source_node, word_def, labels, use) for word_def in word_defs]
+    
     def compiler_directive(self, source_node, directive, labels):
         """ Generate code per compiler directive, using source and arg definitions.
             Ignore use status of parse nodes when generating args.
@@ -251,7 +259,7 @@ class Compiler:
             firstarg = arg_defs[0]
             nodename = defn.childname(firstarg)
             childnodes = source_node.firstchild(nodename, loc=firstarg).children
-            childtexts = [' '.join(self.codegen(child)) for child in childnodes]
+            childtexts = [' '.join(self.codegen(child, use=False)) for child in childnodes]
             codestring = ', '.join(childtexts)
         
         elif name == 'continuebreak':   # set labels for (continue, break) jumps
