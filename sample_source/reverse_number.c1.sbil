@@ -1,0 +1,49 @@
+;// #include <stdio.h>
+func i32 main() {
+    var i32 n
+    var i32 reverse = 0
+    var i32 rem
+    const "Enter an integer: "
+    call printf 1
+    pop
+    ;//   scanf("%d", &n);
+    br while8
+while8:
+    load n
+    const 0
+    cmp ne
+    br whiletrue8, whileend8
+whiletrue8:
+    ; [continue, break] labels = ['while8', 'whileend8']
+    load n
+    const 10
+    rem
+    dup
+    store rem
+    pop
+    load reverse
+    const 10
+    mul
+    load rem
+    add
+    dup
+    store reverse
+    pop
+    ;//      n/=10;
+    load n
+    const 10
+    div
+    dup
+    store n
+    pop
+    br while8
+whileend8:
+    const "Reversed Number = %d"
+    load reverse
+    call printf 2
+    pop
+    .returncheck
+    const 0
+    ret
+    .return
+}

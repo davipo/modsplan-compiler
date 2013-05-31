@@ -251,4 +251,50 @@ SBIL to LLVM translator
             branch
 
 
+2013-05-30
+
+It is difficult to proofread SBIL to check for proper compilation.
+    Would reading LLVM be any easier? I doubt it.
+    But at least LLVM can be executed, for testing.
+
+
+Assignment (expression or statement?)
+
+    Too many dup, store, pop sequences in generated SBIL.  ###
+        These are generated from assignment statements.
+    
+    In C, an assignment is an expression, so we must allow for using its value.
+        (Proabably most common use of value is multiple assignment.)
+        If store consumes (pops) the value stored, we must dup it.
+            If not used (almost always), must discard it with pop.
+        If store does not pop the value stored, then we must discard it when not used.
+        Can multiple assignment reload the value that was just stored?
+            Or insert 'dup' before last store?
+        Because a statement in C can be an expression, which can be an assignment,
+            it is difficult or impossible to parse assignment statements separately.
+
+    Altenative c1 spec for assignment (statement, not expression):
+        This removes excess dup and pop intructions, 
+            but won't handle some assignment expressions.
+
+        If we remove "expression => assignexpr", then the 'for' statement needs revision:
+            for => 'for' '(' assignment? ';' expression? ';' assignment? ')' statement
+                (Assignment nonterm won't allow a function call by itself -- not good.)
+
+        statement => assignment ';'
+        assignment => lvalue '=' midlvalue=* expression
+
+        assignment(lvalue  midlvalue* expression)
+            &expression
+            &midlvalue*
+            &lvalue
+
+        midlvalue(variable)
+            'dup'
+            =lvalue(variable)
+        
+        lvalue(variable)
+            'store' variable
+
+
 

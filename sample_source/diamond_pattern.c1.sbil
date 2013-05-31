@@ -1,0 +1,191 @@
+;// #include <stdio.h>
+func i32 main() {
+    var i32 n
+    var i32 c
+    var i32 k
+    var i32 space = 1
+    const "Enter number of rows\n"
+    call printf 1
+    pop
+    ;//   scanf("%d", &n);
+    const "%d"
+    load n
+    call scanf 2
+    pop
+    load n
+    const 1
+    sub
+    dup
+    store space
+    pop
+    const 1
+    dup
+    store k
+    pop
+    br for14
+for14:
+    load k
+    load n
+    cmp le
+    br forbegin14, forend14
+forbegin14:
+    ; [continue, break] labels = ['for14', 'forend14']
+    const 1
+    dup
+    store c
+    pop
+    br for16
+for16:
+    load c
+    load space
+    cmp le
+    br forbegin16, forend16
+forbegin16:
+    ; [continue, break] labels = ['for16', 'forend16']
+    const " "
+    call printf 1
+    pop
+    load c
+    dup
+    const 1
+    add
+    store c
+    pop
+    br for16
+forend16:
+    load space
+    dup
+    const 1
+    sub
+    store space
+    pop
+    const 1
+    dup
+    store c
+    pop
+    br for21
+for21:
+    load c
+    const 2
+    load k
+    mul
+    const 1
+    sub
+    cmp le
+    br forbegin21, forend21
+forbegin21:
+    ; [continue, break] labels = ['for21', 'forend21']
+    const "*"
+    call printf 1
+    pop
+    load c
+    dup
+    const 1
+    add
+    store c
+    pop
+    br for21
+forend21:
+    const "\n"
+    call printf 1
+    pop
+    load k
+    dup
+    const 1
+    add
+    store k
+    pop
+    br for14
+forend14:
+    const 1
+    dup
+    store space
+    pop
+    const 1
+    dup
+    store k
+    pop
+    br for29
+for29:
+    load k
+    load n
+    const 1
+    sub
+    cmp le
+    br forbegin29, forend29
+forbegin29:
+    ; [continue, break] labels = ['for29', 'forend29']
+    const 1
+    dup
+    store c
+    pop
+    br for31
+for31:
+    load c
+    load space
+    cmp le
+    br forbegin31, forend31
+forbegin31:
+    ; [continue, break] labels = ['for31', 'forend31']
+    const " "
+    call printf 1
+    pop
+    load c
+    dup
+    const 1
+    add
+    store c
+    pop
+    br for31
+forend31:
+    load space
+    dup
+    const 1
+    add
+    store space
+    pop
+    const 1
+    dup
+    store c
+    pop
+    br for36
+for36:
+    load c
+    const 2
+    load n
+    load k
+    sub
+    mul
+    const 1
+    sub
+    cmp le
+    br forbegin36, forend36
+forbegin36:
+    ; [continue, break] labels = ['for36', 'forend36']
+    const "*"
+    call printf 1
+    pop
+    load c
+    dup
+    const 1
+    add
+    store c
+    pop
+    br for36
+forend36:
+    const "\n"
+    call printf 1
+    pop
+    load k
+    dup
+    const 1
+    add
+    store k
+    pop
+    br for29
+forend29:
+    .returncheck
+    const 0
+    ret
+    .return
+}
