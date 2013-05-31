@@ -13,7 +13,7 @@ for7:
     cmp le
     br forbegin7, forend7
 forbegin7:
-    ; [continue, break] labels = ['for7', 'forend7']
+    ;(continue to for7, break to forend7)
     const "%2d  %3d"
     load i
     load i
@@ -29,5 +29,4 @@ forbegin7:
     pop
     br for7
 forend7:
-    .return
 }
