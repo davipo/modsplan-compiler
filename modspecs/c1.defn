@@ -7,11 +7,10 @@ typedef(typespecifier declarator)
     'type' declarator '=' typespecifier
 
 
-globalvardeclaration(declspecifier identifier initializer?)
-    'var' declspecifier identifier initializer?
+globalvardeclaration(declspecifier initdeclarator+)
+    .set('declspecifier', declspecifier)
+    &initdeclarator+
 
-initializer(constant)
-    '=' constant
 
 declspecifier(STORAGESPEC? TYPEQUALIFIER* typespecifier)
     STORAGESPEC? TYPEQUALIFIER* typespecifier
@@ -21,15 +20,22 @@ STORAGESPEC('extern')
     ''      # external is default linkage
 
 
+initdeclarator(identifier initializer?)
+    'var' .get('declspecifier') identifier initializer?
+
+initializer(constant)
+    '=' constant
+
+
 funcdeclaration(declspecifier identifier functiondeclarator)
+    .set('rettype', declspecifier)
     'declare' declspecifier identifier functiondeclarator
 
 funcdefinition(declspecifier identifier functiondeclarator compoundstatement)
+    .set('rettype', declspecifier)
     'func' declspecifier identifier functiondeclarator '{'
     .indent()
     &compoundstatement
-    .return()       # if previous instruction not a terminator and func type is void,
-    #                   insert 'ret', else error.
     .dedent()
     '}'
 
@@ -40,9 +46,9 @@ ellipsis()
     ',' '...'
 
 
-# local declaration inside a function
-declaration(typespecifier identifier initializer?)
-    'var' typespecifier identifier initializer?
+declaration(declspecifier initdeclarator+)
+    # local declaration inside a function
+    =globalvardeclaration(declspecifier initdeclarator+)
 
 
 statement(expression)
@@ -91,12 +97,16 @@ continue()
 break()
     .break()
 
-return(expression?)
-    .returncheck()      # empty only if func type is void
-    &expression?
+return()
+    .asserteq(.get('rettype'), 'void', 'function must return a value')
+    'ret' 'void'
+
+return(expression)
+    &expression
+    .asserteq(.get('rettype'), .type(), 'return expression has wrong type')
     'ret'
-    
-    
+
+
 assignexpr(lvalue expression)
     &expression
     'dup'               # store consumes value, leave a copy

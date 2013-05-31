@@ -1,9 +1,9 @@
+
 // #include <stdio.h>
  
 int main()
 {
-//   int n, c, k, space = 1;
-  int n; int c; int k; int space = 1;
+  int n, c, k, space = 1;
  
   printf("Enter number of rows\n");
 //   scanf("%d", &n);

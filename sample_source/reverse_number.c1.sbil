@@ -14,7 +14,7 @@ while8:
     cmp ne
     br whiletrue8, whileend8
 whiletrue8:
-    ; [continue, break] labels = ['while8', 'whileend8']
+    ;(continue to while8, break to whileend8)
     load n
     const 10
     rem
@@ -42,8 +42,7 @@ whileend8:
     load reverse
     call printf 2
     pop
-    .returncheck
     const 0
+    .asserteq i32, .type, return expression has wrong type
     ret
-    .return
 }

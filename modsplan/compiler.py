@@ -35,6 +35,7 @@ class Compiler:
         self.comments = []          # collected comments, to insert after current instruction
         self.level = 0              # phrase level; 0 when generating whole instructions
         self.continuebreak = []     # stack of label pairs for (continue, break) jumps
+        self.tempvalues = {}        # temporary values for compiler .set and .get directives
         
         self.parser = syntax.SyntaxParser(langpath, debug)  # load langname.{tokens, syntax}
         self.defs = defn.Definitions(default_defn_grammar_dir)    # initialize defn parser
@@ -184,7 +185,8 @@ class Compiler:
                 phrase = ' '.join(words)
                 phrase = phrase.replace(' (', '(').replace('( ', '(').replace(' )', ')')
                     # fix paren spacing
-                code.append(phrase)
+                if phrase:
+                    code.append(phrase)
                 
             else:
                 location = self.defs.first_alternate(instr.name).location
@@ -232,7 +234,6 @@ class Compiler:
             raise location.error('Unrecognized word kind "%s"' % wordtype.name)
             ### Error may be in a subsequent alternate, too hard to find which one
     
-
     
     def gen_words(self, source_node, word_defs, labels, use=True):
         """ Generate list of words from source and word definitions.
@@ -240,22 +241,36 @@ class Compiler:
             If 'use' false, ignore use status of parse nodes."""
         return [self.gen_word(source_node, word_def, labels, use) for word_def in word_defs]
     
+    
+    def check_numargs(self, args, number, directive):
+        """ Check number of args, if wrong raise error for directive."""
+        if len(args) != number:
+            name = directive.findtext()
+            message = '.%s() directive must have %d argument' % (name, number)
+            message += 's' if number > 1 else ''
+            raise directive.location.error(message)
+    
+    
     def compiler_directive(self, source_node, directive, labels):
         """ Generate code per compiler directive, using source and arg definitions.
             Ignore use status of parse nodes when generating args.
             labels[label] is label with suffix for current definition."""        
         name = directive.findtext()
         arg_defs = directive.findall('word')
+        codestring = ''
         
         if name == 'count':         # number of children of its argument
+            self.check_numargs(arg_defs, 1, directive)
             firstarg = arg_defs[0]
             nodename = defn.childname(firstarg)
             codestring = str(source_node.firstchild(nodename, loc=firstarg).numchildren())
             
         elif name == 'again':       # reuse child
+            self.check_numargs(arg_defs, 1, directive)
             codestring = self.gen_word(source_node, arg_defs[0], labels, use=False)
             
         elif name == 'commasep':    # separate children of first arg with commas
+            self.check_numargs(arg_defs, 1, directive)
             firstarg = arg_defs[0]
             nodename = defn.childname(firstarg)
             childnodes = source_node.firstchild(nodename, loc=firstarg).children
@@ -263,26 +278,36 @@ class Compiler:
             codestring = ', '.join(childtexts)
         
         elif name == 'continuebreak':   # set labels for (continue, break) jumps
-            if len(arg_defs) != 2:
-                directive.location.error('continuebreak directive must have 2 arguments')
+            self.check_numargs(arg_defs, 2, directive)
             contbreak = [self.get_label(argdef.findtext(), labels, source_node) 
                             for argdef in arg_defs]
             self.continuebreak.append(contbreak)
-            codestring = '; [continue, break] labels = ' + str(contbreak)
+            codestring = '; (continue to %s, break to %s)' % tuple(contbreak)
         
         elif name in ('continue', 'break'):     # substitute appropriate label
+            self.check_numargs(arg_defs, 0, directive)
             if not self.continuebreak[-1]:
                 raise source_node.location.error('"%s" not valid outside a loop' % name)
             index = ('continue', 'break').index(name)
             codestring = 'br ' + self.continuebreak[-1][index]
         
         else:
-            args = [self.gen_word(source_node, argdef, labels, use=False) 
-                        for argdef in arg_defs]
-            codestring = '.' + name
-            if args:
-                codestring += ' ' + ', '.join(args)
-            
+            args = self.gen_words(source_node, arg_defs, labels, use=False) 
+        
+            if name == 'get':
+                self.check_numargs(arg_defs, 1, directive)
+                codestring = self.tempvalues.get(args[0], '')
+        
+            elif name == 'set':
+                self.check_numargs(arg_defs, 2, directive)
+                key, value = args
+                self.tempvalues[key] = value
+        
+            else:
+                codestring = '.' + name
+                if args:
+                    codestring += ' ' + ', '.join(args)
+        
         return codestring
         
 

@@ -29,7 +29,7 @@ for14:
     cmp le
     br forbegin14, forend14
 forbegin14:
-    ; [continue, break] labels = ['for14', 'forend14']
+    ;(continue to for14, break to forend14)
     const 1
     dup
     store c
@@ -41,7 +41,7 @@ for16:
     cmp le
     br forbegin16, forend16
 forbegin16:
-    ; [continue, break] labels = ['for16', 'forend16']
+    ;(continue to for16, break to forend16)
     const " "
     call printf 1
     pop
@@ -74,7 +74,7 @@ for21:
     cmp le
     br forbegin21, forend21
 forbegin21:
-    ; [continue, break] labels = ['for21', 'forend21']
+    ;(continue to for21, break to forend21)
     const "*"
     call printf 1
     pop
@@ -114,7 +114,7 @@ for29:
     cmp le
     br forbegin29, forend29
 forbegin29:
-    ; [continue, break] labels = ['for29', 'forend29']
+    ;(continue to for29, break to forend29)
     const 1
     dup
     store c
@@ -126,7 +126,7 @@ for31:
     cmp le
     br forbegin31, forend31
 forbegin31:
-    ; [continue, break] labels = ['for31', 'forend31']
+    ;(continue to for31, break to forend31)
     const " "
     call printf 1
     pop
@@ -161,7 +161,7 @@ for36:
     cmp le
     br forbegin36, forend36
 forbegin36:
-    ; [continue, break] labels = ['for36', 'forend36']
+    ;(continue to for36, break to forend36)
     const "*"
     call printf 1
     pop
@@ -184,8 +184,7 @@ forend36:
     pop
     br for29
 forend29:
-    .returncheck
     const 0
+    .asserteq i32, .type, return expression has wrong type
     ret
-    .return
 }

@@ -16,18 +16,20 @@ extdeclaration => funcdefinition
 
 typedef => 'typedef' typespecifier declarator
 
-globalvardeclaration => declspecifier identifier initializer?
+globalvardeclaration => declspecifier initdeclarator,+
 
 declspecifier => STORAGESPEC? TYPEQUALIFIER* typespecifier
 
+initdeclarator => identifier initializer?
+## initdeclarator => declarator initializer?
+
+initializer => '=' constant
 
 typespecifier => TYPESPEC
 ## typespecifier => structspecifier
 typespecifier => typedefname
 
 typedefname => identifier
-
-initializer => '=' constant
 
 
 declarator => pointr* directdeclarator
@@ -50,7 +52,7 @@ funcdefinition => declspecifier identifier functiondeclarator compoundstatement
 functiondeclarator => '(' paramdeclaration,* ellipsis? ')'
     ##  Requires parameters in function declaration to include name, as well as type.
 
-## functiondeclarator => '(' paramdecl,* ellipsis? ')'     # for parameters without names
+## functiondeclarator => '(' paramdecl,* ellipsis? ')'   # for params without names
 ## paramdecl => declspecifier+ abstractdeclarator
     # Need abstractdeclarator for parameters without name in function declarations
 
@@ -60,10 +62,10 @@ ellipsis => ','  '...'
 
 
 compoundstatement => '{' blockitem* '}'
-blockitem => declaration
+blockitem => declaration ';'
 blockitem => statement
 
-declaration => typespecifier identifier initializer? ';'
+declaration =>  declspecifier initdeclarator,+    # local declaration inside function
 
 statement => if
 statement => while
@@ -91,7 +93,8 @@ for => 'for' '(' declaration expression? ';' expression? ')' statement
 continue => 'continue'
 break => 'break'
 
-return => 'return' expression?
+return => 'return'
+return => 'return' expression
 
 expression => assignexpr
 expression => test      # test specified in expr.syntax
