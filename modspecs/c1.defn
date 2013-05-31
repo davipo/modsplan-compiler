@@ -98,12 +98,13 @@ break()
     .break()
 
 return()
-    .asserteq(.get('rettype'), 'void', 'function must return a value')
+    .asserteq(.get('rettype'), 'void', 'Function must return a value')
     'ret' 'void'
 
 return(expression)
     &expression
-    .asserteq(.get('rettype'), .type(), 'return expression has wrong type')
+    ##.asserteq(.get('rettype'), .type(expression), 'Return expression has wrong type')
+    .asserteq(.get('rettype'), 'i32', 'Return expression has wrong type')
     'ret'
 
 

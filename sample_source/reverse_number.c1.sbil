@@ -43,6 +43,5 @@ whileend8:
     call printf 2
     pop
     const 0
-    .asserteq i32, .type, return expression has wrong type
     ret
 }

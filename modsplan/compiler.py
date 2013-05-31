@@ -36,7 +36,8 @@ class Compiler:
         self.level = 0              # phrase level; 0 when generating whole instructions
         self.continuebreak = []     # stack of label pairs for (continue, break) jumps
         self.tempvalues = {}        # temporary values for compiler .set and .get directives
-        
+        self.stack = []             # simulated stack of (type, value)
+                
         self.parser = syntax.SyntaxParser(langpath, debug)  # load langname.{tokens, syntax}
         self.defs = defn.Definitions(default_defn_grammar_dir)    # initialize defn parser
         self.defs.load(langpath)                # load semantics from langname.defn
@@ -61,6 +62,8 @@ class Compiler:
         self.comments = []
         self.level = 0
         self.continuebreak = [()]       # empty tuple indicates no loop active
+        self.tempvalues = {}
+        self.stack = []
         codelines = []
         
         # Output initial comments
@@ -247,7 +250,7 @@ class Compiler:
         if len(args) != number:
             name = directive.findtext()
             message = '.%s() directive must have %d argument' % (name, number)
-            message += 's' if number > 1 else ''
+            message += '' if number == 1 else 's'
             raise directive.location.error(message)
     
     
@@ -293,16 +296,27 @@ class Compiler:
         
         else:
             args = self.gen_words(source_node, arg_defs, labels, use=False) 
-        
+            
             if name == 'get':
                 self.check_numargs(arg_defs, 1, directive)
                 codestring = self.tempvalues.get(args[0], '')
-        
+            
             elif name == 'set':
                 self.check_numargs(arg_defs, 2, directive)
                 key, value = args
                 self.tempvalues[key] = value
-        
+            
+            elif name == 'asserteq':
+                self.check_numargs(arg_defs, 3, directive)
+                first, second, message = args
+                if first != second:
+                    raise source_node.location.error(message)
+            
+            elif name == 'type':    # type of value on top of stack, '' if stack empty
+                self.check_numargs(arg_defs, 1, directive)
+                if self.stack:
+                    codestring = self.stack[-1][0]
+            
             else:
                 codestring = '.' + name
                 if args:
