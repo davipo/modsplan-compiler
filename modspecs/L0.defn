@@ -1,6 +1,7 @@
 # L0.defn
 
 use base
+use expr
 
 
 globalvar(TYPE identifier)

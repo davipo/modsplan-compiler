@@ -1,0 +1,103 @@
+# expr.defn
+
+
+compare(RELATION expr)
+    &expr
+    RELATION
+
+RELATION('==')
+    'cmp eq'
+
+RELATION('!=')
+    'cmp ne'
+
+RELATION('>')
+    'cmp gt'
+
+RELATION('>=')
+    'cmp ge'
+
+RELATION('<')
+    'cmp lt'
+
+RELATION('<=')
+    'cmp le'
+
+
+factor(ADD_OP atom)     # handles unary '-' (and '+')
+    'const 0'
+    &atom
+    ADD_OP
+
+
+addition(ADD_OP term)
+    &term
+    ADD_OP
+
+ADD_OP('+')
+    'add'
+    
+ADD_OP('-')
+    'sub'
+
+
+multiplication(MUL_OP factor)
+    &factor
+    MUL_OP
+
+MUL_OP('*')
+    'mul'
+
+MUL_OP('/')     # Caution: signed div rounds toward zero,
+    'div'       #   which is different from floor division.
+
+MUL_OP('%')     # Caution: remainder not the same as modulo operation;
+    'rem'       #   remainder has sign of dividend, mod has sign of divisor.
+
+
+call(variable arg*)     # function call
+    &arg*
+    'call' variable .count(arg*)     # number of args
+
+
+atom(variable)          ## "variable" instead of "atom(variable)"?
+    'load' variable
+
+atom(constant)
+    'const' constant
+
+
+identifier(NAME)
+    .again(NAME)        # reuse indefinitely
+
+
+ASSIGN_OP('+=')
+    'add'
+
+ASSIGN_OP('-=')
+    'sub'
+
+ASSIGN_OP('*=')
+    'mul'
+
+ASSIGN_OP('/=')     # caution: different in Python, C
+    'div'
+
+ASSIGN_OP('%=')     # caution: different in Python, C
+    'rem'
+
+ASSIGN_OP('&=')
+    'and'
+
+ASSIGN_OP('|=')
+    'or'
+
+ASSIGN_OP('^=')
+    'xor'
+
+ASSIGN_OP('<<=')
+    'shl'
+
+ASSIGN_OP('>>=')
+    'ashr'
+
