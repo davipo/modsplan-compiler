@@ -2,8 +2,9 @@
 
 external int printf()
 
-def void squares():
-    var int i = 1
-    while i <= 20:
+def void squares(first, last):
+    var int i
+    i = first
+    while i <= last:
         printf("%2d %4d", i, i * i)
         i += 1

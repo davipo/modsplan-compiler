@@ -1,15 +1,17 @@
 ;# squares.L0
 declare i32 printf()
-func void squares() {
-    var i32 i = 1
-    br while7
-while7:
+func void squares(first, last) {
+    var i32 i
+    load first
+    store i
+    br while8
+while8:
     load i
-    const 20
+    load last
     cmp le
-    br whiletrue7, whileend7
-whiletrue7:
-    ;(continue to while7, break to whileend7)
+    br whiletrue8, whileend8
+whiletrue8:
+    ;(continue to while8, break to whileend8)
     const "%2d %4d"
     load i
     load i
@@ -21,7 +23,7 @@ whiletrue7:
     const 1
     add
     store i
-    br while7
-whileend7:
+    br while8
+whileend8:
     ret
 }
