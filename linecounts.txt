@@ -237,3 +237,18 @@ tokenize.py           366       304        17
 
 Total (8 files)      1822      1495        18
 
+
+Line count for modsplan version 0.2.6:
+Filename            Lines  Nonblank   % blank
+
+__init__.py             6         3        50
+compiler.py           366       297        19
+defn.py               114        89        22
+grammar.py            257       214        17
+lineparsers.py        244       202        17
+parsetree.py          179       147        18
+syntax.py             337       277        18
+tokenize.py           366       304        17
+
+Total (8 files)      1869      1533        18
+
