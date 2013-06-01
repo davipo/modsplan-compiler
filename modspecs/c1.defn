@@ -122,6 +122,12 @@ assignexpr(lvalue ASSIGN_OP expression)
     'store' .again(lvalue)
 
 
+factor(NOT_OP atom)
+    &atom
+    'const' '0'
+    'cmp' 'eq'      # performs NOT operation (and converts to i1)
+
+
 atom(INC_OP variable)   # increment/decrement before use
     'load' variable
     'const 1'

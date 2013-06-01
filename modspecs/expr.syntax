@@ -5,7 +5,7 @@
 use constants   # constant, number
 
 
-test => NOT_OP? comparison
+test => comparison
 
 comparison => expr compare?
 compare => RELATION expr

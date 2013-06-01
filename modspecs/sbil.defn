@@ -57,6 +57,7 @@ terminator(return)
     
 
 branch(label label)
+    ## If type on stack top is not i1, may need to convert, or give error.
     .br() .top() ', label' .unique(label) ', label' .unique(label)
 ##     'br' recognized as BR, can't use
 

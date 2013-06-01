@@ -104,6 +104,8 @@ assignexpr => lvalue ASSIGN_OP expression
 
 lvalue => variable
 
+factor => NOT_OP atom
+
 atom => INC_OP variable 
 atom => variable INC_OP
 
