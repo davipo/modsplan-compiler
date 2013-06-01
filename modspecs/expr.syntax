@@ -5,7 +5,13 @@
 use constants   # constant, number
 
 
-test => comparison
+test => andtest disjunction*
+disjunction => OR_OP andtest
+
+andtest => nottest conjunction*
+conjunction => AND_OP nottest
+
+nottest => comparison       # (L0 extends with 'not')
 
 comparison => expr compare?
 compare => RELATION expr

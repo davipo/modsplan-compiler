@@ -1,6 +1,17 @@
 # expr.defn
 
 
+# Not correct for C or Python, but works if operands are boolean
+disjunction(OR_OP andtest)
+    &andtest
+    'or'
+
+# Not correct for C or Python, but works if operands are boolean
+conjunction(AND_OP nottest)
+    &nottest
+    'and'
+
+
 compare(RELATION expr)
     &expr
     RELATION

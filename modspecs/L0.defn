@@ -65,7 +65,7 @@ assignment(designator ASSIGN_OP test)
     'store' .again(designator)
 
 
-test(NOT_OP comparison)
+nottest(NOT_OP comparison)
     &comparison
     'const' '0'
     'cmp' 'eq'      # performs NOT operation and converts to i1

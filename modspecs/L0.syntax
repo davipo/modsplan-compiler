@@ -49,4 +49,4 @@ assignment => designator ASSIGN_OP test
 
 designator => variable
 
-test => NOT_OP comparison
+nottest => NOT_OP comparison
