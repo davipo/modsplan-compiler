@@ -54,9 +54,15 @@ params(identifier*)
     '(' .commasep(identifier*) ')'      # separate with commas
 
 
-assignment(designator ASSIGN test)
+assignment(designator test)
     &test
     'store' designator
+
+assignment(designator ASSIGN_OP test)
+    'load' designator
+    &test
+    ASSIGN_OP
+    'store' .again(designator)
 
 
 # MUL_OP('/')     # override base.defn, which implements truncated division

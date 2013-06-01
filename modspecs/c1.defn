@@ -114,6 +114,13 @@ assignexpr(lvalue expression)
     'dup'               # store consumes value, leave a copy
     'store' lvalue
 
+assignexpr(lvalue ASSIGN_OP expression)
+    'load' lvalue
+    &expression
+    ASSIGN_OP
+    'dup'               # store consumes value, leave a copy
+    'store' .again(lvalue)
+
 
 atom(INC_OP variable)   # increment/decrement before use
     'load' variable

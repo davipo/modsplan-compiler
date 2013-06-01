@@ -17,7 +17,6 @@ whiletrue7:
     mul
     call printf 3
     pop
-    ;## i += 1
     load i
     const 1
     add

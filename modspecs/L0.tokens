@@ -37,3 +37,6 @@ VOID => 'void'   # special handling, not a TYPE
 
 
 use base        # include after alphabetic tokens
+
+
+ASSIGNOP => '//='

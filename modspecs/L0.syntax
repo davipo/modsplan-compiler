@@ -44,7 +44,8 @@ while => 'while' test ':' NEWLINE suite
 return => 'return' test?    # return value must match return TYPE;
                             #   no value iff TYPE is void.
 
-assignment => designator ASSIGN test
+assignment => designator '=' test
+assignment => designator ASSIGN_OP test
 
 designator => variable
 

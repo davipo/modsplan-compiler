@@ -6,5 +6,4 @@ def void squares():
     var int i = 1
     while i <= 20:
         printf("%2d %4d", i, i * i)
-        ## i += 1
-        i = i + 1
+        i += 1

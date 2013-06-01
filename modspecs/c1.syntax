@@ -100,6 +100,7 @@ expression => assignexpr
 expression => test      # test specified in expr.syntax
 
 assignexpr => lvalue '=' expression
+assignexpr => lvalue ASSIGN_OP expression
 
 lvalue => variable
 

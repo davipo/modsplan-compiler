@@ -19,6 +19,13 @@ RELATION => inequality '='?
 inequality => '<'
 inequality => '>'
 
-ASSIGN => '='
-ASSIGN => '+='
-ASSIGN => '-='
+ASSIGN_OP => '+='
+ASSIGN_OP => '-='
+ASSIGN_OP => '*='
+ASSIGN_OP => '/='       # caution: different in Python, C
+ASSIGN_OP => '%='       # caution: different in Python, C
+ASSIGN_OP => '&='
+ASSIGN_OP => '|='
+ASSIGN_OP => '^='
+ASSIGN_OP => '<<='
+ASSIGN_OP => '>>='

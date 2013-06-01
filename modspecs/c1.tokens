@@ -3,18 +3,19 @@
 # A subset of C
 
 
-COMMENT => '/*' P* '*/'
-COMMENT => '//' P*
-    # P* = any printable characters (including space)
-
 use expr
 use float
 ## use string
 
-# use base below -- must include after alphabetic keywords
+# use base below -- must appear after alphabetic keywords
 
 
-# Must appear before NAME from base.tokens
+COMMENT => '/*' P* '*/'
+COMMENT => '//' P*
+    # P* = any printable characters (including space)
+
+
+# Keywords must appear before NAME from base.tokens
 
 STORAGESPEC => 'extern'
 STORAGESPEC => 'static'

@@ -29,7 +29,6 @@ whiletrue8:
     dup
     store reverse
     pop
-    ;//      n/=10;
     load n
     const 10
     div

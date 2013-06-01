@@ -297,4 +297,10 @@ Assignment (expression or statement?)
             'store' variable
 
 
+2013-05-31
+
+Bug: comment repeated when node reused with .again() directive.  ###
+
+
+
 
