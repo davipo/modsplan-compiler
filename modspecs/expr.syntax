@@ -18,6 +18,7 @@ multiplication => MUL_OP factor
 
 factor => atom
 factor => ADD_OP atom       # unary - (or +)
+factor => UNARY_OP atom
 
 atom => constant
 atom => parentheses

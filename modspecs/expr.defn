@@ -25,9 +25,13 @@ RELATION('<=')
 
 
 factor(ADD_OP atom)     # handles unary '-' (and '+')
-    'const 0'
+    'const' '0'
     &atom
     ADD_OP
+
+factor(UNARY_OP atom)
+    &atom
+    &UNARY_OP
 
 
 addition(ADD_OP term)
@@ -53,6 +57,11 @@ MUL_OP('/')     # Caution: signed div rounds toward zero,
 
 MUL_OP('%')     # Caution: remainder not the same as modulo operation;
     'rem'       #   remainder has sign of dividend, mod has sign of divisor.
+
+
+UNARY_OP('~')
+    'const' '-1'
+    'xor'
 
 
 call(variable arg*)     # function call
