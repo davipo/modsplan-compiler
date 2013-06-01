@@ -221,7 +221,7 @@ Starting to test compiler on more realistic C examples. Issues:  ###
     Implement division and remainder operators
         Caution: these work differently in Python   ###
 
-    In-place ASSIGN_OPs needed
+    Compound ASSIGN_OPs needed ('+=')
     
 
 Error location reporting
@@ -296,11 +296,19 @@ Assignment (expression or statement?)
         lvalue(variable)
             'store' variable
 
+    Not using this now; better to implement C more correctly.
+        Can use it for L0 and Cython later.  ###
+
 
 2013-05-31
 
 Bug: comment repeated when node reused with .again() directive.  ###
 
+Multiple declarations on one line are working.
 
+Implemented more operators for languages L0 and c1:
+    Compound assignment operators ('+=')
+    Boolean operators (not correct for C or Python, but OK)
+    Bitwise NOT ('~')
 
 
