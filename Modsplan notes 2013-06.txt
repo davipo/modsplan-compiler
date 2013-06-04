@@ -68,4 +68,55 @@ Documentation
         Begin structuring a library of modular specs
 
  
+2013-06-04
+
+Eliminate the .root grammar flag?
+    Make first nonterm in grammar the root.
+    But want to allow 'use' directives at top of file --
+        then first production comes from an imported file,
+        which is likely not the root.
+    
+    Can we recognize the first production in the first file read?
+        Yes. But then can't put any productions before root.
+            (llvm.syntax has two at the top, related to an import.)
+        At the end of Grammar.store_production(), substitute:
+            "if not self.root and location.filepath == self.filepath:"
+            in place of "if 'root' in flags:".
+        (Remove all references to root flag, including error in syntax.py)
+    
+    A compromise: first production is default root, 
+        may be overridden with .root flag.
+
+
+Overloaded operators
+
+    How to select operations based on operand types?
+    Considering using flags on grammar nonterms to indicate type.
+        May not be needed.
+
+    Use a compiler directive in sbil-llvm.defn to handle type promotion and
+        selecting a floating point or integer instruction.
+    Except that compiler directives are now limited to one line of code.
+    Use two directives:
+        .coerce() inserts a sitofp instruction if the top 2 values on stack are
+            different types, converting the int to a floating point type.
+            (If either not floating point or int, then error.)
+            (Error if floating type may be too small for the int type?)
+        .ftype('binop') prefixes 'f' to binop if stack top is floating point.
+    
+    But this does not generalize well for other types (strings?).
+    Use a conditional rewrite?
+        "=i32=ibinop()" does ibinop if stack top is i32.
+    
+    Type information comes from constants, and variable and parameter declarations.
+    Suppose we propagate a type flag up the parse tree, as such nodes are created. 
+        If it finds a node which already has a type, 
+            that node and its ancestors are marked NoType, and then can't change.
+    When matching signature for code generation, type flags must match.
+        (Use .any to match any type, .int to match any int, .string ...)
+    
+
+
+
+
 

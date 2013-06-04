@@ -36,16 +36,21 @@ Compiler
     Option to show source line numbers in emitted code
 
     Translate SBIL to LLVM assembler
+        Use type flags to handle operator overloading
     
 
 Defn specs
 
-    Use (sub)directory per output language for .defn specs
+    Use (sub)directory per output language for .defn specs?
         These share common (higher level) .defn specs with others (imported with "use")
         Need to allow for selecting .defn dir different from grammar dir
     
     Make clear when to use expansion vs substitution in defn specs.  ###
-       
+        Expansion generates multiple instructions. (Always?)
+        Substitution (a defn "word") joins resulting strings with spaces.
+    
+    Add type flags to signatures, constraining matches.
+
 
 Parsetree
 
@@ -57,6 +62,8 @@ Parsetree
 
 
 Grammar
+
+    Make first (non-imported) nonterm in file the default root.  ###
 	
 
 Syntax parser
