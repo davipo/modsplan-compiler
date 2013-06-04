@@ -42,7 +42,6 @@ class Location(object):
             text = text.replace('\t', ' ' * self.tabsize)       # expand tabs
         return text
 
-
     def error(self, message, extra=''):
         """ Return Error exception object for this location."""
         return Error(message, self, extra)

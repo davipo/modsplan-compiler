@@ -162,7 +162,7 @@ class NonterminalNode(BaseNode):
                 break
             else:
                 text = child.findtext()
-                if text:
+                if text is not None:
                     break
         return text
 
