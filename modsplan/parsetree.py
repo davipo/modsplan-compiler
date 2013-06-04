@@ -148,7 +148,7 @@ class NonterminalNode(BaseNode):
             result = None
             for child in self.children:
                 result = child.find(name)
-                if result:
+                if result is not None:
                     break
             return result
 
