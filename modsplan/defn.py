@@ -99,9 +99,7 @@ def childname(child):
         return name of child with quantifier, if any."""
     name = child.findtext()
     qnode = child.find('QUANTIFIER')
-    if qnode:
-        name += qnode.findtext()
-    return name
+    return name + (qnode.findtext() if qnode else '')
 
 
 if __name__ == '__main__':
