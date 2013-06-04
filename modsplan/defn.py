@@ -46,8 +46,9 @@ class Definitions:
         self.defns.clear()
         for definition in self.defn_tree.findall('definition'):
             signature = self.make_signature(definition.firstchild())
-            instructions = definition.firstchild('instructions')
-            self.defns[signature] = instructions.findall('instruction')
+            instructions = definition.firstchild('instructions').findall('instruction')
+            self.defns[signature] = [instr for instr in instructions if instr.children]
+                # remove empty instructions
 
     def make_signature(self, signode):
         ### move outside class?
@@ -70,8 +71,6 @@ class Definitions:
             for child in source_node.children:
                 if child.name != 'COMMENT':
                     signature.append(child.name)
-#         print signature
-#         print '   ', self.defns.get(tuple(signature))
         return self.defns.get(tuple(signature))
     
     def show(self, sigs_only=True):

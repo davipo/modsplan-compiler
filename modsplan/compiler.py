@@ -151,8 +151,6 @@ class Compiler:
         code = []
         
         for instruction in instruction_defs:
-            if not instruction.children:
-                continue
             instr = instruction.firstchild()
             
             if instr.name == 'expansion':       # expand next unused child with this name
