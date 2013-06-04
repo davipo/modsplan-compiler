@@ -12,7 +12,7 @@ while8:
     br whiletrue8, whileend8
 whiletrue8:
     ;(continue to while8, break to whileend8)
-    const "%2d %4d"
+    const "%3d %5d\n"
     load i
     load i
     load i
@@ -25,5 +25,12 @@ whiletrue8:
     store i
     br while8
 whileend8:
+    ret
+}
+func void main() {
+    const 0
+    const 9
+    call squares 2
+    pop
     ret
 }

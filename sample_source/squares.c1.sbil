@@ -14,7 +14,7 @@ for7:
     br forbegin7, forend7
 forbegin7:
     ;(continue to for7, break to forend7)
-    const "%2d  %3d"
+    const "%3d %5d\n"
     load i
     load i
     load i
@@ -29,4 +29,10 @@ forbegin7:
     pop
     br for7
 forend7:
+}
+func void main() {
+    const 0
+    const 9
+    call squares 2
+    pop
 }

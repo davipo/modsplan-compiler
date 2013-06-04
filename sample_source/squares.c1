@@ -5,6 +5,11 @@ extern int printf();
 void squares(int first, int last) {
     int i;
     for (i = first; i <= last; i++) {
-        printf("%2d  %3d", i, i * i);
+        printf("%3d %5d\n", i, i * i);
     }
+}
+
+
+void main() {
+    squares(0, 9);
 }

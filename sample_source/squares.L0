@@ -6,5 +6,9 @@ def void squares(first, last):
     var int i
     i = first
     while i <= last:
-        printf("%2d %4d", i, i * i)
+        printf("%3d %5d\n", i, i * i)
         i += 1
+
+
+def void main():
+    squares(0, 9)
