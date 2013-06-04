@@ -3,5 +3,69 @@ Modsplan notes 2013-06
 
 2013-06-01
 
+How to compile the addressof unary operator in C ('&')?
+    Use .addressof() directive, which compiles to .addressof in sbil,
+         which uses the value of its arg (must be pointer) in LLVM output.
+    This works if argument is an lvalue -- give error otherwise?
 
+
+Naming defn specs (selecting target)
+    Use dash between source and target languages?
+        c-sbil.defn compiles C to SBIL
+        sbil-llvm.defn compiles SBIL to LLVM
+    "Normally" (?), compiler translates to SBIL, and then SBIL to LLVM.
+    But it may target a processor more directly.
+        sbil-x86.defn, sbil-arm.defn, sbil-propeller.defn? Try these!  ####
+    Select target with a command-line option?
+
+
+Can my compiler translate one higher-level language to another?
+    Try L0-js.defn to translate to Javascript? ####
+    May need nested signatures (which we may want anyway)  ###
+
+
+Factor directive handler out of compiler.py?
+
+Use separate class for sbil-llvm directives?
+Use Stack class, Symbol class.
+
+
+2013-06-03
+
+Documentation
+
+    Website
+        Description of the project
+            Modular specs
+                Grammars for syntax and tokens
+                Defn spec
+                SBIL target language: simple, powerful, translates to LLVM
+    
+    Tutorial
+        Grammar reference
+            Write comments in metagrammars -- sufficient?
+        Parser finds longest valid alternate
+        Defn reference
+            Refer to defn.syntax (not user-customizable)
+            Explain compiler algorithm
+                Depth-first traverse of parse tree, generates defined nodes
+            Quantified nodes
+            Instructions
+                Words
+                    Literal
+                    Child
+                    Directive
+                        List & describe
+                Expansion
+                Rewrite
+
+    To Do
+        SBIL to LLVM translator
+        XML parse tree output
+        More complete and accurate C spec
+        Specify other languages
+            Demonstrate compiling OO language (Component Pascal, Javascript, Java?)
+        Begin structuring a library of modular specs
+
+ 
 

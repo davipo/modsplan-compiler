@@ -10,7 +10,7 @@ import lineparsers
 
 quote_chars = "'" + '"'
 quantifiers = '*+?'
-separators = '.,;:/|\&-'    # may be used with quantifier to separate repeating items
+separators = '.,;:/|\&-='       # may be used with quantifier to separate repeating items
 enable_cmd = 'enable '
 
 
@@ -78,7 +78,7 @@ class Alternate:
 class Item:
     """ One item of a production, includes quantifier. Extended by subclasses."""
     
-    def __init__(self, element=None, quantifier='1', separator=''):
+    def __init__(self, element, quantifier='1', separator=''):
         """ Create item from element (string), optional quantifier, separator.
             An element must be one of:
                 terminal:

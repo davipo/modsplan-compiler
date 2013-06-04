@@ -56,7 +56,6 @@ class TokenGrammar(grammar.Grammar):
         self.prefix_map = dict()
         for kind in self.kinds:
             kind.find_prefixes(self.nonterms)       # stores prefixes in kind
-            kind.prefixes.discard(None)   ## should not have None, but in case (give error?)
             self._add_prefixes(kind)
             
     def _add_prefixes(self, tokenkind):
@@ -324,7 +323,7 @@ def reassemble(tokens):
                 if token.text == ',':
                     result += ' '
         lastkind = kind
-    return result
+    return result + '\n'
 
 
 debug = ''
@@ -349,9 +348,8 @@ def test(source_filepath):
         print 'Tokens from ' + source_filepath + ':\n'
         for tkn in tokens:
             print tkn   
-    ra = reassemble(tokens)
-    print ra
-    print
+    
+    print reassemble(tokens)
 
 
 import sys
