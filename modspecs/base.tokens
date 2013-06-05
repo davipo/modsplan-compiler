@@ -18,8 +18,8 @@ alphanum => letter
 alphanum => '_'
 alphanum => D       # digit character class, matches any digit
 
-letter => L 	    # lower case character class
-letter => U 	    # upper case character class
+letter => L         # lower case character class
+letter => U         # upper case character class
 
 HEX => '0x' hexdigit+
 hexdigit => D

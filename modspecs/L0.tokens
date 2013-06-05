@@ -39,6 +39,6 @@ VOID => 'void'   # special handling, not a TYPE
 use base        # include after alphabetic tokens
 
 
-MUL_OP => '//' 	    # floor division
+MUL_OP => '//'      # floor division
 
-ASSIGNOP => '//='
+ASSIGN_OP => '//='

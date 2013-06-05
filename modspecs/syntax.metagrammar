@@ -1,4 +1,5 @@
-# syntax.metagrammar: syntax for Modsplan syntax specifications
+# syntax.metagrammar
+# Syntax for Modsplan syntax specifications
 
 use base        # include (import) base.metagrammar here
 

@@ -85,16 +85,15 @@ Eliminate the .root grammar flag?
         (Remove all references to root flag, including error in syntax.py)
     
     A compromise: first production is default root, 
-        may be overridden with .root flag.
+        may be overridden with .root flag.  ###
 
 
 Overloaded operators
 
     How to select operations based on operand types?
     Considering using flags on grammar nonterms to indicate type.
-        May not be needed.
 
-    Use a compiler directive in sbil-llvm.defn to handle type promotion and
+    Could use a compiler directive in sbil-llvm.defn to handle type coercion and
         selecting a floating point or integer instruction.
     Except that compiler directives are now limited to one line of code.
     Use two directives:
@@ -112,11 +111,36 @@ Overloaded operators
     Suppose we propagate a type flag up the parse tree, as such nodes are created. 
         If it finds a node which already has a type, 
             that node and its ancestors are marked NoType, and then can't change.
-    When matching signature for code generation, type flags must match.
+    When matching signature for code generation, type flags must match.  ###
         (Use .any to match any type, .int to match any int, .string ...)
     
 
+Language proliferation
 
+    (In case not previously noted here:)
+    One hesitation I have about Modsplan is that it could help accelerate a 
+    proliferation of languages. I want to see careful improvement, convergence, and 
+    standardization of general purpose languages like Python and Scala. If many new 
+    languages and dialects proliferate, programmers will need to become more 
+    adaptable and multilingual. Readability and proficiency may suffer. I hope Modsplan 
+    can at least provide readable specifications to facilitate learning and reference.
+
+
+Language definition hierarchy
+
+    Early in the conception of Modsplan, I expected to write definitions using a 
+    hierarchy of language subsets, each building on the capabilities of the one below.
+    Along the way, that idea has receded. One reason is that I want to standardize 
+    specifications, so users have less to learn to understand them. But higher-level 
+    specs should be easier to read and write. It may be best to build subsets of a 
+    typed Python-like language (for readability), and use that to define the rest. 
+    (I can try to design it to be a compromise between C++, Java, and Python.)
+    
+    If Modsplan can translate between higher-level languages, then users can pick 
+    a familiar flavor to read their specs in! (Python, Java, C++, Scheme, Haskell?) ####
+
+
+Discovered more related work: TBNF (similar to my approach), Grammarware, etc.
 
 
 

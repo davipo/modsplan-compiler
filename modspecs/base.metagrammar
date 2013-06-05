@@ -2,63 +2,87 @@
 # Base syntax for Modsplan grammars
 
 # This is also the metagrammar for itself!
-# Space character may appear only where noted; extra spaces ignored
+# Space character may appear only where shown or noted; extra spaces ignored.
+
+# Modsplan grammar is a BNF variant.
+#
+# Items of a production may be a literal (in quotes) or a lowercase nonterminal.
+# 
+# Items may be suffixed with a quantifier character to indicate repetition: 
+#   '*' = 0 or more, '+' = 1 or more, '?' = 0 or 1.
+#
+# A separator character (usually ',') may occur immediately before a quantifier.
+#   This indicates that repetitions are separated by that character.
+#
+# Alternates must be spelled out with a separate production.
+#   This is a reminder that additional alternates may appear in other files.
+#
+# In token specifications (and metagrammars), an item may be a character class,
+#   represented by a single uppercase letter:
+#       U = any upper case letter
+#       L = any lower case letter
+#       D = any digit
+#       P* = any printable characters, must be followed by terminal or end of line.
+#           P must be used with the '*'. Printable character may be a space.
+# 
+# In syntax specifications, an item may be a tokenkind, represented by a word of
+#   two or more uppercase letters. These are defined in a token specification.
 
 
-grammar => preface body
+grammar => line*
 
-preface => preface_line*
-
-preface_line => comment "\n"    # "\n" represents a newline (end-of-line marker)
-preface_line => import "\n"
-
-import => 'use' filename,+     # one or more filenames, separated by ", "
-
-filename => identifier      # no extension, assume same extension as current file
-
-body => body_line*
-
-body_line => production? comment? "\n"
+line => statement? comment? '\n'     # '\n' represents a newline (end-of-line marker)
 
 comment => "#" P*           # if not at start of line, must be preceded by a space
 
-production => nonterminal "=>" alternate
+statement => enable
+statement => import
+statement => production
 
-nonterminal => nonterm      # "nonterminal" is left side only; "nonterm" may be on right
-
-nonterm => identifier
+enable => 'enable ' option
+option => identifier
 
 identifier => L+
 
+import => 'use ' filename,+     # one or more filenames, separated by ", "
+filename => identifier          # no extension, assumes same extension as current file
+
+
+production => nonterminal ' => ' alternate
+
+nonterminal => nonterm      # "nonterminal" on left side only; "nonterm" may be on right
+                            #   (nonterminal is extended in tokens.metagrammar)
+
+nonterm => identifier
+
 alternate => word+          # spaces must separate adjacent words
 
-word => item repeater?
+word => item repeater?              # no space between item and repeater
 
-repeater => separator? quantifier
+repeater => separator? quantifier   # no space between separator and quantifier
 
-separator => ","            # separates repeated items (space must follow each)
+separator => ','            # will separate repeated items (space must follow each)
+separator => '.'
+separator => ';'
+separator => ':'
+separator => '/'
+separator => '|'
+separator => '\'
+separator => '&'
+separator => '-'
+separator => '='
 
-quantifier => "*"           # zero or more
-quantifier => "+"           # one or more
-quantifier => "?"           # zero or one
+quantifier => '*'           # zero or more
+quantifier => '+'           # one or more
+quantifier => '?'           # zero or one
 
 item => nonterm 
 item => literal             # terminal
 
-literal => "'" P* "'"
 literal => '"' P* '"'
+literal => "'" P* "'"
 
-# charclass is permitted only in .tokens spec; here only because used in this metagrammar
+# charclass is permitted only in .tokens spec; here only because needed by metagrammars
 item => charclass           # terminal
 
 charclass => U
-
-# Character classes are represented by a single uppercase letter:
-# U => any upper case letter
-# L => any lower case letter
-# D => any digit
-#
-# P* = any printable characters, must be followed by terminal or end of line.
-# P may be used only with *
-# Printable char may be a space; tab char discouraged
-

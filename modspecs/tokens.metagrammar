@@ -1,11 +1,13 @@
-# tokens.metagrammar: syntax for Modsplan token specifications
+# tokens.metagrammar
+# Syntax for Modsplan token specifications
 
 use base        # include (import) base.metagrammar here
 
 
 nonterminal => tokenname
 
-tokenname => U upper+ 		# (single uppercase letter reserved for character classes)
+tokenname => U upper+       # must have more than one letter
+                            #   (single uppercase letter reserved for character classes)
 
 upper => U
 upper => '_'
