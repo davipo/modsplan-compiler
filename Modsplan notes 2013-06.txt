@@ -143,4 +143,31 @@ Language definition hierarchy
 Discovered more related work: TBNF (similar to my approach), Grammarware, etc.
 
 
+2013-06-06
 
+Showed Modsplan to Bryan F.
+    Shortest C program that crashes: "main ;".
+    Random test code generation, for finding C compiler bugs
+        (udacity.com course in SW testing)
+        John Regehr
+        http://www.cs.utah.edu/~regehr/papers/
+    Declarations not used in first slot of 'for' statements in C?
+
+
+Meet with Joe N.
+    Documentation
+        Dataflow diagram
+            Diagramming software?
+        Readme
+        Website
+    Parser/Tokenizer
+        Replacement for Yacc/Lex?
+        XML parse tree
+        Applications?
+            Data parsing?
+    SBIL-LLVM translator
+    
+
+
+    
+    
