@@ -63,6 +63,8 @@ Parsetree
 
 Grammar
 
+    Ignore '#' inside quotes (even if preceded by space): not a comment.
+
     Make first (non-imported) nonterm in file the default root.  ###
 	
 
