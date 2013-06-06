@@ -155,21 +155,21 @@ class Grammar:
     
     
     def load_grammar(self, filepath):
-        """ Load grammar file (format defined by base.metagrammar).
-            Store productions in self.nonterms.
-            If grammar contains 'use' directives, import all needed files.
-            Set self.root to last nonterminal found with a .root flag.
-            (To use multiple grammar files, create one file of 'use' directives.)
-        """ 
+        """ Load grammar file, store productions (format defined by base.metagrammar).
+            'enable' commands set options.
+            'use' commands include other files (see lineparsers.py).
+            Last nonterminal with suffix '.root' is recorded as root.
+        """
         lines = lineparsers.LineInfoParser(filepath)
         for line in lines:
             if line.startswith(enable_cmd):
                 option = line[len(enable_cmd):].strip()
-                self.options.append(option.lower())
-            else:
-                line = line.strip()
-                if line and not line.startswith('#'):   # skip blank and comment lines
-                    self.store_production(line, lines.location)
+                if option.isalnum():    # if not alphanumeric, process line as a production
+                    self.options.append(option.lower())
+                    continue
+            line = line.strip()
+            if line and not line.startswith('#'):   # skip blank and comment lines
+                self.store_production(line, lines.location)
         self.load_items()       # replace raw strings of production with Item
 
 
@@ -236,7 +236,7 @@ class Grammar:
 
 
 gfn = 'base.tokens'
-gfn = 'tokens.metagrammar'      #### Error when "use" tries to add to existing nonterm.
+gfn = 'tokens.metagrammar'
 gfn = 'base.metagrammar'
 gfn = 'L0.syntax'
 
