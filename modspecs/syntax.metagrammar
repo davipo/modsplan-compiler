@@ -1,9 +1,0 @@
-# syntax.metagrammar
-# Syntax for Modsplan syntax specifications
-
-use base        # include (import) base.metagrammar here
-
-
-nonterminal => nonterm "." flag
-
-flag => identifier      # flag "root" is used to identify root of syntax grammar

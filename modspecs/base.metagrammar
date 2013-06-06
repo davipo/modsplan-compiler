@@ -39,21 +39,23 @@ statement => enable
 statement => import
 statement => production
 
-enable => 'enable ' option
+enable => 'enable' option
 option => identifier
 
 identifier => L+
 
-import => 'use ' filename,+     # one or more filenames, separated by ", "
+import => 'use' filename,+      # one or more filenames, separated by ", "
 filename => identifier          # no extension, assumes same extension as current file
 
 
-production => nonterminal ' => ' alternate
+production => nonterminal flag* '=>' alternate
 
 nonterminal => nonterm      # "nonterminal" on left side only; "nonterm" may be on right
                             #   (nonterminal is extended in tokens.metagrammar)
 
 nonterm => identifier
+
+flag => '.' identifier      # no spaces between nonterminal and flags
 
 alternate => word+          # spaces must separate adjacent words
 
