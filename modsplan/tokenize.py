@@ -4,7 +4,7 @@
 
 
 import grammar
-from lineparsers import LineInfoParser, FileParser
+from lineparsers import LineInfoParser, FileParser, Error
 
 
 class Token:
@@ -330,26 +330,29 @@ debug = ''
 
 def test(source_filepath):
     global t
-
-    language = source_filepath.rpartition('.')[-1]
-    tokenspec = 'modspecs/%s.tokens' % language
-    
-    t = Tokenizer(tokenspec)
-    print t.prefixes(),
-    
-    print 'prefix_map:'
-    for prefix, kinds in sorted(t.tokendef.prefix_map.items()):
-        kindnames = [kind.name for kind in kinds]
-        print '%3s: %s' % (prefix, ' '.join(kindnames))
-    print
+    try:
+        language = source_filepath.rpartition('.')[-1]
+        tokenspec = 'modspecs/%s.tokens' % language
         
-    tokens = t.get_tokens(source_filepath)
-    if '1' in debug:
-        print 'Tokens from ' + source_filepath + ':\n'
-        for tkn in tokens:
-            print tkn   
-    
-    print reassemble(tokens)
+        t = Tokenizer(tokenspec)
+        print t.prefixes(),
+        
+        print 'prefix_map:'
+        for prefix, kinds in sorted(t.tokendef.prefix_map.items()):
+            kindnames = [kind.name for kind in kinds]
+            print '%3s: %s' % (prefix, ' '.join(kindnames))
+        print
+            
+        tokens = t.get_tokens(source_filepath)
+        if '1' in debug:
+            print 'Tokens from ' + source_filepath + ':\n'
+            for tkn in tokens:
+                print tkn   
+        
+        print reassemble(tokens)
+
+    except Error as exc:
+        print exc
 
 
 import sys

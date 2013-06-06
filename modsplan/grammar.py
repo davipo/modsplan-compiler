@@ -251,7 +251,10 @@ def test(gfn=gfn):
 import sys
 
 if __name__ == '__main__':
-    if sys.argv[1:]:
-        test(sys.argv[1])
-    else:
-        test()
+    try:
+        if sys.argv[1:]:
+            test(sys.argv[1])
+        else:
+            test()
+    except lineparsers.Error as exc:
+        print exc
