@@ -32,7 +32,7 @@ class BaseNode:
         """ Return string of indentation to level of node."""
         location = ''
         if 'n' in self.debug:
-            location = '%2d %2d ' % (self.location.linenum, self.column)
+            location = '%2d %2d ' % (self.location.linenum, self.location.column)
         return location + indentation[len(location):self.level * indent_size]
 
     def find(self, name):
