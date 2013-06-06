@@ -202,15 +202,16 @@ class ImportParser(FileParser):
         # overriding FileParser.process_line(), so do its processing first
         for pline in FileParser.process_line(self, line):
             if pline.startswith(import_command):
-                pline = pline.partition('#')[0]     # remove any comment
-                importname = pline[len(import_command):].strip()
-                importpath = os.path.join(self.directory, importname) + self.extension
-                if importpath not in self.imported:
-                    importer = ImportParser(importpath, self.track_indent, self.imported)
-                    for import_line in importer:
-                        yield import_line
-            else:
-                yield (pline, self.location)
+                command = pline.partition('#')[0]   # remove any comment
+                importname = command[len(import_command):].strip()
+                if importname.isalnum():        # if alphanumeric, include imported file
+                    importpath = os.path.join(self.directory, importname) + self.extension
+                    if importpath not in self.imported:
+                        importer = ImportParser(importpath, self.track_indent, self.imported)
+                        for import_line in importer:
+                            yield import_line
+                    continue
+            yield (pline, self.location)
 
 
 class LineInfoParser(LineParser):
