@@ -151,7 +151,7 @@ Showed Modsplan to Bryan F.
         (udacity.com course in SW testing)
         John Regehr
         http://www.cs.utah.edu/~regehr/papers/
-    Declarations not used in first slot of 'for' statements in C?
+    Declarations rarely used in first slot of 'for' statements in C?
 
 
 Meet with Joe N.
@@ -167,6 +167,27 @@ Meet with Joe N.
             Data parsing?
     SBIL-LLVM translator
     
+    &expansion necessary?
+
+
+
+Formal specification of languages (as an application for Modsplan)
+    
+    Most programming languages are informally and incompletely specified. Writing a Modsplan spec creates a formal definition of a language, if the target language is formally specified.
+    
+    Critical software systems need high-quality language specifications to verify correct behavior. (?) An exact specification that can be used to compile and thereby execute critical code is valuable for testing other compilers, interpreters, linkers, etc.
+
+
+2013-06-12
+
+    Languages to write specs for:
+        Ada, Component Pascal (Oberon), Java, Javascript, Python (Cython), Scala.
+
+
+2013-06-17
+
+Started writing intro for documentation. Problem: what is a Modsplan module? In current implementation, it is one or more spec files. Token, syntax, defn are imported independently, so there is no coherence to a "module".
+
 
 
     

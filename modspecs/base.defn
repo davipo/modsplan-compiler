@@ -3,7 +3,7 @@
 # This is the base definition for most programming languages.
 # It specifies code generation from an abstract syntax tree (AST).
 
-# See defn.metagrammar for syntax of .defn files
+# See defn.syntax for syntax of .defn files
 
 # Specify only nonterms which generate code
 # Compiler traverses tree depth-first, matching these, generating as it goes.
