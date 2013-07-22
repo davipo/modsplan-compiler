@@ -1,0 +1,55 @@
+# legislation.syntax
+
+use unitids         # numbering of sections, subsections, paragraphs, etc.
+
+
+proposal.root => psection+ '(' 'End' ')' NEWLINE
+
+psection => psectionid unitid 'of' 'the' 'statutes' 'is' action
+# psection => psectionid unitidlist 'of' 'the' 'statutes' 'are' action
+
+psectionid => 'Section' SUBDIVISIONID       # psection number, not actual SUBDIVISIONID
+
+
+action => repeal
+action => creation
+action => repealcreate
+action => amendment
+action => renumberamend
+
+repeal => 'repealed' '.' NEWLINE
+creation => 'created' 'to' 'read' ':' NEWLINE unit+
+repealcreate => 'repealed' 'and' 'recreated' 'to' 'read' ':' NEWLINE unit+
+amendment => 'amended' 'to' 'read' ':' NEWLINE unit+
+renumberamend => 'renumbered' 'and' 'amended' 'to' 'read' ':' NEWLINE unit+
+
+unit => section 
+unit => subsection
+unit => paragraph
+unit => subdivision
+unit => subparagraph
+
+section => SECTIONID title text? subsection*
+
+title => sentence
+
+text => sentence+
+
+sentence => word+ '.'?
+sentence => word+ ':'
+
+word => WORD
+word => 's.' unitid
+
+subsection => SUBSECTIONID subtitle text? NEWLINE paragraph*
+
+subtitle => sentence
+
+paragraph => PARAGRAPHID text NEWLINE subdivision*
+paragraph => PARAGRAPHID NEWLINE subdivision+
+
+subdivision => SUBDIVISIONID text NEWLINE subparagraph*
+subdivision => SUBDIVISIONID NEWLINE subparagraph+
+
+subparagraph => SUBPARAGRAPHID text NEWLINE
+

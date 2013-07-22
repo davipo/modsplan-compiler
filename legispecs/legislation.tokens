@@ -1,0 +1,22 @@
+# legislation.tokens
+
+enable newline
+
+
+WORD => L+          # one or more lowercase letters
+WORD => U L*
+WORD => ','
+WORD => '"'
+WORD => digits
+
+digits => D+
+
+SECTIONID => digits '.' digits
+SUBSECTIONID => '(' digits L? ')'
+PARAGRAPHID => '(' L L? ')'
+SUBDIVISIONID => digits L? '.'
+SUBPARAGRAPHID => L L? '.'
+
+KEYWORD => 's.'
+KEYWORD => 'ss.'
+
