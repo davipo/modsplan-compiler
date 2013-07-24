@@ -11,11 +11,14 @@ WORD => digits
 
 digits => D+
 
+modletter => L
+modletter => 'L'
+
 SECTIONID => digits '.' digits
-SUBSECTIONID => '(' digits L? ')'
-PARAGRAPHID => '(' L L? ')'
-SUBDIVISIONID => digits L? '.'
-SUBPARAGRAPHID => L L? '.'
+SUBSECTIONID => '(' digits modletter? ')'
+PARAGRAPHID => '(' L modletter? ')'
+SUBDIVISIONID => digits modletter? '.'
+SUBPARAGRAPHID => L modletter? '.'
 
 KEYWORD => 's.'
 KEYWORD => 'ss.'
