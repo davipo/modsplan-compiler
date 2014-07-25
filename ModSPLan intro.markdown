@@ -1,6 +1,6 @@
 
 # ModSPLan
-##Modular Specification of Programming Languages
+## Modular Specification of Programming Languages
 
 Modsplan is a language for writing specifications of programming languages (a [meta-language](http://en.wikipedia.org/wiki/Meta-language)). A Modsplan specification provides a formal definition of the syntax and semantics of a language. These specifications are *modular*: common definitions (for constants, expressions, statements, etc) may be shared between languages.
 
@@ -12,9 +12,12 @@ Three kinds of specifications define a language:
 + a **syntax** grammar defines the language syntax, based on tokens
 + a **defn** (definition) specifies code to generate for each syntactic element
 
-The grammar used in tokens and syntax specs is a simple and powerful [BNF](http://en.wikipedia.org/wiki/Backus–Naur_Form) variant. The defn spec lists target code instructions to generate for parse tree nodes matching a given signature.
+The grammar used in the tokens specs and syntax specs is a simple but powerful 
+[BNF](http://en.wikipedia.org/wiki/Backus–Naur_Form) variant. 
+The defn spec lists target code instructions to generate for parse tree nodes matching a 
+given signature.
 
 Modsplan specifications use three simple languages to define higher-level languages: the Modsplan grammar, the Modsplan defn, and the target instruction set.
 
-To generate code for many platforms, defn specs typically target SBIL (a Stack-Based Intermediate Language), which is translated to [LLVM](http://en.wikipedia.org/wiki/LLVM).
+To generate code for many platforms, our defn specs usually target SBIL (a Stack-Based Intermediate Language), which will be translated to [LLVM](http://en.wikipedia.org/wiki/LLVM).
 
