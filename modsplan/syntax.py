@@ -308,9 +308,9 @@ def test(source_filepath, grammar_dir=None, debug=''):
     try:
         print '\nParsing %s ... \n' % source_filepath
         parser = SyntaxParser(os.path.join(grammar_dir, langname), debug)
-        tree = parser.parse(source_filepath, enable_imports=('i' in debug))
+        tree = parser.parse(source_filepath, enable_imports=('m' in debug))
         print "\n**** Syntax test done ****"
-    except Error as exc:
+    except (None if 'b' in debug else Error) as exc:
         print exc
     print
     return tree
