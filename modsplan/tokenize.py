@@ -1,3 +1,5 @@
+#!/usr/local/bin/python
+
 # tokenize.py
 # Modsplan tokenizer
 # Copyright 2011-2013 by David H Post, DaviWorks.com.
