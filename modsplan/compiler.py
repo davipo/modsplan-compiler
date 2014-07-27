@@ -362,7 +362,7 @@ if __name__ == '__main__':
         print codestring
     else:
         print """
-    Usage: python compiler.py <source_path> [<specification_dir>] [-<debug_flags>]
+    Usage: %s <source_path> [<specification_dir>] [-<debug_flags>]
 
         debug_flags (may be combined, as in -345nb):
 
@@ -384,5 +384,5 @@ if __name__ == '__main__':
         s = display syntax used to parse source
         t = display parse tree
         w = write target code to file (overwrites file)
-        """
+        """ % sys.argv[0]
 
