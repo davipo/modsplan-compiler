@@ -333,5 +333,5 @@ if __name__ == '__main__':
                 grammar_dir = arg
         tree = test(sourcepath, grammar_dir, debug)
     else:
-        print 'Usage: ./syntax.py <source_filepath> [<grammar_dir>] [-<debug_flags>]'
+        print 'Usage: %s <source_filepath> [<grammar_dir>] [-<debug_flags>]' % sys.argv[0]
 
