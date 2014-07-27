@@ -346,14 +346,14 @@ def test(source_filepath):
         print
             
         tokens = t.get_tokens(source_filepath)
-        if '1' in debug:
+        if 'o' in debug:
             print 'Tokens from ' + source_filepath + ':\n'
             for tkn in tokens:
                 print tkn   
         
         print reassemble(tokens)
 
-    except Error as exc:
+    except (None if 'b' in debug else Error) as exc:
         print exc
 
 
