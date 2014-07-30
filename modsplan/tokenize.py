@@ -365,5 +365,13 @@ if __name__ == '__main__':
         source_filepath, debug = args[:2]
         test(source_filepath)
     else:    
-        print 'Usage: %s <source_filepath> [<debug_flags>]' % sys.argv[0]
+        print """
+    Usage: %s <source_path> [-<debug_flags>]
+        
+        debug_flags (may be combined, as in -2ob):
 
+        2 = log nonterm matching to stdout
+        3 = log item matching to stdout
+        b = show traceback on error
+        o = list tokens from source file
+        """ % sys.argv[0]

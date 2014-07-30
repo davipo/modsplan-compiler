@@ -333,5 +333,24 @@ if __name__ == '__main__':
                 grammar_dir = arg
         tree = test(sourcepath, grammar_dir, debug)
     else:
-        print 'Usage: %s <source_filepath> [<grammar_dir>] [-<debug_flags>]' % sys.argv[0]
+        print """
+    Usage: %s <source_path> [<specification_dir>] [-<debug_flags>]
+        
+        debug_flags (may be combined, as in -345nb):
+
+        1 = on successful parse, tell number of tokens (on by default)
+        2 = list specification files loaded for language
+        3 = parse trace: show tokens, production alternates
+        4 = parse trace: show successful and failed alternates
+        5 = parse trace: show tokens found and not found
+        a = ambiguous parse permitted (error suppressed)
+        b = show traceback on error
+        m = enable imports in source files
+        n = use with t, 3, 4, or 5 to show line and column numbers
+        o = list tokens from source file
+        p = list possible prefixes for syntax nonterminals
+        r = display source code reassembled from tokens
+        s = display syntax used to parse source
+        t = display parse tree
+        """ % sys.argv[0]
 
