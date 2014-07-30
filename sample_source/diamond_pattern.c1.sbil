@@ -185,6 +185,5 @@ forend36:
     br for29
 forend29:
     const 0
-    .asserteq i32, .type, return expression has wrong type
     ret
 }
