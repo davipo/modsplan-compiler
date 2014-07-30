@@ -71,6 +71,12 @@ class TerminalNode(BaseNode):
         """ Return text of this terminal."""
         return self.text
 
+    def nextchild(self, name=None, use=True, loc=None):
+        message = 'Terminal node "%s" has no children' % self.name
+        if name:
+            message += ' (seeking name "%s")' % name
+        raise (loc if loc else self).location.error(message)
+
 
 class NonterminalNode(BaseNode):
     """ A nonterminal node of the parse tree; contains a list of child nodes."""
