@@ -1,6 +1,6 @@
 # L0.syntax
 # L0 language syntax
-# (A minimal subset of Python)
+# A small statically-typed langugage with Python-like syntax
 
 use expr        # common expression syntax
 
