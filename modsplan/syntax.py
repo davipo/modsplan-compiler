@@ -321,7 +321,7 @@ def test(source_filepath, grammar_dir=None, debug=''):
 #   3, 4, 5 = parse trace levels
 
 if __name__ == '__main__':
-    debug = 't'     # default debugging output
+    debug = '1'     # default debugging output
     
     if 2 <= len(sys.argv) <= 4:
         sourcepath = sys.argv[1]
