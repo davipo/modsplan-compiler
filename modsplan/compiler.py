@@ -220,11 +220,11 @@ class Compiler:
             If 'use' false, ignore use status of parse nodes."""
         wordtype = word_def.firstchild()
         
-        if wordtype.name in ('LITERAL'):
+        if wordtype.name == 'LITERAL':
             return defn.remove_quotes(wordtype.findtext())
                 
         elif wordtype.name == 'child':
-            child = source_node.nextchild(defn.childname(wordtype), use)
+            child = source_node.nextchild(defn.childname(wordtype), use, loc=wordtype)
             return ' '.join(self.codegen(child, use))
             
         elif wordtype.name == 'directive':
@@ -388,4 +388,3 @@ if __name__ == '__main__':
         t = display parse tree
         w = write target code to file (overwrites file)
         """ % sys.argv[0]
-
