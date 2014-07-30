@@ -1,13 +1,9 @@
 # tokens.metagrammar
 # Syntax for Modsplan token specifications
+# (This is documentation only, not read by Modsplan compiler.)
 
-use base        # include (import) base.metagrammar here
+use base                    # include (import) base.metagrammar here
 
+nonterminal => tokenname    # tokenkind names may appear on left side of productions
 
-nonterminal => tokenname
-
-tokenname => U upper+       # must have more than one letter
-                            #   (single uppercase letter reserved for character classes)
-
-upper => U
-upper => '_'
+item => charclass           # character class is used in token specs

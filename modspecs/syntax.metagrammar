@@ -1,0 +1,7 @@
+# syntax.metagrammar
+# Syntax for Modsplan syntax specifications
+# (This is documentation only, not read by Modsplan compiler.)
+
+use base                # include (import) base.metagrammar here
+
+item => tokenname       # tokenkind names may appear on right side of productions

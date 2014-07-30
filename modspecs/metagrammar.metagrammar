@@ -1,0 +1,9 @@
+# metagrammar.metagrammar
+# Syntax for Modsplan metagrammars
+# (This is documentation only, not read by Modsplan compiler.)
+
+# This the metagrammar for itself!
+
+use base                # include (import) base.metagrammar here
+
+item => charclass       # character class is used in metagrammars

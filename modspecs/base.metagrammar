@@ -1,12 +1,12 @@
 # base.metagrammar
 # Base syntax for Modsplan grammars
-
-# This is also the metagrammar for itself!
-# Space character may appear only where noted; extra spaces ignored.
+# (This is documentation only, not read by Modsplan compiler.)
 
 # Modsplan grammar is a BNF variant.
 #
-# Items of a production may be a literal (in quotes) or a lowercase nonterminal.
+# Items of a production may be:
+#   a literal (in quotes)
+#   a nonterminal (lowercase identifier)
 # 
 # Items may be suffixed with a quantifier character to indicate repetition: 
 #   '*' = 0 or more
@@ -19,24 +19,18 @@
 # Alternates must be spelled out with a separate production.
 #   This is a reminder that additional alternates may appear in imported files.
 #
-# In token specifications (and metagrammars), an item may be a character class,
-#   represented by a single uppercase letter:
-#       U = any upper case letter
-#       L = any lower case letter
-#       D = any digit
-#       P* = any printable characters, must be followed by terminal or end of line.
-#           P must be used with '*'. Printable character may be a space.
-# 
-# In syntax specifications, an item may be a tokenkind, represented by a word of
-#   two or more uppercase letters. These are defined in a token specification.
+# A space may appear only as noted; extra spaces are ignored.
+#
+# (See metagrammar.metagrammar for the syntax of metagrammars.)
 
 
 grammar => line*
 
 line => statement? comment? '\n'     # '\n' represents a newline (end-of-line marker)
 
-comment => "#" P*           # if not at start of line, must be preceded by a space
-
+comment => "#" P*               # if not at start of line, must be preceded by a space
+                                #   P* is a string of printable chars (see charclass below)
+                 
 statement => enable
 statement => import
 statement => production
@@ -44,7 +38,7 @@ statement => production
 enable => 'enable' option       # space required after 'enable'
 option => identifier
 
-identifier => L+
+identifier => L+                # one or more lowercase letters (see charclass below)
 
 import => 'use' filename,+      # one or more filenames, separated by ", ";
                                 #   space required after 'use'
@@ -65,7 +59,7 @@ alternate => word+          # spaces must separate adjacent words
 word => item repeater?              # no space between item and repeater
 
 repeater => separator? quantifier   # no space between separator and quantifier
-                                    #   (separator will separate repeated items)
+                                    #   (separator used to separate repeated items)
 separator => ','
 separator => '.'
 separator => ';'
@@ -82,12 +76,26 @@ quantifier => '+'           # one or more
 quantifier => '?'           # zero or one
 
 item => nonterm 
-item => literal             # terminal
+item => literal
 
-literal => '"' P* '"'
-literal => "'" P* "'"
+literal => '"' P* '"'       # a quoted string of printable characters
+literal => "'" P* "'"       #   (P is a character class, see below)
 
-# charclass is permitted only in .tokens spec; here only because needed by metagrammars
-item => charclass           # terminal
+# In token specifications (and metagrammars), an item may be a character class,
+#   represented by a single uppercase letter. 
+#   (See tokens.metagrammar, metagrammar.metagrammar)
+charclass => 'U'    # any upper case letter
+charclass => 'L'    # any lower case letter
+charclass => 'D'    # any digit
+charclass => 'P'    # any printable characters, must be followed by terminal or end of line
+                    #   P must be used with '*'
+                    #   (a space is considered a printable character)
 
-charclass => U
+# In syntax specifications, an item may be a tokenname, 
+#   represented by an uppercase letter followed by uppercase letters or underscores.
+#   Token names are defined in a token specification.
+#   (See syntax.metagrammar, tokens.metagrammar)
+tokenname => U upper+       # must have more than one character
+                            #   (single uppercase letter reserved for character classes)
+upper => U
+upper => '_'
