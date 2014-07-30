@@ -8,7 +8,6 @@ Applications
         Organize as library, with documentation
     
     Could a version of this aid in translating natural language?
-        (Ask Owen)
 
 
 Uncategorized    
