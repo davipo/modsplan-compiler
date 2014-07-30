@@ -96,7 +96,7 @@ suite => statement      # for compatibility with base.defn
 expression => assignexpr
 expression => test      # test specified in expr.syntax
 
-assignexpr => lvalue ASSIGN expression
+assignexpr => lvalue '=' expression
 
 lvalue => variable
 

@@ -10,7 +10,7 @@ declaration(declspecifier initdeclarator+)
 initdeclarator(declarator initializer)
     &declarator
     &initializer
-    store
+    'store'
     
 assignexpr(lvalue ASSIGN expression)
     &lvalue
@@ -24,29 +24,29 @@ for(expression? expression? expression? statement)
     &expression?
     for:
         &expression?            # condition
-        br forbegin, forend
-        forbegin:
-            &statement
-            &expression?        # next
-            br for
-        forend:
+        'br' forbegin, forend
+    forbegin:
+        &statement
+        &expression?        # next
+        'br' for
+    forend:
 
 
 atom(INC_OP variable)   # increment/decrement before use
     &variable               # get address
     .load(variable)         # put value on stack
-    const 1
+    'const' '1'
     &INC_OP                 # add or subtract
-    store                   # removes address, leaves value on stack
+    'store'                 # removes address, leaves value on stack
 
 atom(variable INC_OP)   # increment/decrement after use
     .load(variable)         # put value on stack
     =atom(INC_OP variable)
-    pop                     # remove top of stack
+    'pop'                   # remove top of stack
     
 INC_OP('++')
-    add
+    'add'
 
 INC_OP('--')
-    sub
+    'sub'
 
