@@ -336,6 +336,9 @@ if __name__ == '__main__':
         print """
     Usage: %s <source_path> [<specification_dir>] [-<debug_flags>]
         
+        optional <specification_dir> is path to directory holding token and syntax grammars
+            default is 'modspecs/'
+        
         debug_flags (may be combined, as in -345nb):
 
         1 = on successful parse, tell number of tokens (on by default)

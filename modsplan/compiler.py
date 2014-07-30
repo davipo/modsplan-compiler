@@ -363,6 +363,9 @@ if __name__ == '__main__':
     else:
         print """
     Usage: %s <source_path> [<specification_dir>] [-<debug_flags>]
+        
+        optional <specification_dir> is path to directory of token, syntax, defn specs
+            default is 'modspecs/'
 
         debug_flags (may be combined, as in -345nb):
 
