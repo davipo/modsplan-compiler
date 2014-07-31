@@ -1,9 +1,12 @@
-Modsplan ReadMe.txt
+modsplan-compiler/ReadMe.txt
+ModSPLan - Modular Specification of Programming Languages
+Modsplan implements a universal compiler, driven by language specifications.
 
 Please read the introduction to this project at modsplan.com
 
-Version 0.2.8 of the Modsplan compiler is 1932 lines of pure Python 
-(plus 84 lines of specifications used internally). It uses no external libraries.
+
+Version 0.2.8 of the Modsplan compiler is 1932 lines of pure Python, 
+plus 84 lines of specifications used internally. It uses no external libraries.
 
 Modsplan requires Python 2.7
 Enter "python compiler.py" on your command line for usage information.
@@ -19,9 +22,8 @@ modspecs/           Modsplan specification files (.tokens, .syntax, .defn)
     
     *.metagrammar specify the syntax of Modsplan specification files
     
-    L0 is a small statically-typed langugage with Python-like syntax
-    C0 is a minimal subset of C
-    c1 is a larger, working subset of C
+    L0 is a small statically-typed language with Python-like syntax
+    c1 is a working subset of C
     base, expr, constants, float: specs shared between languages
     
     sbil is a Stack-Based Intermediate Language (based on LLVM), which is our target
