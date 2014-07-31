@@ -14,7 +14,9 @@ Enter "python compiler.py" on your command line for usage information.
 
 Files:
 
-ReadMe.txt          This file.
+ReadMe.txt          This file
+
+License.txt         License terms
 
 sample_source/      Source code examples for testing compiler
 
