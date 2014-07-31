@@ -1,0 +1,432 @@
+
+Parsing legispecs/ab106_sections.legislation ... 
+
+
+Tree:
+
+proposal
+   psection+
+      psection
+      |  psectionid
+      |     SUBDIVISIONID(1.)
+      |  unitid
+      |     SECTIONID(196.137)
+      |     SUBSECTIONID?
+      |  action
+      |     creation
+      |     |  unit+
+      |     |     unit
+      |     |     |  section
+      |     |     |     SECTIONID(1196.137)
+      |     |     |     title
+      |     |     |     |  sentence
+      |     |     |     |     word+
+      |     |     |     |     |  word
+      |     |     |     |     |     WORD(Municipal)
+      |     |     |     |     |  word
+      |     |     |     |     |     WORD(utility)
+      |     |     |     |     |  word
+      |     |     |     |     |     WORD(customer)
+      |     |     |     |     |  word
+      |     |     |     |     |     WORD(information)
+      |     |     |     |     '.'?
+      |     |     |     text?
+      |     |     |     subsection*
+      |     |     |     |  subsection
+      |     |     |     |     SUBSECTIONID((1))
+      |     |     |     |     subtitle
+      |     |     |     |     |  sentence
+      |     |     |     |     |     word+
+      |     |     |     |     |     |  word
+      |     |     |     |     |     |     WORD(Definitions)
+      |     |     |     |     |     '.'?
+      |     |     |     |     text?
+      |     |     |     |     |  text
+      |     |     |     |     |     sentence+
+      |     |     |     |     |     |  sentence
+      |     |     |     |     |     |     word+
+      |     |     |     |     |     |     |  word
+      |     |     |     |     |     |     |     WORD(In)
+      |     |     |     |     |     |     |  word
+      |     |     |     |     |     |     |     WORD(this)
+      |     |     |     |     |     |     |  word
+      |     |     |     |     |     |     |     WORD(section)
+      |     |     |     |     paragraph*
+      |     |     |     |     |  paragraph
+      |     |     |     |     |     PARAGRAPHID((a))
+      |     |     |     |     |     text
+      |     |     |     |     |     |  sentence+
+      |     |     |     |     |     |     sentence
+      |     |     |     |     |     |     |  word+
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(")
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(Customer)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(information)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(")
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(means)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(any)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(information)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(received)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(from)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(customers)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(which)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(serves)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(to)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(identify)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(customers)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(individually)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(by)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(usage)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(or)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(account)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(status)
+      |     |     |     |     |     |     |  '.'?
+      |     |     |     |     |     subdivision*
+      |     |     |     |     |  paragraph
+      |     |     |     |     |     PARAGRAPHID((b))
+      |     |     |     |     |     text
+      |     |     |     |     |     |  sentence+
+      |     |     |     |     |     |     sentence
+      |     |     |     |     |     |     |  word+
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(")
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(Municipal)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(utility)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(")
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(has)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(the)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(meaning)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(given)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(in)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  unitid
+      |     |     |     |     |     |     |     |     SECTIONID(196.377)
+      |     |     |     |     |     |     |     |     SUBSECTIONID((2))
+      |     |     |     |     |     |     |     |     PARAGRAPHID((a))
+      |     |     |     |     |     |     |     |     SUBDIVISIONID(3.)
+      |     |     |     |     |     |     |     |     SUBPARAGRAPHID?
+      |     |     |     |     |     |     |  '.'?
+      |     |     |     |     |     subdivision*
+      |     |     |     |  subsection
+      |     |     |     |     SUBSECTIONID((2))
+      |     |     |     |     subtitle
+      |     |     |     |     |  sentence
+      |     |     |     |     |     word+
+      |     |     |     |     |     |  word
+      |     |     |     |     |     |     WORD(Prohibition)
+      |     |     |     |     |     '.'?
+      |     |     |     |     text?
+      |     |     |     |     |  text
+      |     |     |     |     |     sentence+
+      |     |     |     |     |     |  sentence
+      |     |     |     |     |     |     word+
+      |     |     |     |     |     |     |  word
+      |     |     |     |     |     |     |     WORD(A)
+      |     |     |     |     |     |     |  word
+      |     |     |     |     |     |     |     WORD(municipal)
+      |     |     |     |     |     |     |  word
+      |     |     |     |     |     |     |     WORD(utility)
+      |     |     |     |     |     |     |  word
+      |     |     |     |     |     |     |     WORD(may)
+      |     |     |     |     |     |     |  word
+      |     |     |     |     |     |     |     WORD(not)
+      |     |     |     |     |     |     |  word
+      |     |     |     |     |     |     |     WORD(release)
+      |     |     |     |     |     |     |  word
+      |     |     |     |     |     |     |     WORD(customer)
+      |     |     |     |     |     |     |  word
+      |     |     |     |     |     |     |     WORD(information)
+      |     |     |     |     |     |     |  word
+      |     |     |     |     |     |     |     WORD(to)
+      |     |     |     |     |     |     |  word
+      |     |     |     |     |     |     |     WORD(any)
+      |     |     |     |     |     |     |  word
+      |     |     |     |     |     |     |     WORD(person)
+      |     |     |     |     |     |     |  word
+      |     |     |     |     |     |     |     WORD(except)
+      |     |     |     |     |     |     |  word
+      |     |     |     |     |     |     |     WORD(with)
+      |     |     |     |     |     |     |  word
+      |     |     |     |     |     |     |     WORD(the)
+      |     |     |     |     |     |     |  word
+      |     |     |     |     |     |     |     WORD(consent)
+      |     |     |     |     |     |     |  word
+      |     |     |     |     |     |     |     WORD(of)
+      |     |     |     |     |     |     |  word
+      |     |     |     |     |     |     |     WORD(the)
+      |     |     |     |     |     |     |  word
+      |     |     |     |     |     |     |     WORD(customer)
+      |     |     |     |     |     |     |  word
+      |     |     |     |     |     |     |     WORD(,)
+      |     |     |     |     |     |     |  word
+      |     |     |     |     |     |     |     WORD(and)
+      |     |     |     |     |     |     |  word
+      |     |     |     |     |     |     |     WORD(except)
+      |     |     |     |     |     |     |  word
+      |     |     |     |     |     |     |     WORD(to)
+      |     |     |     |     |     |     |  word
+      |     |     |     |     |     |     |     WORD(any)
+      |     |     |     |     |     |     |  word
+      |     |     |     |     |     |     |     WORD(of)
+      |     |     |     |     |     |     |  word
+      |     |     |     |     |     |     |     WORD(the)
+      |     |     |     |     |     |     |  word
+      |     |     |     |     |     |     |     WORD(following)
+      |     |     |     |     paragraph*
+      |     |     |     |     |  paragraph
+      |     |     |     |     |     PARAGRAPHID((a))
+      |     |     |     |     |     text
+      |     |     |     |     |     |  sentence+
+      |     |     |     |     |     |     sentence
+      |     |     |     |     |     |     |  word+
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(Agents)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(,)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(vendors)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(,)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(partners)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(,)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(or)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(affiliates)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(of)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(the)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(municipal)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(utility)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(that)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(are)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(engaged)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(to)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(perform)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(any)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(services)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(or)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(functions)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(for)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(or)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(on)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(behalf)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(of)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(the)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(municipal)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(utility)
+      |     |     |     |     |     |     |  '.'?
+      |     |     |     |     |     subdivision*
+      |     |     |     |     |  paragraph
+      |     |     |     |     |     PARAGRAPHID((b))
+      |     |     |     |     |     text
+      |     |     |     |     |     |  sentence+
+      |     |     |     |     |     |     sentence
+      |     |     |     |     |     |     |  word+
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(Transmission)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(and)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(distribution)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(utilities)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(and)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(operators)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(within)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(whose)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(geographic)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(service)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(territory)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(the)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(customer)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(is)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(located)
+      |     |     |     |     |     |     |  '.'?
+      |     |     |     |     |     subdivision*
+      |     |     |     |     |  paragraph
+      |     |     |     |     |     PARAGRAPHID((c))
+      |     |     |     |     |     text
+      |     |     |     |     |     |  sentence+
+      |     |     |     |     |     |     sentence
+      |     |     |     |     |     |     |  word+
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(The)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(commission)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(or)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(any)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(person)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(whom)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(the)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(commission)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(authorizes)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(by)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(order)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(or)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(rule)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(to)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(receive)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(the)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(customer)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(information)
+      |     |     |     |     |     |     |  '.'?
+      |     |     |     |     |     subdivision*
+      |     |     |     |     |  paragraph
+      |     |     |     |     |     PARAGRAPHID((d))
+      |     |     |     |     |     text
+      |     |     |     |     |     |  sentence+
+      |     |     |     |     |     |     sentence
+      |     |     |     |     |     |     |  word+
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(Any)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(person)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(who)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(is)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(otherwise)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(authorized)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(by)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(law)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(to)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(receive)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(the)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(customer)
+      |     |     |     |     |     |     |     word
+      |     |     |     |     |     |     |     |  WORD(information)
+      |     |     |     |     |     |     |  '.'?
+      |     |     |     |     |     subdivision*
+      |     |     |     |  subsection
+      |     |     |     |     SUBSECTIONID((3))
+      |     |     |     |     subtitle
+      |     |     |     |     |  sentence
+      |     |     |     |     |     word+
+      |     |     |     |     |     |  word
+      |     |     |     |     |     |     WORD(Public)
+      |     |     |     |     |     |  word
+      |     |     |     |     |     |     WORD(record)
+      |     |     |     |     |     |  word
+      |     |     |     |     |     |     WORD(exception)
+      |     |     |     |     |     '.'?
+      |     |     |     |     text?
+      |     |     |     |     |  text
+      |     |     |     |     |     sentence+
+      |     |     |     |     |     |  sentence
+      |     |     |     |     |     |     word+
+      |     |     |     |     |     |     |  word
+      |     |     |     |     |     |     |     WORD(Customer)
+      |     |     |     |     |     |     |  word
+      |     |     |     |     |     |     |     WORD(information)
+      |     |     |     |     |     |     |  word
+      |     |     |     |     |     |     |     WORD(is)
+      |     |     |     |     |     |     |  word
+      |     |     |     |     |     |     |     WORD(not)
+      |     |     |     |     |     |     |  word
+      |     |     |     |     |     |     |     WORD(subject)
+      |     |     |     |     |     |     |  word
+      |     |     |     |     |     |     |     WORD(to)
+      |     |     |     |     |     |     |  word
+      |     |     |     |     |     |     |     WORD(inspection)
+      |     |     |     |     |     |     |  word
+      |     |     |     |     |     |     |     WORD(or)
+      |     |     |     |     |     |     |  word
+      |     |     |     |     |     |     |     WORD(copying)
+      |     |     |     |     |     |     |  word
+      |     |     |     |     |     |     |     WORD(under)
+      |     |     |     |     |     |     |  word
+      |     |     |     |     |     |     |     unitid
+      |     |     |     |     |     |     |     |  SECTIONID(19.35)
+      |     |     |     |     |     |     |     |  SUBSECTIONID?
+      |     |     |     |     |     |     '.'?
+      |     |     |     |     paragraph*
+
+
+**** Syntax test done ****
+
