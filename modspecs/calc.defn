@@ -1,0 +1,40 @@
+# calc.defn
+# Calculator definition specification
+# Simple calculator example using Modsplan
+
+# Only nodes that generate code need be defined.
+# Modsplan will compile each child of an undefined node.
+# Unspecified terminal nodes generate the text they contain.
+
+
+factor(ADD_OP atom)     # handles unary '-' (and '+')
+    'const' '0'
+    &atom               # expand atom here
+    ADD_OP
+
+
+# This definition is included to reverse the order of the child nodes.
+addition(ADD_OP term)
+    &term
+    ADD_OP
+
+ADD_OP('+')     # a terminal node: ADD_OP token with text '+'
+    'add'
+    
+ADD_OP('-')
+    'sub'
+
+
+multiplication(MUL_OP factor)
+    &factor
+    MUL_OP
+
+MUL_OP('*')
+    'mul'
+
+MUL_OP('/')     # Caution: signed div rounds toward zero,
+    'div'       #   which is different from floor division.
+
+
+atom(number)
+    'const' number      # text of number will be inserted

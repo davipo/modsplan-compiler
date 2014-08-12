@@ -1,0 +1,24 @@
+# calc.syntax
+# Calculator syntax specification
+# Simple calculator example using Modsplan
+
+
+expr.root => term addition*         # a term followed by 0 or more additions
+                                    #   (root node of parse tree)
+addition => ADD_OP term             #   allows multiple terms without parens
+
+# This way of structuring expressions gives multiplication higher precedence
+
+term => factor multiplication*
+multiplication => MUL_OP factor
+
+factor => atom
+factor => ADD_OP atom       # unary - (or +)
+
+atom => number
+atom => parentheses
+
+number => INTEGER
+number => FLOAT
+
+parentheses => '(' expr ')'

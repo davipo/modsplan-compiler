@@ -1,0 +1,15 @@
+# calc.tokens
+# Calculator token specification
+# Simple calculator example using Modsplan
+
+use float           # include float.tokens here
+
+INTEGER => D+       # one or more digits
+
+# Additive operators
+ADD_OP => '+'
+ADD_OP => '-'
+
+# Multiplicative operators
+MUL_OP => '*'
+MUL_OP => '/'
