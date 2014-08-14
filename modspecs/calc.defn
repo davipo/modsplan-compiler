@@ -8,8 +8,8 @@
 
 
 factor(ADD_OP atom)     # handles unary '-' (and '+')
-    'const' '0'
-    &atom               # expand atom here
+    'const' '0'             # (push constant on stack)
+    &atom                   # expand atom here
     ADD_OP
 
 
@@ -19,7 +19,7 @@ addition(ADD_OP term)
     ADD_OP
 
 ADD_OP('+')     # a terminal node: ADD_OP token with text '+'
-    'add'
+    'add'           # (pop 2 values, push result)
     
 ADD_OP('-')
     'sub'
