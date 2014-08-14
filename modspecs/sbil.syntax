@@ -3,8 +3,9 @@
 # Based on LLVM
 
 
-use constants   # constant, number, STRING, INTEGER, FLOAT, HEX
+use constants   # constant, number
 use irtypes     # intermediate representation types
+                #   (type, elementtype, returntype, argtype)
 
 
 module.root => definition*
