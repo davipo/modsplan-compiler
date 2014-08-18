@@ -1,0 +1,51 @@
+;// gcd.c1
+;// Euclid's Greatest Common Denominator (GCD) algorithm
+func i32 gcd(i32 x, i32 y) {
+    load x
+    load y
+    cmp eq
+    br iftrue5, iffalse5
+iftrue5:
+    load x
+    ret
+    br ifend5
+iffalse5:
+    load x
+    load y
+    cmp lt
+    br iftrue7, iffalse7
+iftrue7:
+    load x
+    load y
+    load x
+    sub
+    call gcd 2
+    ret
+    br ifend7
+iffalse7:
+    load x
+    load y
+    sub
+    load y
+    call gcd 2
+    ret
+ifend7:
+ifend5:
+}
+func i32 main() {
+    var i32 x = 12
+    var i32 y = 18
+    var i32 d
+    load x
+    load y
+    call gcd 2
+    dup
+    store d
+    pop
+    const "GCD of %d and %d is %d"
+    load x
+    load y
+    load d
+    call printf 4
+    pop
+}

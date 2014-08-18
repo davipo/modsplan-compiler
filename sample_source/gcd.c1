@@ -1,0 +1,20 @@
+// gcd.c1
+// Euclid's Greatest Common Denominator (GCD) algorithm
+
+int gcd(int x, int y) {
+  if(x == y) {
+    return x;
+  } else if(x < y) {
+    return gcd(x, y - x);
+  } else {
+    return gcd(x - y, y);
+  }
+}
+
+int main() {
+  int x = 12;
+  int y = 18;
+  int d;
+  d = gcd(x, y);
+  printf("GCD of %d and %d is %d", x, y, d);
+}
