@@ -12,16 +12,52 @@ Modsplan requires Python 2.7
 Run "python modsplan/compiler.py" on your command line for usage information.
 
 
-A simple calculator example:
-  (Compare with Lex & Yacc example at http://pltplp.net/lex-yacc/example.html)
-  (See modspecs/calc.* for specifications)
+Simple calculator example
+
+  See modspecs/calc.* for specifications
+  Compare with Lex & Yacc example at http://pltplp.net/lex-yacc/example.html
 
     $ cat sample_source/example.calc
     4 + 2 * -1.5
 
-    $ python modsplan/compiler.py sample_source/example.calc
+    $ python modsplan/compiler.py sample_source/example.calc -ot
 
-    sample_source/example.calc parsed successfully (6 tokens)
+    Tokens from sample_source/example.calc:
+
+    INTEGER(4)
+    ADD_OP(+)
+    INTEGER(2)
+    MUL_OP(*)
+    ADD_OP(-)
+    FLOAT(1.5)
+
+
+    Tree:
+
+    expr
+       term
+          factor
+          |  atom
+          |     number
+          |     |  INTEGER(4)
+          multiplication*
+       addition*
+          addition
+          |  ADD_OP(+)
+          |  term
+          |     factor
+          |     |  atom
+          |     |     number
+          |     |     |  INTEGER(2)
+          |     multiplication*
+          |     |  multiplication
+          |     |     MUL_OP(*)
+          |     |     factor
+          |     |     |  ADD_OP(-)
+          |     |     |  atom
+          |     |     |     number
+          |     |     |     |  FLOAT(1.5)
+
 
     const 4
     const 2
@@ -43,7 +79,7 @@ sample_source/      Source code examples for testing compiler
 
 modspecs/           Modsplan specification files (.tokens, .syntax, .defn)
     
-    *.metagrammar specify the syntax of Modsplan specification files
+    *.metagrammar document the syntax of Modsplan grammars
     
     calc is a simple calculator example
         See sample_source/example.calc and example.calc.sbil generated code
