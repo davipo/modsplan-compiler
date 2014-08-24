@@ -13,6 +13,10 @@ globalvar(elementtype name constant)
     .addvar(name, elementtype)
     .concat('@', name) '=' 'global' elementtype constant
 
+globalconst(elementtype name constant)
+    .addvar(name, elementtype)
+    .concat('@', name) '=' 'constant' elementtype constant
+
 
 typedef(TYPEID type)
     TYPEID '= type' type

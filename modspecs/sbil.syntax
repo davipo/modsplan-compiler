@@ -12,6 +12,7 @@ module.root => definition*
 
 definition => NEWLINE               # handles comment lines
 definition => globalvar NEWLINE
+definition => globalconst NEWLINE
 definition => typedef NEWLINE
 definition => funcdecl NEWLINE      # external or forward declaration
 definition => funcdef NEWLINE
@@ -20,6 +21,7 @@ definition => funcdef NEWLINE
 globalvar => 'var' elementtype name                # (module level) makes a global variable
 globalvar => 'var' elementtype name '=' constant   #   with initializer
 
+globalconst => 'const' elementtype name '=' constant    # global constant
 
 name => IDENTIFIER
 
