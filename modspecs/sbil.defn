@@ -7,11 +7,11 @@ use constants   # constant, number
 
 globalvar(elementtype name)
     .addvar(name, elementtype)
-    .concat('@', name) '=' elementtype
+    .concat('@', name) '=' 'global' elementtype
 
 globalvar(elementtype name constant)
     .addvar(name, elementtype)
-    .concat('@', name) '=' elementtype constant
+    .concat('@', name) '=' 'global' elementtype constant
 
 
 typedef(TYPEID type)
