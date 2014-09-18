@@ -3,9 +3,12 @@ Modsplan To Do List
 
 Applications
 
-    Use to parse anything
+    Data parsing
         Weather data?
         Organize as library, with documentation
+    
+    Domain-specific languages
+        Config, makefiles?
     
     Could a version of this aid in translating natural language?
 
@@ -36,6 +39,8 @@ Compiler
 
     Translate SBIL to LLVM assembler
         Use type flags to handle operator overloading
+    
+    Symbol table, handle and check types
     
 
 Defn specs
