@@ -2,7 +2,7 @@
 
 
 constant(STRING)
-    '[' .len(STRING) 'x i8]' .concat('c', STRING)
+    '[' .len(STRING) 'x i8]' .string(STRING)
 
 
 number(INTEGER)

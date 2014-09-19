@@ -45,6 +45,10 @@ funcdef(returntype name params funcbody)
 params(param* ellipsis?)
     '(' .commasep(param*) ellipsis? ')'
 
+param(argtype name)
+    .addparam(name)
+    argtype name
+
 
 entryblock(instruction* terminator)
     &instruction*
@@ -80,6 +84,7 @@ vardecl(elementtype name constant)
 
 constval(constant)
     .push(constant)         # push puts type and value on stack
+    # String constant may have to be a global
 
 
 load(variable)
