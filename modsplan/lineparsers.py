@@ -240,5 +240,5 @@ def test_parse(filepath):
     for line in lines:
         loc = lines.location        # updated for each line
         filename = os.path.basename(loc.filepath)
-        print '%20s %2d %1d %s' % (filename, loc.linenum, loc.level, line)
+        print('%20s %3d %2d %s' % (filename, loc.linenum, loc.level, line))
 
