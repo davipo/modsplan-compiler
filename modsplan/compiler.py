@@ -7,10 +7,10 @@
 import sys
 import os.path
 
-from lineparsers import Error
+from .lineparsers import Error
 
-import syntax
-import defn
+from . import syntax
+from . import defn
 
 
 default_spec_dir = 'modspecs/'              # default directory for language specifications
@@ -29,7 +29,7 @@ class Compiler:
         self.langname = langname
         self.debug = debug          # debugging flags
         self.source_tree = None     # last tree parsed from source
-        if spec_dir == None:
+        if spec_dir is None:
             spec_dir = default_spec_dir
         langpath = os.path.join(spec_dir, langname)
         self.comments = []          # collected comments, to insert after current instruction
@@ -44,18 +44,18 @@ class Compiler:
         self.labelsuffix = {}           # key is label, value is last unique suffix used
         
         if 'e' in debug:
-            print self.defs.defn_tree.show()        # parse tree of language definitions
+            print(self.defs.defn_tree.show())       # parse tree of language definitions
         if 'g' in debug:
-            print self.defs.show()                  # definition signatures
+            print(self.defs.show())                 # definition signatures
         if 'd' in debug:
-            print self.defs.show(sigs_only=False)   # definition sigs with instructions
+            print(self.defs.show(sigs_only=False))  # definition sigs with instructions
 
 
     def compile(self, source_filepath):
         """ Compile source code for initialized language,
             return lines of target code, indented appropriately."""
         if '2' in self.debug:
-            print '\nParsing %s ...' % source_filepath
+            print('\nParsing %s ...' % source_filepath)
         self.source_tree = self.parser.parse(source_filepath)
         
         self.labelsuffix.clear()
@@ -209,8 +209,8 @@ class Compiler:
             self.comments = []
         
         if 'i' in self.debug:
-            print '(%s:)' % source_node.name
-            print '\n'.join(code) + '\n'
+            print('(%s:)' % source_node.name)
+            print('\n'.join(code) + '\n')
         return code
     
     
@@ -342,7 +342,7 @@ def compile_src(sourcepath, codepath='', spec_dir=None, debug=''):
         return codestring
     
     except (None if 'b' in debug else Error) as exc:
-        print exc
+        print(exc)
         return None
 
 
@@ -358,10 +358,10 @@ if __name__ == '__main__':
                 spec_dir = arg
         codepath = '*' if 'w' in debug else ''
         codestring = compile_src(sourcepath, codepath, spec_dir, debug)
-        print
-        print codestring
+        print()
+        print(codestring)
     else:
-        print """
+        print("""
     Usage: %s <source_path> [<specification_dir>] [-<debug_flags>]
         
         optional <specification_dir> is path to directory of token, syntax, defn specs
@@ -387,4 +387,4 @@ if __name__ == '__main__':
         s = display syntax used to parse source
         t = display parse tree
         w = write target code to file (overwrites file)
-        """ % sys.argv[0]
+        """ % sys.argv[0])
