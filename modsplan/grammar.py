@@ -7,7 +7,7 @@
 
 from collections import OrderedDict
 
-import lineparsers
+from . import lineparsers
 
 
 quote_chars = "'" + '"'
@@ -140,11 +140,11 @@ class Grammar:
     
     def show(self):
         """ Display grammar. """
-        print
+        print()
         for nonterm in self.nonterms.values():
             if nonterm == self.root:
-                print '(root:)'
-            print nonterm.show()
+                print('(root:)')
+            print(nonterm.show())
 
 
     def show_prefixes(self):
@@ -259,4 +259,4 @@ if __name__ == '__main__':
         else:
             test()
     except lineparsers.Error as exc:
-        print exc
+        print(exc)
