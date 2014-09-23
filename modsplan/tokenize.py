@@ -117,7 +117,7 @@ class Tokenizer:
         """ Return text table of prefixes for each token kind."""
         text = '\nPrefixes for token kinds:\n'
         for kind in self.tokendef.kinds:
-            text += '%s: %s\n' % (kind.name, list(kind.prefixes))
+            text += '%s: %s\n' % (kind.name, sorted(kind.prefixes))
         return text + '\n'
 
 
