@@ -2,8 +2,9 @@
 
 # syntax.py
 # Modsplan syntax parser
-# Copyright 2011-2013 by David H Post, DaviWorks.com.
+# Copyright 2011-2014 by David H Post, DaviWorks.com.
 
+from __future__ import print_function       # for Python 2 compatibility
 
 import sys
 import os.path
@@ -51,16 +52,16 @@ class SyntaxParser:
         
         self.tokenizer = tokenize.Tokenizer(langpath + '.tokens')
         if '2' in self.debug:
-            print 'Token spec loaded from ' + self.tokenizer.tokendef.filepath
+            print('Token spec loaded from ' + self.tokenizer.tokendef.filepath)
             
         self.syntax = SyntaxGrammar(langpath + '.syntax', self.tokenizer.tokendef.kindnames)
         if '2' in self.debug:
-            print 'Syntax spec loaded from ' + self.syntax.filepath
+            print('Syntax spec loaded from ' + self.syntax.filepath)
             
         if 's' in self.debug:
             self.syntax.show()
         if 'p' in self.debug:
-            print self.syntax.show_prefixes()
+            print(self.syntax.show_prefixes())
             
         self.source_path = ''       # last source file parsed
         self.maxtokens = 0          # greatest number of tokens parsed before a parse failure
@@ -78,13 +79,13 @@ class SyntaxParser:
         self.tokens = self.tokenizer.get_tokens(filepath, enable_imports=enable_imports)
         
         if 'o' in self.debug:
-            print '\nTokens from ' + filepath + ':\n'
+            print('\nTokens from ' + filepath + ':\n')
             for tkn in self.tokens:
-                print tkn
-            print
+                print(tkn)
+            print()
         if 'r' in self.debug:
-            print '\nReassembled source from tokens:'
-            print tokenize.reassemble(self.tokens)
+            print('\nReassembled source from tokens:')
+            print(tokenize.reassemble(self.tokens))
             
         # Start at syntax root, find terminals matching tokens of source file.
         # Build parse tree depth-first, climbing syntax to classify nodes.
@@ -100,18 +101,18 @@ class SyntaxParser:
             if failure or numtokens < len(self.tokens):     # end not reached
                 self.syntax_error(numtokens)
             elif '1' in self.debug:
-                print '\n%s parsed successfully (%d tokens)' % (filepath, numtokens)
+                print('\n%s parsed successfully (%d tokens)' % (filepath, numtokens))
                 
         if 't' in self.debug:
-            print '\nTree:\n'
-            print parse_tree.show()
+            print('\nTree:\n')
+            print(parse_tree.show())
         return parse_tree
 
 
     def syntax_error(self, numtokens):
         """ Raise Error with appropriate message for furthest token reached. """
         message = '\nParsed %d tokens of %d total for %s'
-        print message % (numtokens, len(self.tokens), self.source_path)
+        print(message % (numtokens, len(self.tokens), self.source_path))
         if self.maxtokens < len(self.tokens):
            token = self.tokens[self.maxtokens]
            message = 'Syntax error at %s token "%s"' % (token.name, token.text)
@@ -290,7 +291,7 @@ class SyntaxParser:
     def log(self, msgtype, message, node=None):
         if str(msgtype) in self.debug:
             indent = node.indent() if node else ''
-            print indent + str(message)
+            print(indent + str(message))
 
         
 def listtokens(tokens):
@@ -306,13 +307,13 @@ def test(source_filepath, grammar_dir=None, debug=''):
     srcname, sep, langname = source_filepath.rpartition('.')
     tree = None
     try:
-        print '\nParsing %s ... \n' % source_filepath
+        print('\nParsing %s ... \n' % source_filepath)
         parser = SyntaxParser(os.path.join(grammar_dir, langname), debug)
         tree = parser.parse(source_filepath, enable_imports=('m' in debug))
-        print "\n**** Syntax test done ****"
+        print("\n**** Syntax test done ****")
     except (None if 'b' in debug else Error) as exc:
-        print exc
-    print
+        print(exc)
+    print()
     return tree
 
 
@@ -333,7 +334,7 @@ if __name__ == '__main__':
                 grammar_dir = arg
         tree = test(sourcepath, grammar_dir, debug)
     else:
-        print """
+        print("""
     Usage: %s <source_path> [<specification_dir>] [-<debug_flags>]
         
         optional <specification_dir> is path to directory holding token and syntax grammars
@@ -355,5 +356,5 @@ if __name__ == '__main__':
         r = display source code reassembled from tokens
         s = display syntax used to parse source
         t = display parse tree
-        """ % sys.argv[0]
+        """ % sys.argv[0])
 

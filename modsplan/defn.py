@@ -1,6 +1,8 @@
 # defn.py
 # Modsplan .defn parser
-# Copyright 2011-2013 by David H Post, DaviWorks.com.
+# Copyright 2011-2014 by David H Post, DaviWorks.com.
+
+from __future__ import print_function       # for Python 2 compatibility
 
 import os.path
 
@@ -104,6 +106,6 @@ if __name__ == '__main__':
     defs = Definitions()
     lang = 'modspecs/L0'
     defs.load(lang)
-    print defs.show()
+    print(defs.show())
 
 

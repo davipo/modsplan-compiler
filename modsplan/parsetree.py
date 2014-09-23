@@ -1,6 +1,6 @@
 # parsetree.py
 # Modsplan parse tree
-# Copyright 2013 by David H Post, DaviWorks.com.
+# Copyright 2013-2014 by David H Post, DaviWorks.com.
 
 
 indent_size = 3

@@ -1,6 +1,8 @@
 # lineparsers.py
 # Modsplan line parsers
-# Copyright 2013 by David H Post, DaviWorks.com.
+# Copyright 2013-2014 by David H Post, DaviWorks.com.
+
+from __future__ import print_function       # for Python 2 compatibility
 
 import os
 

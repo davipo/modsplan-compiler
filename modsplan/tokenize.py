@@ -2,8 +2,9 @@
 
 # tokenize.py
 # Modsplan tokenizer
-# Copyright 2011-2013 by David H Post, DaviWorks.com.
+# Copyright 2011-2014 by David H Post, DaviWorks.com.
 
+from __future__ import print_function       # for Python 2 compatibility
 
 import grammar
 from lineparsers import LineInfoParser, FileParser, Error
@@ -190,7 +191,7 @@ class Tokenizer:
             Return number of chars matched (-1 if no match).
         """
         if '2' in debug:
-            print 'match nonterm %s with "%s":' % (nonterm.name, text)
+            print('match nonterm %s with "%s":' % (nonterm.name, text))
         maxchars = -1       # length of longest token that matched
         for alt in nonterm.alternates:
             col = 0             # index to text
@@ -202,7 +203,7 @@ class Tokenizer:
                     continue            # on to next item
                 length = self.match_item(text[col:], item, skip)
                 if '2' in debug:
-                    print '   %d chars of "%s" matched %s' % (length, text[col:], item)
+                    print('   %d chars of "%s" matched %s' % (length, text[col:], item))
                 if length == -1:        # if item fails to match
                     break                   # try next alternate
                 skip &= (length == 0)   # stop skip if literal found
@@ -275,7 +276,7 @@ class Tokenizer:
             nonterm = self.tokendef.nonterms[item_text]
             length = self.match_nonterm(text, nonterm)
         if '3' in debug:
-            print '      %d chars of "%s" match %s' % (length, text, item)
+            print('      %d chars of "%s" match %s' % (length, text, item))
         return length
     
 
@@ -337,24 +338,24 @@ def test(source_filepath):
         tokenspec = 'modspecs/%s.tokens' % language
         
         t = Tokenizer(tokenspec)
-        print t.prefixes(),
+        print(t.prefixes())
         
-        print 'prefix_map:'
+        print('prefix_map:')
         for prefix, kinds in sorted(t.tokendef.prefix_map.items()):
             kindnames = [kind.name for kind in kinds]
-            print '%3s: %s' % (prefix, ' '.join(kindnames))
-        print
+            print('%3s: %s' % (prefix, ' '.join(kindnames)))
+        print()
             
         tokens = t.get_tokens(source_filepath)
         if 'o' in debug:
-            print 'Tokens from ' + source_filepath + ':\n'
+            print('Tokens from ' + source_filepath + ':\n')
             for tkn in tokens:
-                print tkn   
+                print(tkn)   
         
-        print reassemble(tokens)
+        print(reassemble(tokens))
 
     except (None if 'b' in debug else Error) as exc:
-        print exc
+        print(exc)
 
 
 import sys
@@ -365,7 +366,7 @@ if __name__ == '__main__':
         source_filepath, debug = args[:2]
         test(source_filepath)
     else:    
-        print """
+        print("""
     Usage: %s <source_path> [-<debug_flags>]
         
         debug_flags (may be combined, as in -2ob):
@@ -374,4 +375,4 @@ if __name__ == '__main__':
         3 = log item matching to stdout
         b = show traceback on error
         o = list tokens from source file
-        """ % sys.argv[0]
+        """ % sys.argv[0])

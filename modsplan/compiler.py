@@ -2,7 +2,9 @@
 
 # compiler.py
 # Modsplan compiler
-# Copyright 2013- by David H Post, DaviWorks.com.
+# Copyright 2013-2014 by David H Post, DaviWorks.com.
+
+from __future__ import print_function       # for Python 2 compatibility
 
 import sys
 import os.path
@@ -324,8 +326,8 @@ class Compiler:
         
 
 def compile_src(sourcepath, codepath='', spec_dir=None, debug=''):
-    """ Compile source code from sourcepath, write target code to codepath (if given),
-        return lines of target code in a single string.
+    """ Compile source code from sourcepath, write target code to codepath (if given);
+        return lines of target code in a single string, or None if error.
         If codepath is '*', write to sourcepath.<code_suffix>.
         Optional specification directory and debug flags."""
     langname = sourcepath.rpartition('.')[-1]
