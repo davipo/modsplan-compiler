@@ -1,0 +1,115 @@
+# rho.syntax
+# Modsplan syntax specification for parsing Rholang
+
+use expr        # common expression syntax
+
+# A program is just a process.
+Proc.root => Proc1 parallel*
+parallel => "|" Proc1
+
+Proc1 => Proc2
+Proc2 => Proc3
+Proc3 => Proc4
+Proc4 => Proc12     # shortcut
+
+# Proc4 => Proc5
+# Proc5 => Proc6
+# Proc6 => Proc7
+# Proc7 => Proc8
+# Proc8 => Proc9
+# Proc9 => Proc10
+# Proc10 => Proc11
+# Proc11 => Proc12
+
+Proc12 => Proc13
+Proc13 => "{" Proc "}"
+
+# Processes
+# In general the expression style processes are higher precedence.
+# Expression style is anything that necessary resolves to a single ground value
+# or a collection.
+
+## Ground covered in constants.syntax, used by expr.syntax
+# Proc13 => Ground
+
+Proc13 => Collection
+Proc13 => ProcVar
+Proc12 => MUL_OP Name       # *name (dereference, MUL_OP must be '*')
+
+Proc => test                # test imported from expr.syntax
+
+## covered in expr.syntax
+# Proc10 => "not" Proc10
+# Proc10 => "-" Proc10
+# Proc9 => Proc9 "*" Proc10
+# Proc9 => Proc9 "/" Proc10
+# Proc8 => Proc8 "+" Proc9
+# Proc8 => Proc8 "-" Proc9
+# Proc7 => Proc7 "<" Proc8
+# Proc7 => Proc7 "<=" Proc8
+# Proc7 => Proc7 ">" Proc8
+# Proc7 => Proc7 ">=" Proc8
+# Proc6 => Proc6 "==" Proc7
+# Proc6 => Proc6 "!=" Proc7
+# Proc5 => Proc5 "and" Proc6
+# Proc4 => Proc4 "or" Proc5
+
+# Proc11 => Proc11 "." Var "(" Proc,* ")"
+# Proc6 => Proc7 "matches" Proc7
+
+Proc3 => Name Send "(" Proc,* ")"
+Proc2 => contract
+contract => "contract" Name "(" Name,* NameRemainder? ")" "=" "{" Proc "}"
+Proc2 => "for" "(" LinearBind;+ rcvcondition? ")" "{" Proc "}"
+Proc2 => "for" "(" RepeatedBind;+ rcvcondition? ")" "{" Proc "}"
+rcvcondition => "if" Proc       # requires boolean Proc
+
+Proc2 => "select" "{" Branch+ "}"
+Proc2 => "match" Proc4 "{" Case+ "}"
+Proc2 => "bundle" "{" Proc "}"
+Proc1 => "if" "(" Proc ")" Proc2 else?
+else => "else" Proc1
+Proc1 => "new" NameDecl,+ "in" Proc1
+
+## Should be removed, use send syntax
+Proc1 => constr
+constr => Var "(" Proc,* ")"     # from rholang.cf, not in rholang_mercury.cf
+
+# Process variables
+ProcVar => WILDCARD
+# ProcVar => Var
+
+Name => WILDCARD
+Name => Var
+Name => QUOTEPROC Proc
+
+LinearBind => Name,* NameRemainder? "<-" Name
+RepeatedBind => Name,* NameRemainder? "<=" Name
+
+Send => SEND
+Send => SENDMULTIPLE
+
+# Branch => LinearBind;+ "=>" Proc      # examples use 'case'
+Branch => "case" LinearBind;+ "=>" Proc
+
+Case => Proc "=>" Proc
+
+NameDecl => Var
+
+### (moved to constants.syntax, used by expr.syntax)
+# Ground => NIL
+# Ground => BOOL
+# Ground => INTEGER
+# Ground => STRING
+# Ground => URI
+
+Collection => "[" Proc,* Remainder? "]"
+Collection => "(" Proc,* ")"
+Collection => "Set" "(" Proc,* ")"
+# Collection => "{" KeyValuePair,* "}"      # ambiguous with Proc13 => "{" Proc "}"
+KeyValuePair => Proc ":" Proc
+
+Remainder => "..." ProcVar
+NameRemainder => "..." "@" ProcVar
+
+Var => NAME

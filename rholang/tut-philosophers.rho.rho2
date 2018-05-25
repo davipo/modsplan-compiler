@@ -1,0 +1,28 @@
+"north".send("knife")
+"south".send("spoon")
+when "north".rcv(knf), "south".rcv(spn):
+    new ack:
+        "stdoutAck".send("Philosopher 1 Utensils: ", ack)
+        when ack.rcv(_):
+            "stdoutAck".send(knf, ack)
+            when ack.rcv(_):
+                "stdoutAck".send(", ", ack)
+                when ack.rcv(_):
+                    "stdoutAck".send(spn, ack)
+                    when ack.rcv(_):
+                        "stdout".send("\n")
+    "north".send(knf)
+    "south".send(spn)
+when "south".rcv(spn), "north".rcv(knf):
+    new ack:
+        "stdoutAck".send("Philosopher 2 Utensils: ", ack)
+        when ack.rcv(_):
+            "stdoutAck".send(knf, ack)
+            when ack.rcv(_):
+                "stdoutAck".send(", ", ack)
+                when ack.rcv(_):
+                    "stdoutAck".send(spn, ack)
+                    when ack.rcv(_):
+                        "stdout".send("\n")
+    "north".send(knf)
+    "south".send(spn)

@@ -1,0 +1,20 @@
+# expr.tokens
+# expr token specification
+# Common expression tokens
+
+
+RELATION => '=='
+RELATION => '!='
+RELATION => inequality '='?
+inequality => '<'
+inequality => '>'
+
+ADD_OP => '+'
+ADD_OP => '-'
+
+MUL_OP => '*'
+MUL_OP => '/'
+MUL_OP => '%'
+
+UNARY_OP => '~'         # bit-wise complement
+# ADD_OPs also used as unary operators

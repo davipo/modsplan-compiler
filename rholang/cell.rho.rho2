@@ -1,0 +1,14 @@
+
+contract Cell.rcv(get, set, state):
+    when get.rcv(rtn), state.rcv(v):
+        rtn.send(v)
+        state.send(v)
+        Cell.$end(get, set, state)
+    when set.rcv(newValue), state.rcv(_):
+        state.send(newValue)
+        Cell.$end(get, set, state)
+
+contract Wallet.rcv(get, set, initial):
+    new current:
+        Cell.$end(get, set, current)
+        current.send(initial)

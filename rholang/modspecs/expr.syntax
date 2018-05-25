@@ -1,0 +1,45 @@
+# expr.syntax
+# Common expression syntax
+
+
+use constants   # constant, number
+
+
+test => andtest disjunction*
+disjunction => OR_OP andtest
+
+andtest => nottest conjunction*
+conjunction => AND_OP nottest
+
+nottest => comparison       # (L0 extends with 'not')
+
+comparison => expr compare?
+compare => RELATION expr
+
+expr => term addition*
+addition => ADD_OP term
+
+term => factor multiplication*
+multiplication => MUL_OP factor
+
+factor => atom
+factor => ADD_OP atom       # unary - (or +)
+factor => UNARY_OP atom
+
+atom => constant
+atom => parentheses
+# atom => call
+atom => variable
+
+# function call
+# call => variable '(' arg,* ')'
+
+arg => test
+
+parentheses => '(' test ')'
+
+
+variable => identifier
+
+identifier => NAME
+

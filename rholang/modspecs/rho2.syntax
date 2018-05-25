@@ -1,0 +1,73 @@
+# rho2.syntax
+# Modsplan syntax specification for parsing Rholang alternative syntax
+
+
+use expr        # common expression syntax
+
+
+procs.root => parallel*
+parallel => NEWLINE
+parallel => proc
+
+## May include this, but prefer one proc per line
+# parallel => "|" proc
+
+proc => 'new' var,* ':' NEWLINE+ INDENT procs DEDENT
+
+var => NAME             # name, channel name
+
+proc => send
+proc => sendr           # repeated (persistent) send
+
+send => channel '.' 'send' '(' proc,* ')'
+sendr => channel '.' 'sendr' '(' proc,* ')'     # repeated (persisting) send
+
+channel => var
+channel => STRING       ### should be a proc
+
+### remove this if we can't distinguish that var is a contract
+send => channel '.' '$end' '(' proc,* ')'   # send to contract (sender pays)
+
+proc => receive
+proc => rreceive    # repeated (persistent) receive
+
+receive => 'when' receipt,* rcvcondition? ':' NEWLINE INDENT procs DEDENT
+rreceive => 'whenever' receipt,* rcvcondition? ':' NEWLINE INDENT procs DEDENT
+rcvcondition => 'if' proc       # requires boolean proc
+
+rreceive => 'contract' receipt ':' NEWLINE INDENT procs DEDENT   # sender pays
+
+receipt => channel '.' 'rcv' '(' varwild,* remainder? ')'
+varwild => var
+varwild => WILDCARD
+remainder => '...' var
+
+
+proc => 'select' ':' NEWLINE INDENT branch* DEDENT
+branch => 'case' receipt,* ':' NEWLINE INDENT procs DEDENT
+
+proc => 'match' proc ':' NEWLINE INDENT matchcase* DEDENT
+matchcase => procwild '=>' NEWLINE INDENT procs DEDENT
+procwild => WILDCARD
+procwild => proc
+
+### Add 'if', 'bundle' ?
+
+
+proc => test    # test imported from expr.syntax, covers expressions
+
+## These are included in test, imported from expr.syntax
+# proc => var
+# proc => literal
+# literal => NIL
+# literal => BOOL
+# literal => INTEGER
+# literal => STRING
+# literal => URI
+
+proc => collection
+collection => '[' proc,* ']'            # list
+collection => 'set' '(' proc,* ')'      # set
+collection => '{' keyvaluepair,* '}'    # mapping (dictionary)
+keyvaluepair => proc ':' proc
+

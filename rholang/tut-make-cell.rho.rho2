@@ -1,0 +1,42 @@
+new updateTestResult:
+    "testResult".send(true)
+    
+    contract updateTestResult.rcv(bool, return):
+        when "testResult".rcv(r):
+            match [r, bool]:
+                [true, true] =>
+                    "testResult".send(true)
+                    return.send(true)
+                _ =>
+                    "testResult".send(false)
+                    return.send(false)
+    
+    contract "CellDemo".rcv(_):
+        new MakeCell:
+            
+            contract MakeCell.rcv(init, get, set):
+                new valueStore:
+                    valueStore.send(init)
+                    
+                    contract get.rcv(ack):
+                        when valueStore.rcv(value):
+                            valueStore.send(value)
+                            ack.send(value)
+                    
+                    contract set.rcv(newValue, ack):
+                        when valueStore.rcv(_):
+                            valueStore.send(newValue)
+                            ack.send(true)
+            new myGet, mySet:
+                MakeCell.send(123, myGet, mySet)
+                new ack:
+                    myGet.send(ack)
+                    when ack.rcv(result):
+                        updateTestResult.send(result == 123, ack)
+                        when ack.rcv(_):
+                            mySet.send(456, ack)
+                            when ack.rcv(_):
+                                myGet.send(ack)
+                                when ack.rcv(result):
+                                    updateTestResult.send(result == 456, ack)
+    "CellDemo".send(Nil)

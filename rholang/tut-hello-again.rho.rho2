@@ -1,0 +1,12 @@
+new helloAgain:
+     
+    contract helloAgain.rcv(_):
+        new chan:
+            chan.send("Hello again, world!")
+            when chan.rcv(text):
+                new ack:
+                    "stdoutAck".send(text, ack)
+                    when ack.rcv(_):
+                        "stdout".send("\n")
+    helloAgain.send(Nil)
+    helloAgain.send(Nil)

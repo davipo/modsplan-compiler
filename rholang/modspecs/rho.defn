@@ -1,0 +1,105 @@
+# rho.defn
+# Modsplan defn spec to translate Rholang to an alternative syntax (rho2)
+
+
+Proc(Proc1 parallel*)
+    &Proc1
+    &parallel*
+
+
+contract(Name Name* NameRemainder? Proc)
+    ## 'contract' Name '(' .commasep(Name*) NameRemainder? '):'
+    ''     ## blank line (kludge until compiler passes thru blank lines)
+    'contract' Name '\b.rcv(' .commasep(Name*) NameRemainder? '):'
+    .indent()
+    &Proc
+    .dedent()
+
+NameRemainder(ProcVar)
+    =Remainder(ProcVar)
+
+
+Proc2(LinearBind+ rcvcondition? Proc)       # 'for' with  '<-'
+    'when' .commasep(LinearBind+) rcvcondition? '\b:'
+    .indent()
+    &Proc
+    .dedent()
+
+Proc2(RepeatedBind+ rcvcondition? Proc)     # 'for' with '<="
+    'whenever' .commasep(RepeatedBind+) rcvcondition? '\b:'
+    .indent()
+    &Proc
+    .dedent()
+
+rcvcondition(Proc)
+    'if' Proc
+
+
+Proc2(Branch+)          # select
+    'select' '\b:'
+    .indent()
+    &Branch+
+    .dedent()
+
+Branch(LinearBind+ Proc)
+    'case' .commasep(LinearBind+) '\b:'
+    .indent()
+    &Proc
+    .dedent()
+
+
+Proc2(Proc4 Case+)      # match
+    'match' Proc4 '\b:'
+    .indent()
+    &Case+
+    .dedent()
+
+Case(Proc Proc)         # match case
+    Proc '=>'
+    .indent()
+    &Proc
+    .dedent()
+
+
+LinearBind(Name* NameRemainder? Name)
+    Name '\b.rcv(' .commasep(Name*) NameRemainder? ')'
+
+RepeatedBind(Name* NameRemainder? Name)
+    =LinearBind(Name* NameRemainder? Name)
+
+
+Proc3(Name Send Proc*)
+    Name '\b.send(' .commasep(Proc*) ')'
+
+## Contract invocation, old syntax
+## This was removed in rholang_mercury.cf, replaced with normal send
+constr(Var Proc*)
+    Var '\b.$end(' .commasep(Proc*) ')'
+
+
+Proc1(NameDecl+ Proc1)      # new
+    'new' .commasep(NameDecl+) '\b:'
+    .indent()
+    &Proc1
+    .dedent()
+
+
+Collection(Proc* Remainder?)    # list
+    '[\b' .commasep(Proc*) Remainder? '\b]'
+
+Remainder(ProcVar)
+    '...' ProcVar
+
+
+Proc12(MUL_OP Name)             # *name (dereference, MUL_OP must be '*')
+    Name                        # deref if needed by context
+    ## was: MUL_OP '\b' Name
+
+Name(QUOTEPROC Proc)
+    Proc                        # quoted if needed by context
+    ## was: QUOTEPROC '\b' Proc12
+
+
+ProcVar()       # must be wildcard if no child Var
+    '_'
+

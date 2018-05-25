@@ -1,0 +1,66 @@
+# rho.tokens
+# Modsplan token specification for parsing Rholang
+
+use expr
+
+
+COMMENT => '//' P*
+STARTCOMMENT => '/*' 
+ENDCOMMENT => '*/'
+
+BINDARROW => '<-'
+REPBINDARROW => '<='
+FWDARROW => '=>'
+
+INTEGER => D+
+
+# Operators
+AND_OP => 'and'
+OR_OP => 'or'
+NOT_OP => 'not'
+
+RELATION => '=='
+RELATION => '!='
+RELATION => inequality '='?
+inequality => '<'
+inequality => '>'
+
+ADD_OP => '+'
+ADD_OP => '-'
+
+MUL_OP => '*'
+MUL_OP => '/'
+
+SEND => '!'
+SENDMULTIPLE => '!!'
+ELIPSIS => '...'
+QUOTEPROC => '@'
+
+# Keywords (tokens matched with literals in syntax)
+KEYWORD => "contract"
+KEYWORD => "for"
+KEYWORD => "select"
+KEYWORD => "match"
+KEYWORD => "bundle"
+KEYWORD => "if"
+KEYWORD => "new"
+KEYWORD => "in"
+KEYWORD => "case"
+
+BOOL => "true"
+BOOL => "false"
+NIL => "Nil"
+
+NAME => letter alphanum*
+
+alphanum => letter
+alphanum => '_'
+alphanum => D           # digit character class, matches any digit
+
+letter => L             # lower case character class
+letter => U             # upper case character class
+
+WILDCARD => '_'
+
+STRING => '"' P* '"'
+URI => '`' P* '`'       # ???

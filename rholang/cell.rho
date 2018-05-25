@@ -1,0 +1,13 @@
+
+contract Cell( get, set, state ) = {
+    for( rtn <- get; @v <- state ) {
+        rtn!( v ) | state!( v ) | Cell( *get, *set, *state ) 
+    }|
+    for( @newValue <- set; _ <- state ) {
+        state!( newValue ) | Cell( *get, *set, *state )
+    }
+}
+|
+contract Wallet( get, set, @initial ) = {
+    new current in { Cell( *get, *set, *current ) | current!( initial ) }
+}

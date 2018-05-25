@@ -1,0 +1,11 @@
+#// A simple HelloWorld contract demonstrating a contract being rerun
+new helloworld:
+    
+    contract helloworld.rcv(world):
+        when world.rcv(msg):
+            "stdout".send(msg)
+    new world, world2:
+        helloworld.send(world)
+        world.send("Hello World")
+        helloworld.send(world2)
+        world2.send("Hello World again")

@@ -1,0 +1,13 @@
+# constants.syntax
+
+
+constant => number
+constant => STRING
+
+constant => NIL
+constant => BOOL
+constant => URI
+
+number => INTEGER
+# number => FLOAT
+# number => HEX
