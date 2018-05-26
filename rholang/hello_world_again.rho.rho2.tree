@@ -1,0 +1,184 @@
+
+Parsing hello_world_again.rho.rho2 ... 
+
+
+Tree:
+
+procs
+   COMMENT(#// A simple HelloWorld contract demonstrating a contract being rerun)
+   parallel*
+      parallel
+      parallel
+      |  proc
+      |     var*
+      |     |  var
+      |     |     NAME(helloworld)
+      |     NEWLINE+
+      |     procs
+      |     |  parallel*
+      |     |     parallel
+      |     |     |  proc
+      |     |     |     rreceive
+      |     |     |     |  receipt
+      |     |     |     |     channel
+      |     |     |     |     |  var
+      |     |     |     |     |     NAME(helloworld)
+      |     |     |     |     varwild*
+      |     |     |     |     |  varwild
+      |     |     |     |     |     var
+      |     |     |     |     |     |  NAME(world)
+      |     |     |     |     remainder?
+      |     |     |     |  procs
+      |     |     |     |     parallel*
+      |     |     |     |     |  parallel
+      |     |     |     |     |     proc
+      |     |     |     |     |     |  receive
+      |     |     |     |     |     |     receipt*
+      |     |     |     |     |     |     |  receipt
+      |     |     |     |     |     |     |     channel
+      |     |     |     |     |     |     |     |  var
+      |     |     |     |     |     |     |     |     NAME(world)
+      |     |     |     |     |     |     |     varwild*
+      |     |     |     |     |     |     |     |  varwild
+      |     |     |     |     |     |     |     |     var
+      |     |     |     |     |     |     |     |     |  NAME(msg)
+      |     |     |     |     |     |     |     remainder?
+      |     |     |     |     |     |     rcvcondition?
+      |     |     |     |     |     |     procs
+      |     |     |     |     |     |     |  parallel*
+      |     |     |     |     |     |     |     parallel
+      |     |     |     |     |     |     |     |  proc
+      |     |     |     |     |     |     |     |     send
+      |     |     |     |     |     |     |     |     |  channel
+      |     |     |     |     |     |     |     |     |     STRING("stdout")
+      |     |     |     |     |     |     |     |     |  proc*
+      |     |     |     |     |     |     |     |     |     proc
+      |     |     |     |     |     |     |     |     |     |  test
+      |     |     |     |     |     |     |     |     |     |     andtest
+      |     |     |     |     |     |     |     |     |     |     |  nottest
+      |     |     |     |     |     |     |     |     |     |     |     comparison
+      |     |     |     |     |     |     |     |     |     |     |     |  expr
+      |     |     |     |     |     |     |     |     |     |     |     |     term
+      |     |     |     |     |     |     |     |     |     |     |     |     |  factor
+      |     |     |     |     |     |     |     |     |     |     |     |     |     atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  NAME(msg)
+      |     |     |     |     |     |     |     |     |     |     |     |     |  multiplication*
+      |     |     |     |     |     |     |     |     |     |     |     |     addition*
+      |     |     |     |     |     |     |     |     |     |     |     |  compare?
+      |     |     |     |     |     |     |     |     |     |     |  conjunction*
+      |     |     |     |     |     |     |     |     |     |     disjunction*
+      |     |     |     |     |     |     |     parallel
+      |     |     parallel
+      |     |     |  proc
+      |     |     |     var*
+      |     |     |     |  var
+      |     |     |     |     NAME(world)
+      |     |     |     |  var
+      |     |     |     |     NAME(world2)
+      |     |     |     NEWLINE+
+      |     |     |     procs
+      |     |     |     |  parallel*
+      |     |     |     |     parallel
+      |     |     |     |     |  proc
+      |     |     |     |     |     send
+      |     |     |     |     |     |  channel
+      |     |     |     |     |     |     var
+      |     |     |     |     |     |     |  NAME(helloworld)
+      |     |     |     |     |     |  proc*
+      |     |     |     |     |     |     proc
+      |     |     |     |     |     |     |  test
+      |     |     |     |     |     |     |     andtest
+      |     |     |     |     |     |     |     |  nottest
+      |     |     |     |     |     |     |     |     comparison
+      |     |     |     |     |     |     |     |     |  expr
+      |     |     |     |     |     |     |     |     |     term
+      |     |     |     |     |     |     |     |     |     |  factor
+      |     |     |     |     |     |     |     |     |     |     atom
+      |     |     |     |     |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |     |     |     |     |  NAME(world)
+      |     |     |     |     |     |     |     |     |     |  multiplication*
+      |     |     |     |     |     |     |     |     |     addition*
+      |     |     |     |     |     |     |     |     |  compare?
+      |     |     |     |     |     |     |     |  conjunction*
+      |     |     |     |     |     |     |     disjunction*
+      |     |     |     |     parallel
+      |     |     |     |     parallel
+      |     |     |     |     |  proc
+      |     |     |     |     |     send
+      |     |     |     |     |     |  channel
+      |     |     |     |     |     |     var
+      |     |     |     |     |     |     |  NAME(world)
+      |     |     |     |     |     |  proc*
+      |     |     |     |     |     |     proc
+      |     |     |     |     |     |     |  test
+      |     |     |     |     |     |     |     andtest
+      |     |     |     |     |     |     |     |  nottest
+      |     |     |     |     |     |     |     |     comparison
+      |     |     |     |     |     |     |     |     |  expr
+      |     |     |     |     |     |     |     |     |     term
+      |     |     |     |     |     |     |     |     |     |  factor
+      |     |     |     |     |     |     |     |     |     |     atom
+      |     |     |     |     |     |     |     |     |     |     |  constant
+      |     |     |     |     |     |     |     |     |     |     |     STRING("Hello World")
+      |     |     |     |     |     |     |     |     |     |  multiplication*
+      |     |     |     |     |     |     |     |     |     addition*
+      |     |     |     |     |     |     |     |     |  compare?
+      |     |     |     |     |     |     |     |  conjunction*
+      |     |     |     |     |     |     |     disjunction*
+      |     |     |     |     parallel
+      |     |     |     |     parallel
+      |     |     |     |     |  proc
+      |     |     |     |     |     send
+      |     |     |     |     |     |  channel
+      |     |     |     |     |     |     var
+      |     |     |     |     |     |     |  NAME(helloworld)
+      |     |     |     |     |     |  proc*
+      |     |     |     |     |     |     proc
+      |     |     |     |     |     |     |  test
+      |     |     |     |     |     |     |     andtest
+      |     |     |     |     |     |     |     |  nottest
+      |     |     |     |     |     |     |     |     comparison
+      |     |     |     |     |     |     |     |     |  expr
+      |     |     |     |     |     |     |     |     |     term
+      |     |     |     |     |     |     |     |     |     |  factor
+      |     |     |     |     |     |     |     |     |     |     atom
+      |     |     |     |     |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |     |     |     |     |  NAME(world2)
+      |     |     |     |     |     |     |     |     |     |  multiplication*
+      |     |     |     |     |     |     |     |     |     addition*
+      |     |     |     |     |     |     |     |     |  compare?
+      |     |     |     |     |     |     |     |  conjunction*
+      |     |     |     |     |     |     |     disjunction*
+      |     |     |     |     parallel
+      |     |     |     |     parallel
+      |     |     |     |     |  proc
+      |     |     |     |     |     send
+      |     |     |     |     |     |  channel
+      |     |     |     |     |     |     var
+      |     |     |     |     |     |     |  NAME(world2)
+      |     |     |     |     |     |  proc*
+      |     |     |     |     |     |     proc
+      |     |     |     |     |     |     |  test
+      |     |     |     |     |     |     |     andtest
+      |     |     |     |     |     |     |     |  nottest
+      |     |     |     |     |     |     |     |     comparison
+      |     |     |     |     |     |     |     |     |  expr
+      |     |     |     |     |     |     |     |     |     term
+      |     |     |     |     |     |     |     |     |     |  factor
+      |     |     |     |     |     |     |     |     |     |     atom
+      |     |     |     |     |     |     |     |     |     |     |  constant
+      |     |     |     |     |     |     |     |     |     |     |     STRING("Hello World again")
+      |     |     |     |     |     |     |     |     |     |  multiplication*
+      |     |     |     |     |     |     |     |     |     addition*
+      |     |     |     |     |     |     |     |     |  compare?
+      |     |     |     |     |     |     |     |  conjunction*
+      |     |     |     |     |     |     |     disjunction*
+      |     |     |     |     parallel
+
+
+**** Syntax test done ****
+
