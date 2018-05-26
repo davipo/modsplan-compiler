@@ -23,7 +23,7 @@ send => channel '.' 'send' '(' proc,* ')'
 sendr => channel '.' 'sendr' '(' proc,* ')'     # repeated (persisting) send
 
 channel => var
-channel => STRING       ### should be a proc
+channel => proc     # will be quoted by compiler
 
 ### remove this if we can't distinguish that var is a contract
 send => channel '.' '$end' '(' proc,* ')'   # send to contract (sender pays)
