@@ -48,10 +48,10 @@ name => proc    # pattern to match, will be quoted by the compiler
 proc => 'select' ':' NEWLINE INDENT branch* DEDENT
 branch => 'case' receipt,* ':' NEWLINE INDENT procs DEDENT
 
-proc => 'match' proc ':' NEWLINE INDENT matchcase* DEDENT
+proc => 'match' proc ':' NEWLINE INDENT matchcase+ DEDENT
 matchcase => procwild '=>' NEWLINE INDENT procs DEDENT
-procwild => WILDCARD
 procwild => proc
+procwild => WILDCARD    # default match case
 
 ### Add 'if', 'bundle' ?
 
