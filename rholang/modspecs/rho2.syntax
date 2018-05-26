@@ -37,10 +37,12 @@ rcvcondition => 'if' proc       # requires boolean proc
 
 rreceive => 'contract' receipt ':' NEWLINE INDENT procs DEDENT   # sender pays
 
-receipt => channel '.' 'rcv' '(' varwild,* remainder? ')'
-varwild => var
-varwild => WILDCARD
-remainder => '...' var
+receipt => channel '.' 'rcv' '(' name,* remainder? ')'
+remainder => '...' var      # var gets bound to a list of values (procs)
+
+name => var
+name => WILDCARD
+name => proc    # pattern to match, will be quoted by the compiler
 
 
 proc => 'select' ':' NEWLINE INDENT branch* DEDENT
