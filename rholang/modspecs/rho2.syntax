@@ -52,7 +52,7 @@ remainder => '...' variable     # variable gets list of remaining values
 when => 'when' receipt,+ rcvcondition? body   # receive once, receiver pays
 
 receipt => channel '.' 'rcv' '(' patternlist ')'
-rcvcondition => '\b,' 'if' test     # requires boolean test
+rcvcondition => ',' 'if' test       # requires boolean test
 
 # persistent repeated receives
 whenever => 'whenever' receipt,+ rcvcondition? body     # receiver pays

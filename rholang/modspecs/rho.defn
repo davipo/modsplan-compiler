@@ -32,7 +32,7 @@ Proc2(RepeatedBind+ rcvcondition? Proc)     # 'for' with '<="
     .dedent()
 
 rcvcondition(Proc)
-    'if' Proc
+    ',' 'if' Proc       # ',' separates condition from last Bind
 
 
 Proc2(Branch+)          # select
