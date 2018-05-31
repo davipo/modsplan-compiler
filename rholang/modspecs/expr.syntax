@@ -31,6 +31,7 @@ atom => parentheses
 # atom => call
 atom => variable
 
+### Use for built-in functions in rho2?
 # function call
 # call => variable '(' arg,* ')'
 

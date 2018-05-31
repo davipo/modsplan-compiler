@@ -1,75 +1,75 @@
 # rho2.syntax
 # Modsplan syntax specification for parsing Rholang alternative syntax
 
-
-use expr        # common expression syntax
-
-
-procs.root => parallel*
-parallel => NEWLINE
-parallel => proc
-
-## May include this, but prefer one proc per line
-# parallel => "|" proc
-
-proc => 'new' var,* ':' NEWLINE+ INDENT procs DEDENT
-
-var => NAME             # name, channel name
-
-proc => send
-proc => sendr           # repeated (persistent) send
-
-send => channel '.' 'send' '(' proc,* ')'
-sendr => channel '.' 'sendr' '(' proc,* ')'     # repeated (persisting) send
-
-channel => var
-channel => proc     # will be quoted by compiler
-
-### remove this if we can't determine if channel is a contract
-send => channel '.' '$end' '(' proc,* ')'   # send to contract (sender pays)
-
-proc => receive
-proc => rreceive    # repeated (persistent) receive
-
-receive => 'when' receipt,* rcvcondition? ':' NEWLINE INDENT procs DEDENT
-rreceive => 'whenever' receipt,* rcvcondition? ':' NEWLINE INDENT procs DEDENT
-rcvcondition => 'if' proc       # requires boolean proc
-
-rreceive => 'contract' receipt ':' NEWLINE INDENT procs DEDENT   # sender pays
-
-receipt => channel '.' 'rcv' '(' name,* remainder? ')'
-remainder => '...' var      # var gets bound to a list of values (procs)
-
-name => var
-name => WILDCARD
-name => proc    # pattern to match, will be quoted by the compiler
+use expr        # import common expression syntax from expr.syntax
 
 
-proc => 'select' ':' NEWLINE INDENT branch* DEDENT
-branch => 'case' receipt,* ':' NEWLINE INDENT procs DEDENT
+block.root => process*      # root node of parse tree
+process => NEWLINE
 
-proc => 'match' proc ':' NEWLINE INDENT matchcase+ DEDENT
-matchcase => procwild '=>' NEWLINE INDENT procs DEDENT
-procwild => proc
-procwild => WILDCARD    # default match case
+# send processes
+process => send         # one-time send
+process => sendr        # repeated (persistent) send
 
-### Add 'if', 'bundle' ?
+# block processes
+process => newblock
+process => match
+
+# block receive processes
+process => when         # one-time receive, receiver pays
+process => whenever     # persistent repeated receive, receiver pays
+process => contract     # persistent repeated receive, sender pays
+process => select       # one of multiple receive cases matched
 
 
-proc => test    # test imported from expr.syntax, covers expressions
+send => channel '.' 'send' '(' test,* ')'       # one-time send
+sendr => channel '.' 'sendr' '(' test,* ')'     # repeated (persisting) send
+# "test" is an expression, defined in expr.syntax
 
-## These are included in test, imported from expr.syntax
-# proc => var
-# proc => literal
-# literal => NIL
-# literal => BOOL
-# literal => INTEGER
-# literal => STRING
-# literal => URI
+channel => atom     # "atom" from expr.syntax
 
-proc => collection
-collection => '[' proc,* ']'            # list
-collection => 'set' '(' proc,* ')'      # set
-collection => '{' keyvaluepair,* '}'    # mapping (dictionary)
-keyvaluepair => proc ':' proc
 
+newblock => 'new' variable,* body
+# creates unique unforgeable values, bound to variables for use in body
+# variables visible only in body, any with same name are shadowed
+
+body => ':' NEWLINE+ INDENT block DEDENT
+
+
+match => 'match' test ':' NEWLINE+ INDENT matchcase+ DEDENT
+matchcase => pattern '=>' NEWLINE+ INDENT block DEDENT
+# evaluates test, executes block of first matching pattern
+
+pattern => constant             # matches value
+pattern => variable             # matches anything, is bound to value
+pattern => '(' test ')'         # test is evaluated, match its value
+pattern => WILDCARD             # match anything, discard value
+pattern => '[' patternlist ']'  # matches a list of matching elements
+patternlist => pattern,* remainder?
+remainder => '...' variable     # variable gets list of remaining values
+
+
+when => 'when' receipt,+ rcvcondition? body   # receive once, receiver pays
+
+receipt => channel '.' 'rcv' '(' patternlist ')'
+rcvcondition => '\b,' 'if' test     # requires boolean test
+
+# persistent repeated receives
+whenever => 'whenever' receipt,+ rcvcondition? body     # receiver pays
+contract => 'contract' receipt body                     # sender pays
+
+select => 'select' ':' NEWLINE+ INDENT branch* DEDENT
+branch => 'case' receipt,* body
+
+
+nottest => NOT_OP comparison        # boolean 'not', used in expr.syntax
+
+
+# collections (atom defined in expr.syntax, extended here)
+atom => list
+atom => set
+atom => map
+list => '[' test,* ']'
+set => 'set' '(' test,* ')'
+map => '{' keyvaluepair,* '}'
+keyvaluepair => test ':' test

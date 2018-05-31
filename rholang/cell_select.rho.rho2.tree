@@ -4,273 +4,297 @@ Parsing cell_select.rho.rho2 ...
 
 Tree:
 
-procs
+block
    COMMENT(#// cell_select.rho)
-   parallel*
-      parallel
+   process*
+      process
       |  COMMENT(#// rchain-architecture.readthedocs.io/en/latest/contracts/contract-design.html#rholang-a-concurrent-language)
-      parallel
-      parallel
-      parallel
-      |  proc
-      |     rreceive
-      |     |  receipt
-      |     |     channel
-      |     |     |  var
-      |     |     |     NAME(Cell)
-      |     |     varwild*
-      |     |     |  varwild
-      |     |     |     var
-      |     |     |     |  NAME(get)
-      |     |     |  varwild
-      |     |     |     var
-      |     |     |     |  NAME(set)
-      |     |     |  varwild
-      |     |     |     var
-      |     |     |     |  NAME(state)
+      process
+      process
+      process
+      |  contract
+      |     receipt
+      |     |  channel
+      |     |     atom
+      |     |     |  variable
+      |     |     |     identifier
+      |     |     |     |  NAME(Cell)
+      |     |  patternlist
+      |     |     pattern*
+      |     |     |  pattern
+      |     |     |     variable
+      |     |     |     |  identifier
+      |     |     |     |     NAME(get)
+      |     |     |  pattern
+      |     |     |     variable
+      |     |     |     |  identifier
+      |     |     |     |     NAME(set)
+      |     |     |  pattern
+      |     |     |     variable
+      |     |     |     |  identifier
+      |     |     |     |     NAME(state)
       |     |     remainder?
-      |     |  procs
-      |     |     parallel*
-      |     |     |  parallel
-      |     |     |     proc
+      |     body
+      |     |  NEWLINE+
+      |     |  block
+      |     |     process*
+      |     |     |  process
+      |     |     |     select
+      |     |     |     |  NEWLINE+
       |     |     |     |  branch*
       |     |     |     |     branch
       |     |     |     |     |  receipt*
       |     |     |     |     |     receipt
       |     |     |     |     |     |  channel
-      |     |     |     |     |     |     var
-      |     |     |     |     |     |     |  NAME(get)
-      |     |     |     |     |     |  varwild*
-      |     |     |     |     |     |     varwild
-      |     |     |     |     |     |     |  var
-      |     |     |     |     |     |     |     NAME(rtn)
-      |     |     |     |     |     |  remainder?
+      |     |     |     |     |     |     atom
+      |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |  NAME(get)
+      |     |     |     |     |     |  patternlist
+      |     |     |     |     |     |     pattern*
+      |     |     |     |     |     |     |  pattern
+      |     |     |     |     |     |     |     variable
+      |     |     |     |     |     |     |     |  identifier
+      |     |     |     |     |     |     |     |     NAME(rtn)
+      |     |     |     |     |     |     remainder?
       |     |     |     |     |     receipt
       |     |     |     |     |     |  channel
-      |     |     |     |     |     |     var
-      |     |     |     |     |     |     |  NAME(state)
-      |     |     |     |     |     |  varwild*
-      |     |     |     |     |     |     varwild
-      |     |     |     |     |     |     |  var
-      |     |     |     |     |     |     |     NAME(v)
-      |     |     |     |     |     |  remainder?
-      |     |     |     |     |  procs
-      |     |     |     |     |     parallel*
-      |     |     |     |     |     |  parallel
-      |     |     |     |     |     |     proc
+      |     |     |     |     |     |     atom
+      |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |  NAME(state)
+      |     |     |     |     |     |  patternlist
+      |     |     |     |     |     |     pattern*
+      |     |     |     |     |     |     |  pattern
+      |     |     |     |     |     |     |     variable
+      |     |     |     |     |     |     |     |  identifier
+      |     |     |     |     |     |     |     |     NAME(v)
+      |     |     |     |     |     |     remainder?
+      |     |     |     |     |  body
+      |     |     |     |     |     NEWLINE+
+      |     |     |     |     |     block
+      |     |     |     |     |     |  process*
+      |     |     |     |     |     |     process
       |     |     |     |     |     |     |  send
       |     |     |     |     |     |     |     channel
-      |     |     |     |     |     |     |     |  var
-      |     |     |     |     |     |     |     |     NAME(rtn)
-      |     |     |     |     |     |     |     proc*
-      |     |     |     |     |     |     |     |  proc
-      |     |     |     |     |     |     |     |     test
-      |     |     |     |     |     |     |     |     |  andtest
-      |     |     |     |     |     |     |     |     |     nottest
-      |     |     |     |     |     |     |     |     |     |  comparison
-      |     |     |     |     |     |     |     |     |     |     expr
-      |     |     |     |     |     |     |     |     |     |     |  term
-      |     |     |     |     |     |     |     |     |     |     |     factor
-      |     |     |     |     |     |     |     |     |     |     |     |  atom
-      |     |     |     |     |     |     |     |     |     |     |     |     variable
-      |     |     |     |     |     |     |     |     |     |     |     |     |  identifier
-      |     |     |     |     |     |     |     |     |     |     |     |     |     NAME(v)
-      |     |     |     |     |     |     |     |     |     |     |     multiplication*
-      |     |     |     |     |     |     |     |     |     |     |  addition*
-      |     |     |     |     |     |     |     |     |     |     compare?
-      |     |     |     |     |     |     |     |     |     conjunction*
-      |     |     |     |     |     |     |     |     |  disjunction*
-      |     |     |     |     |     |  parallel
-      |     |     |     |     |     |  parallel
-      |     |     |     |     |     |     proc
+      |     |     |     |     |     |     |     |  atom
+      |     |     |     |     |     |     |     |     variable
+      |     |     |     |     |     |     |     |     |  identifier
+      |     |     |     |     |     |     |     |     |     NAME(rtn)
+      |     |     |     |     |     |     |     test*
+      |     |     |     |     |     |     |     |  test
+      |     |     |     |     |     |     |     |     andtest
+      |     |     |     |     |     |     |     |     |  nottest
+      |     |     |     |     |     |     |     |     |     comparison
+      |     |     |     |     |     |     |     |     |     |  expr
+      |     |     |     |     |     |     |     |     |     |     term
+      |     |     |     |     |     |     |     |     |     |     |  factor
+      |     |     |     |     |     |     |     |     |     |     |     atom
+      |     |     |     |     |     |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |  NAME(v)
+      |     |     |     |     |     |     |     |     |     |     |  multiplication*
+      |     |     |     |     |     |     |     |     |     |     addition*
+      |     |     |     |     |     |     |     |     |     |  compare?
+      |     |     |     |     |     |     |     |     |  conjunction*
+      |     |     |     |     |     |     |     |     disjunction*
+      |     |     |     |     |     |     process
+      |     |     |     |     |     |     process
       |     |     |     |     |     |     |  send
       |     |     |     |     |     |     |     channel
-      |     |     |     |     |     |     |     |  var
-      |     |     |     |     |     |     |     |     NAME(state)
-      |     |     |     |     |     |     |     proc*
-      |     |     |     |     |     |     |     |  proc
-      |     |     |     |     |     |     |     |     test
-      |     |     |     |     |     |     |     |     |  andtest
-      |     |     |     |     |     |     |     |     |     nottest
-      |     |     |     |     |     |     |     |     |     |  comparison
-      |     |     |     |     |     |     |     |     |     |     expr
-      |     |     |     |     |     |     |     |     |     |     |  term
-      |     |     |     |     |     |     |     |     |     |     |     factor
-      |     |     |     |     |     |     |     |     |     |     |     |  atom
-      |     |     |     |     |     |     |     |     |     |     |     |     variable
-      |     |     |     |     |     |     |     |     |     |     |     |     |  identifier
-      |     |     |     |     |     |     |     |     |     |     |     |     |     NAME(v)
-      |     |     |     |     |     |     |     |     |     |     |     multiplication*
-      |     |     |     |     |     |     |     |     |     |     |  addition*
-      |     |     |     |     |     |     |     |     |     |     compare?
-      |     |     |     |     |     |     |     |     |     conjunction*
-      |     |     |     |     |     |     |     |     |  disjunction*
-      |     |     |     |     |     |  parallel
-      |     |     |     |     |     |  parallel
-      |     |     |     |     |     |     proc
+      |     |     |     |     |     |     |     |  atom
+      |     |     |     |     |     |     |     |     variable
+      |     |     |     |     |     |     |     |     |  identifier
+      |     |     |     |     |     |     |     |     |     NAME(state)
+      |     |     |     |     |     |     |     test*
+      |     |     |     |     |     |     |     |  test
+      |     |     |     |     |     |     |     |     andtest
+      |     |     |     |     |     |     |     |     |  nottest
+      |     |     |     |     |     |     |     |     |     comparison
+      |     |     |     |     |     |     |     |     |     |  expr
+      |     |     |     |     |     |     |     |     |     |     term
+      |     |     |     |     |     |     |     |     |     |     |  factor
+      |     |     |     |     |     |     |     |     |     |     |     atom
+      |     |     |     |     |     |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |  NAME(v)
+      |     |     |     |     |     |     |     |     |     |     |  multiplication*
+      |     |     |     |     |     |     |     |     |     |     addition*
+      |     |     |     |     |     |     |     |     |     |  compare?
+      |     |     |     |     |     |     |     |     |  conjunction*
+      |     |     |     |     |     |     |     |     disjunction*
+      |     |     |     |     |     |     process
+      |     |     |     |     |     |     process
       |     |     |     |     |     |     |  send
       |     |     |     |     |     |     |     channel
-      |     |     |     |     |     |     |     |  var
-      |     |     |     |     |     |     |     |     NAME(Cell)
-      |     |     |     |     |     |     |     proc*
-      |     |     |     |     |     |     |     |  proc
-      |     |     |     |     |     |     |     |     test
-      |     |     |     |     |     |     |     |     |  andtest
-      |     |     |     |     |     |     |     |     |     nottest
-      |     |     |     |     |     |     |     |     |     |  comparison
-      |     |     |     |     |     |     |     |     |     |     expr
-      |     |     |     |     |     |     |     |     |     |     |  term
-      |     |     |     |     |     |     |     |     |     |     |     factor
-      |     |     |     |     |     |     |     |     |     |     |     |  atom
-      |     |     |     |     |     |     |     |     |     |     |     |     variable
-      |     |     |     |     |     |     |     |     |     |     |     |     |  identifier
-      |     |     |     |     |     |     |     |     |     |     |     |     |     NAME(get)
-      |     |     |     |     |     |     |     |     |     |     |     multiplication*
-      |     |     |     |     |     |     |     |     |     |     |  addition*
-      |     |     |     |     |     |     |     |     |     |     compare?
-      |     |     |     |     |     |     |     |     |     conjunction*
-      |     |     |     |     |     |     |     |     |  disjunction*
-      |     |     |     |     |     |     |     |  proc
-      |     |     |     |     |     |     |     |     test
-      |     |     |     |     |     |     |     |     |  andtest
-      |     |     |     |     |     |     |     |     |     nottest
-      |     |     |     |     |     |     |     |     |     |  comparison
-      |     |     |     |     |     |     |     |     |     |     expr
-      |     |     |     |     |     |     |     |     |     |     |  term
-      |     |     |     |     |     |     |     |     |     |     |     factor
-      |     |     |     |     |     |     |     |     |     |     |     |  atom
-      |     |     |     |     |     |     |     |     |     |     |     |     variable
-      |     |     |     |     |     |     |     |     |     |     |     |     |  identifier
-      |     |     |     |     |     |     |     |     |     |     |     |     |     NAME(set)
-      |     |     |     |     |     |     |     |     |     |     |     multiplication*
-      |     |     |     |     |     |     |     |     |     |     |  addition*
-      |     |     |     |     |     |     |     |     |     |     compare?
-      |     |     |     |     |     |     |     |     |     conjunction*
-      |     |     |     |     |     |     |     |     |  disjunction*
-      |     |     |     |     |     |     |     |  proc
-      |     |     |     |     |     |     |     |     test
-      |     |     |     |     |     |     |     |     |  andtest
-      |     |     |     |     |     |     |     |     |     nottest
-      |     |     |     |     |     |     |     |     |     |  comparison
-      |     |     |     |     |     |     |     |     |     |     expr
-      |     |     |     |     |     |     |     |     |     |     |  term
-      |     |     |     |     |     |     |     |     |     |     |     factor
-      |     |     |     |     |     |     |     |     |     |     |     |  atom
-      |     |     |     |     |     |     |     |     |     |     |     |     variable
-      |     |     |     |     |     |     |     |     |     |     |     |     |  identifier
-      |     |     |     |     |     |     |     |     |     |     |     |     |     NAME(state)
-      |     |     |     |     |     |     |     |     |     |     |     multiplication*
-      |     |     |     |     |     |     |     |     |     |     |  addition*
-      |     |     |     |     |     |     |     |     |     |     compare?
-      |     |     |     |     |     |     |     |     |     conjunction*
-      |     |     |     |     |     |     |     |     |  disjunction*
-      |     |     |     |     |     |  parallel
+      |     |     |     |     |     |     |     |  atom
+      |     |     |     |     |     |     |     |     variable
+      |     |     |     |     |     |     |     |     |  identifier
+      |     |     |     |     |     |     |     |     |     NAME(Cell)
+      |     |     |     |     |     |     |     test*
+      |     |     |     |     |     |     |     |  test
+      |     |     |     |     |     |     |     |     andtest
+      |     |     |     |     |     |     |     |     |  nottest
+      |     |     |     |     |     |     |     |     |     comparison
+      |     |     |     |     |     |     |     |     |     |  expr
+      |     |     |     |     |     |     |     |     |     |     term
+      |     |     |     |     |     |     |     |     |     |     |  factor
+      |     |     |     |     |     |     |     |     |     |     |     atom
+      |     |     |     |     |     |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |  NAME(get)
+      |     |     |     |     |     |     |     |     |     |     |  multiplication*
+      |     |     |     |     |     |     |     |     |     |     addition*
+      |     |     |     |     |     |     |     |     |     |  compare?
+      |     |     |     |     |     |     |     |     |  conjunction*
+      |     |     |     |     |     |     |     |     disjunction*
+      |     |     |     |     |     |     |     |  test
+      |     |     |     |     |     |     |     |     andtest
+      |     |     |     |     |     |     |     |     |  nottest
+      |     |     |     |     |     |     |     |     |     comparison
+      |     |     |     |     |     |     |     |     |     |  expr
+      |     |     |     |     |     |     |     |     |     |     term
+      |     |     |     |     |     |     |     |     |     |     |  factor
+      |     |     |     |     |     |     |     |     |     |     |     atom
+      |     |     |     |     |     |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |  NAME(set)
+      |     |     |     |     |     |     |     |     |     |     |  multiplication*
+      |     |     |     |     |     |     |     |     |     |     addition*
+      |     |     |     |     |     |     |     |     |     |  compare?
+      |     |     |     |     |     |     |     |     |  conjunction*
+      |     |     |     |     |     |     |     |     disjunction*
+      |     |     |     |     |     |     |     |  test
+      |     |     |     |     |     |     |     |     andtest
+      |     |     |     |     |     |     |     |     |  nottest
+      |     |     |     |     |     |     |     |     |     comparison
+      |     |     |     |     |     |     |     |     |     |  expr
+      |     |     |     |     |     |     |     |     |     |     term
+      |     |     |     |     |     |     |     |     |     |     |  factor
+      |     |     |     |     |     |     |     |     |     |     |     atom
+      |     |     |     |     |     |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |  NAME(state)
+      |     |     |     |     |     |     |     |     |     |     |  multiplication*
+      |     |     |     |     |     |     |     |     |     |     addition*
+      |     |     |     |     |     |     |     |     |     |  compare?
+      |     |     |     |     |     |     |     |     |  conjunction*
+      |     |     |     |     |     |     |     |     disjunction*
+      |     |     |     |     |     |     process
       |     |     |     |     branch
       |     |     |     |     |  receipt*
       |     |     |     |     |     receipt
       |     |     |     |     |     |  channel
-      |     |     |     |     |     |     var
-      |     |     |     |     |     |     |  NAME(set)
-      |     |     |     |     |     |  varwild*
-      |     |     |     |     |     |     varwild
-      |     |     |     |     |     |     |  var
-      |     |     |     |     |     |     |     NAME(newValue)
-      |     |     |     |     |     |  remainder?
+      |     |     |     |     |     |     atom
+      |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |  NAME(set)
+      |     |     |     |     |     |  patternlist
+      |     |     |     |     |     |     pattern*
+      |     |     |     |     |     |     |  pattern
+      |     |     |     |     |     |     |     variable
+      |     |     |     |     |     |     |     |  identifier
+      |     |     |     |     |     |     |     |     NAME(newValue)
+      |     |     |     |     |     |     remainder?
       |     |     |     |     |     receipt
       |     |     |     |     |     |  channel
-      |     |     |     |     |     |     var
-      |     |     |     |     |     |     |  NAME(state)
-      |     |     |     |     |     |  varwild*
-      |     |     |     |     |     |     varwild
-      |     |     |     |     |     |     |  var
-      |     |     |     |     |     |     |     NAME(v)
-      |     |     |     |     |     |  remainder?
-      |     |     |     |     |  procs
-      |     |     |     |     |     parallel*
-      |     |     |     |     |     |  parallel
-      |     |     |     |     |     |     proc
+      |     |     |     |     |     |     atom
+      |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |  NAME(state)
+      |     |     |     |     |     |  patternlist
+      |     |     |     |     |     |     pattern*
+      |     |     |     |     |     |     |  pattern
+      |     |     |     |     |     |     |     variable
+      |     |     |     |     |     |     |     |  identifier
+      |     |     |     |     |     |     |     |     NAME(v)
+      |     |     |     |     |     |     remainder?
+      |     |     |     |     |  body
+      |     |     |     |     |     NEWLINE+
+      |     |     |     |     |     block
+      |     |     |     |     |     |  process*
+      |     |     |     |     |     |     process
       |     |     |     |     |     |     |  send
       |     |     |     |     |     |     |     channel
-      |     |     |     |     |     |     |     |  var
-      |     |     |     |     |     |     |     |     NAME(state)
-      |     |     |     |     |     |     |     proc*
-      |     |     |     |     |     |     |     |  proc
-      |     |     |     |     |     |     |     |     test
-      |     |     |     |     |     |     |     |     |  andtest
-      |     |     |     |     |     |     |     |     |     nottest
-      |     |     |     |     |     |     |     |     |     |  comparison
-      |     |     |     |     |     |     |     |     |     |     expr
-      |     |     |     |     |     |     |     |     |     |     |  term
-      |     |     |     |     |     |     |     |     |     |     |     factor
-      |     |     |     |     |     |     |     |     |     |     |     |  atom
-      |     |     |     |     |     |     |     |     |     |     |     |     variable
-      |     |     |     |     |     |     |     |     |     |     |     |     |  identifier
-      |     |     |     |     |     |     |     |     |     |     |     |     |     NAME(newValue)
-      |     |     |     |     |     |     |     |     |     |     |     multiplication*
-      |     |     |     |     |     |     |     |     |     |     |  addition*
-      |     |     |     |     |     |     |     |     |     |     compare?
-      |     |     |     |     |     |     |     |     |     conjunction*
-      |     |     |     |     |     |     |     |     |  disjunction*
-      |     |     |     |     |     |  parallel
-      |     |     |     |     |     |  parallel
-      |     |     |     |     |     |     proc
+      |     |     |     |     |     |     |     |  atom
+      |     |     |     |     |     |     |     |     variable
+      |     |     |     |     |     |     |     |     |  identifier
+      |     |     |     |     |     |     |     |     |     NAME(state)
+      |     |     |     |     |     |     |     test*
+      |     |     |     |     |     |     |     |  test
+      |     |     |     |     |     |     |     |     andtest
+      |     |     |     |     |     |     |     |     |  nottest
+      |     |     |     |     |     |     |     |     |     comparison
+      |     |     |     |     |     |     |     |     |     |  expr
+      |     |     |     |     |     |     |     |     |     |     term
+      |     |     |     |     |     |     |     |     |     |     |  factor
+      |     |     |     |     |     |     |     |     |     |     |     atom
+      |     |     |     |     |     |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |  NAME(newValue)
+      |     |     |     |     |     |     |     |     |     |     |  multiplication*
+      |     |     |     |     |     |     |     |     |     |     addition*
+      |     |     |     |     |     |     |     |     |     |  compare?
+      |     |     |     |     |     |     |     |     |  conjunction*
+      |     |     |     |     |     |     |     |     disjunction*
+      |     |     |     |     |     |     process
+      |     |     |     |     |     |     process
       |     |     |     |     |     |     |  send
       |     |     |     |     |     |     |     channel
-      |     |     |     |     |     |     |     |  var
-      |     |     |     |     |     |     |     |     NAME(Cell)
-      |     |     |     |     |     |     |     proc*
-      |     |     |     |     |     |     |     |  proc
-      |     |     |     |     |     |     |     |     test
-      |     |     |     |     |     |     |     |     |  andtest
-      |     |     |     |     |     |     |     |     |     nottest
-      |     |     |     |     |     |     |     |     |     |  comparison
-      |     |     |     |     |     |     |     |     |     |     expr
-      |     |     |     |     |     |     |     |     |     |     |  term
-      |     |     |     |     |     |     |     |     |     |     |     factor
-      |     |     |     |     |     |     |     |     |     |     |     |  atom
-      |     |     |     |     |     |     |     |     |     |     |     |     variable
-      |     |     |     |     |     |     |     |     |     |     |     |     |  identifier
-      |     |     |     |     |     |     |     |     |     |     |     |     |     NAME(get)
-      |     |     |     |     |     |     |     |     |     |     |     multiplication*
-      |     |     |     |     |     |     |     |     |     |     |  addition*
-      |     |     |     |     |     |     |     |     |     |     compare?
-      |     |     |     |     |     |     |     |     |     conjunction*
-      |     |     |     |     |     |     |     |     |  disjunction*
-      |     |     |     |     |     |     |     |  proc
-      |     |     |     |     |     |     |     |     test
-      |     |     |     |     |     |     |     |     |  andtest
-      |     |     |     |     |     |     |     |     |     nottest
-      |     |     |     |     |     |     |     |     |     |  comparison
-      |     |     |     |     |     |     |     |     |     |     expr
-      |     |     |     |     |     |     |     |     |     |     |  term
-      |     |     |     |     |     |     |     |     |     |     |     factor
-      |     |     |     |     |     |     |     |     |     |     |     |  atom
-      |     |     |     |     |     |     |     |     |     |     |     |     variable
-      |     |     |     |     |     |     |     |     |     |     |     |     |  identifier
-      |     |     |     |     |     |     |     |     |     |     |     |     |     NAME(set)
-      |     |     |     |     |     |     |     |     |     |     |     multiplication*
-      |     |     |     |     |     |     |     |     |     |     |  addition*
-      |     |     |     |     |     |     |     |     |     |     compare?
-      |     |     |     |     |     |     |     |     |     conjunction*
-      |     |     |     |     |     |     |     |     |  disjunction*
-      |     |     |     |     |     |     |     |  proc
-      |     |     |     |     |     |     |     |     test
-      |     |     |     |     |     |     |     |     |  andtest
-      |     |     |     |     |     |     |     |     |     nottest
-      |     |     |     |     |     |     |     |     |     |  comparison
-      |     |     |     |     |     |     |     |     |     |     expr
-      |     |     |     |     |     |     |     |     |     |     |  term
-      |     |     |     |     |     |     |     |     |     |     |     factor
-      |     |     |     |     |     |     |     |     |     |     |     |  atom
-      |     |     |     |     |     |     |     |     |     |     |     |     variable
-      |     |     |     |     |     |     |     |     |     |     |     |     |  identifier
-      |     |     |     |     |     |     |     |     |     |     |     |     |     NAME(state)
-      |     |     |     |     |     |     |     |     |     |     |     multiplication*
-      |     |     |     |     |     |     |     |     |     |     |  addition*
-      |     |     |     |     |     |     |     |     |     |     compare?
-      |     |     |     |     |     |     |     |     |     conjunction*
-      |     |     |     |     |     |     |     |     |  disjunction*
-      |     |     |     |     |     |  parallel
+      |     |     |     |     |     |     |     |  atom
+      |     |     |     |     |     |     |     |     variable
+      |     |     |     |     |     |     |     |     |  identifier
+      |     |     |     |     |     |     |     |     |     NAME(Cell)
+      |     |     |     |     |     |     |     test*
+      |     |     |     |     |     |     |     |  test
+      |     |     |     |     |     |     |     |     andtest
+      |     |     |     |     |     |     |     |     |  nottest
+      |     |     |     |     |     |     |     |     |     comparison
+      |     |     |     |     |     |     |     |     |     |  expr
+      |     |     |     |     |     |     |     |     |     |     term
+      |     |     |     |     |     |     |     |     |     |     |  factor
+      |     |     |     |     |     |     |     |     |     |     |     atom
+      |     |     |     |     |     |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |  NAME(get)
+      |     |     |     |     |     |     |     |     |     |     |  multiplication*
+      |     |     |     |     |     |     |     |     |     |     addition*
+      |     |     |     |     |     |     |     |     |     |  compare?
+      |     |     |     |     |     |     |     |     |  conjunction*
+      |     |     |     |     |     |     |     |     disjunction*
+      |     |     |     |     |     |     |     |  test
+      |     |     |     |     |     |     |     |     andtest
+      |     |     |     |     |     |     |     |     |  nottest
+      |     |     |     |     |     |     |     |     |     comparison
+      |     |     |     |     |     |     |     |     |     |  expr
+      |     |     |     |     |     |     |     |     |     |     term
+      |     |     |     |     |     |     |     |     |     |     |  factor
+      |     |     |     |     |     |     |     |     |     |     |     atom
+      |     |     |     |     |     |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |  NAME(set)
+      |     |     |     |     |     |     |     |     |     |     |  multiplication*
+      |     |     |     |     |     |     |     |     |     |     addition*
+      |     |     |     |     |     |     |     |     |     |  compare?
+      |     |     |     |     |     |     |     |     |  conjunction*
+      |     |     |     |     |     |     |     |     disjunction*
+      |     |     |     |     |     |     |     |  test
+      |     |     |     |     |     |     |     |     andtest
+      |     |     |     |     |     |     |     |     |  nottest
+      |     |     |     |     |     |     |     |     |     comparison
+      |     |     |     |     |     |     |     |     |     |  expr
+      |     |     |     |     |     |     |     |     |     |     term
+      |     |     |     |     |     |     |     |     |     |     |  factor
+      |     |     |     |     |     |     |     |     |     |     |     atom
+      |     |     |     |     |     |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |  NAME(state)
+      |     |     |     |     |     |     |     |     |     |     |  multiplication*
+      |     |     |     |     |     |     |     |     |     |     addition*
+      |     |     |     |     |     |     |     |     |     |  compare?
+      |     |     |     |     |     |     |     |     |  conjunction*
+      |     |     |     |     |     |     |     |     disjunction*
+      |     |     |     |     |     |     process
 
 
 **** Syntax test done ****

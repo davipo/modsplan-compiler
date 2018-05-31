@@ -18,23 +18,6 @@ FWDARROW => '=>'
 
 INTEGER => D+
 
-# Operators
-AND_OP => 'and'
-OR_OP => 'or'
-NOT_OP => 'not'
-
-RELATION => '=='
-RELATION => '!='
-RELATION => inequality '='?
-inequality => '<'
-inequality => '>'
-
-ADD_OP => '+'
-ADD_OP => '-'
-
-MUL_OP => '*'
-MUL_OP => '/'
-
 ELIPSIS => '...'
 # QUOTEPROC => '@'
 
@@ -47,15 +30,20 @@ KEYWORD => "rcv"
 KEYWORD => "contract"
 KEYWORD => "select"
 KEYWORD => "match"
-KEYWORD => "bundle"
+KEYWORD => "bundle"     ## ?
 KEYWORD => "if"
 KEYWORD => "new"
 KEYWORD => "case"
-KEYWORD => "$end"
+# KEYWORD => "$end"       ## remove when not used
 
 BOOL => "true"
 BOOL => "false"
 NIL => "Nil"
+
+# Additional operators (common ones in expr.tokens)
+AND_OP => 'and'
+OR_OP => 'or'
+NOT_OP => 'not'
 
 NAME => letter alphanum*
 

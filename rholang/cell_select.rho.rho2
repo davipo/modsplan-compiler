@@ -1,12 +1,12 @@
 #// cell_select.rho
 #// rchain-architecture.readthedocs.io/en/latest/contracts/contract-design.html#rholang-a-concurrent-language
- 
+
 contract Cell.rcv(get, set, state):
     select:
         case get.rcv(rtn), state.rcv(v):
             rtn.send(v)
             state.send(v)
-            Cell.$end(get, set, state)
+            Cell.send(get, set, state)
         case set.rcv(newValue), state.rcv(v):
             state.send(newValue)
-            Cell.$end(get, set, state)
+            Cell.send(get, set, state)

@@ -1,0 +1,904 @@
+
+Parsing tut-make-cell.rho.rho2 ... 
+
+
+Tree:
+
+block
+   process*
+      process
+      |  newblock
+      |     variable*
+      |     |  variable
+      |     |     identifier
+      |     |     |  NAME(updateTestResult)
+      |     body
+      |     |  NEWLINE+
+      |     |  block
+      |     |     process*
+      |     |     |  process
+      |     |     |     send
+      |     |     |     |  channel
+      |     |     |     |     atom
+      |     |     |     |     |  constant
+      |     |     |     |     |     STRING("testResult")
+      |     |     |     |  test*
+      |     |     |     |     test
+      |     |     |     |     |  andtest
+      |     |     |     |     |     nottest
+      |     |     |     |     |     |  comparison
+      |     |     |     |     |     |     expr
+      |     |     |     |     |     |     |  term
+      |     |     |     |     |     |     |     factor
+      |     |     |     |     |     |     |     |  atom
+      |     |     |     |     |     |     |     |     constant
+      |     |     |     |     |     |     |     |     |  BOOL(true)
+      |     |     |     |     |     |     |     multiplication*
+      |     |     |     |     |     |     |  addition*
+      |     |     |     |     |     |     compare?
+      |     |     |     |     |     conjunction*
+      |     |     |     |     |  disjunction*
+      |     |     |  process
+      |     |     |  process
+      |     |     |  process
+      |     |     |     contract
+      |     |     |     |  receipt
+      |     |     |     |     channel
+      |     |     |     |     |  atom
+      |     |     |     |     |     variable
+      |     |     |     |     |     |  identifier
+      |     |     |     |     |     |     NAME(updateTestResult)
+      |     |     |     |     patternlist
+      |     |     |     |     |  pattern*
+      |     |     |     |     |     pattern
+      |     |     |     |     |     |  variable
+      |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |  NAME(bool)
+      |     |     |     |     |     pattern
+      |     |     |     |     |     |  variable
+      |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |  NAME(return)
+      |     |     |     |     |  remainder?
+      |     |     |     |  body
+      |     |     |     |     NEWLINE+
+      |     |     |     |     block
+      |     |     |     |     |  process*
+      |     |     |     |     |     process
+      |     |     |     |     |     |  when
+      |     |     |     |     |     |     receipt+
+      |     |     |     |     |     |     |  receipt
+      |     |     |     |     |     |     |     channel
+      |     |     |     |     |     |     |     |  atom
+      |     |     |     |     |     |     |     |     constant
+      |     |     |     |     |     |     |     |     |  STRING("testResult")
+      |     |     |     |     |     |     |     patternlist
+      |     |     |     |     |     |     |     |  pattern*
+      |     |     |     |     |     |     |     |     pattern
+      |     |     |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |     |     |  NAME(r)
+      |     |     |     |     |     |     |     |  remainder?
+      |     |     |     |     |     |     rcvcondition?
+      |     |     |     |     |     |     body
+      |     |     |     |     |     |     |  NEWLINE+
+      |     |     |     |     |     |     |  block
+      |     |     |     |     |     |     |     process*
+      |     |     |     |     |     |     |     |  process
+      |     |     |     |     |     |     |     |     match
+      |     |     |     |     |     |     |     |     |  test
+      |     |     |     |     |     |     |     |     |     andtest
+      |     |     |     |     |     |     |     |     |     |  nottest
+      |     |     |     |     |     |     |     |     |     |     comparison
+      |     |     |     |     |     |     |     |     |     |     |  expr
+      |     |     |     |     |     |     |     |     |     |     |     term
+      |     |     |     |     |     |     |     |     |     |     |     |  factor
+      |     |     |     |     |     |     |     |     |     |     |     |     atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |  list
+      |     |     |     |     |     |     |     |     |     |     |     |     |     test*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |  test
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     andtest
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  nottest
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     comparison
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  expr
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     term
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  factor
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  NAME(r)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  multiplication*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     addition*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  compare?
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  conjunction*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     disjunction*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |  test
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     andtest
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  nottest
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     comparison
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  expr
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     term
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  factor
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  NAME(bool)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  multiplication*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     addition*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  compare?
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  conjunction*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     disjunction*
+      |     |     |     |     |     |     |     |     |     |     |     |  multiplication*
+      |     |     |     |     |     |     |     |     |     |     |     addition*
+      |     |     |     |     |     |     |     |     |     |     |  compare?
+      |     |     |     |     |     |     |     |     |     |  conjunction*
+      |     |     |     |     |     |     |     |     |     disjunction*
+      |     |     |     |     |     |     |     |     |  NEWLINE+
+      |     |     |     |     |     |     |     |     |  matchcase+
+      |     |     |     |     |     |     |     |     |     matchcase
+      |     |     |     |     |     |     |     |     |     |  pattern
+      |     |     |     |     |     |     |     |     |     |     patternlist
+      |     |     |     |     |     |     |     |     |     |     |  pattern*
+      |     |     |     |     |     |     |     |     |     |     |     pattern
+      |     |     |     |     |     |     |     |     |     |     |     |  constant
+      |     |     |     |     |     |     |     |     |     |     |     |     BOOL(true)
+      |     |     |     |     |     |     |     |     |     |     |     pattern
+      |     |     |     |     |     |     |     |     |     |     |     |  constant
+      |     |     |     |     |     |     |     |     |     |     |     |     BOOL(true)
+      |     |     |     |     |     |     |     |     |     |     |  remainder?
+      |     |     |     |     |     |     |     |     |     |  NEWLINE+
+      |     |     |     |     |     |     |     |     |     |  block
+      |     |     |     |     |     |     |     |     |     |     process*
+      |     |     |     |     |     |     |     |     |     |     |  process
+      |     |     |     |     |     |     |     |     |     |     |     send
+      |     |     |     |     |     |     |     |     |     |     |     |  channel
+      |     |     |     |     |     |     |     |     |     |     |     |     atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |  constant
+      |     |     |     |     |     |     |     |     |     |     |     |     |     STRING("testResult")
+      |     |     |     |     |     |     |     |     |     |     |     |  test*
+      |     |     |     |     |     |     |     |     |     |     |     |     test
+      |     |     |     |     |     |     |     |     |     |     |     |     |  andtest
+      |     |     |     |     |     |     |     |     |     |     |     |     |     nottest
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |  comparison
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     expr
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  term
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     factor
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     constant
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  BOOL(true)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     multiplication*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  addition*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     compare?
+      |     |     |     |     |     |     |     |     |     |     |     |     |     conjunction*
+      |     |     |     |     |     |     |     |     |     |     |     |     |  disjunction*
+      |     |     |     |     |     |     |     |     |     |     |  process
+      |     |     |     |     |     |     |     |     |     |     |  process
+      |     |     |     |     |     |     |     |     |     |     |     send
+      |     |     |     |     |     |     |     |     |     |     |     |  channel
+      |     |     |     |     |     |     |     |     |     |     |     |     atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |  NAME(return)
+      |     |     |     |     |     |     |     |     |     |     |     |  test*
+      |     |     |     |     |     |     |     |     |     |     |     |     test
+      |     |     |     |     |     |     |     |     |     |     |     |     |  andtest
+      |     |     |     |     |     |     |     |     |     |     |     |     |     nottest
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |  comparison
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     expr
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  term
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     factor
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     constant
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  BOOL(true)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     multiplication*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  addition*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     compare?
+      |     |     |     |     |     |     |     |     |     |     |     |     |     conjunction*
+      |     |     |     |     |     |     |     |     |     |     |     |     |  disjunction*
+      |     |     |     |     |     |     |     |     |     |     |  process
+      |     |     |     |     |     |     |     |     |     matchcase
+      |     |     |     |     |     |     |     |     |     |  pattern
+      |     |     |     |     |     |     |     |     |     |     WILDCARD(_)
+      |     |     |     |     |     |     |     |     |     |  NEWLINE+
+      |     |     |     |     |     |     |     |     |     |  block
+      |     |     |     |     |     |     |     |     |     |     process*
+      |     |     |     |     |     |     |     |     |     |     |  process
+      |     |     |     |     |     |     |     |     |     |     |     send
+      |     |     |     |     |     |     |     |     |     |     |     |  channel
+      |     |     |     |     |     |     |     |     |     |     |     |     atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |  constant
+      |     |     |     |     |     |     |     |     |     |     |     |     |     STRING("testResult")
+      |     |     |     |     |     |     |     |     |     |     |     |  test*
+      |     |     |     |     |     |     |     |     |     |     |     |     test
+      |     |     |     |     |     |     |     |     |     |     |     |     |  andtest
+      |     |     |     |     |     |     |     |     |     |     |     |     |     nottest
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |  comparison
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     expr
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  term
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     factor
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     constant
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  BOOL(false)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     multiplication*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  addition*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     compare?
+      |     |     |     |     |     |     |     |     |     |     |     |     |     conjunction*
+      |     |     |     |     |     |     |     |     |     |     |     |     |  disjunction*
+      |     |     |     |     |     |     |     |     |     |     |  process
+      |     |     |     |     |     |     |     |     |     |     |  process
+      |     |     |     |     |     |     |     |     |     |     |     send
+      |     |     |     |     |     |     |     |     |     |     |     |  channel
+      |     |     |     |     |     |     |     |     |     |     |     |     atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |  NAME(return)
+      |     |     |     |     |     |     |     |     |     |     |     |  test*
+      |     |     |     |     |     |     |     |     |     |     |     |     test
+      |     |     |     |     |     |     |     |     |     |     |     |     |  andtest
+      |     |     |     |     |     |     |     |     |     |     |     |     |     nottest
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |  comparison
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     expr
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  term
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     factor
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     constant
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  BOOL(false)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     multiplication*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  addition*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     compare?
+      |     |     |     |     |     |     |     |     |     |     |     |     |     conjunction*
+      |     |     |     |     |     |     |     |     |     |     |     |     |  disjunction*
+      |     |     |     |     |     |     |     |     |     |     |  process
+      |     |     |     |     |     |     |     |     |     |     |  process
+      |     |     |  process
+      |     |     |     contract
+      |     |     |     |  receipt
+      |     |     |     |     channel
+      |     |     |     |     |  atom
+      |     |     |     |     |     constant
+      |     |     |     |     |     |  STRING("CellDemo")
+      |     |     |     |     patternlist
+      |     |     |     |     |  pattern*
+      |     |     |     |     |     pattern
+      |     |     |     |     |     |  WILDCARD(_)
+      |     |     |     |     |  remainder?
+      |     |     |     |  body
+      |     |     |     |     NEWLINE+
+      |     |     |     |     block
+      |     |     |     |     |  process*
+      |     |     |     |     |     process
+      |     |     |     |     |     |  newblock
+      |     |     |     |     |     |     variable*
+      |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |  NAME(MakeCell)
+      |     |     |     |     |     |     body
+      |     |     |     |     |     |     |  NEWLINE+
+      |     |     |     |     |     |     |  block
+      |     |     |     |     |     |     |     process*
+      |     |     |     |     |     |     |     |  process
+      |     |     |     |     |     |     |     |     contract
+      |     |     |     |     |     |     |     |     |  receipt
+      |     |     |     |     |     |     |     |     |     channel
+      |     |     |     |     |     |     |     |     |     |  atom
+      |     |     |     |     |     |     |     |     |     |     variable
+      |     |     |     |     |     |     |     |     |     |     |  identifier
+      |     |     |     |     |     |     |     |     |     |     |     NAME(MakeCell)
+      |     |     |     |     |     |     |     |     |     patternlist
+      |     |     |     |     |     |     |     |     |     |  pattern*
+      |     |     |     |     |     |     |     |     |     |     pattern
+      |     |     |     |     |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |     |     |     |     |  NAME(init)
+      |     |     |     |     |     |     |     |     |     |     pattern
+      |     |     |     |     |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |     |     |     |     |  NAME(get)
+      |     |     |     |     |     |     |     |     |     |     pattern
+      |     |     |     |     |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |     |     |     |     |  NAME(set)
+      |     |     |     |     |     |     |     |     |     |  remainder?
+      |     |     |     |     |     |     |     |     |  body
+      |     |     |     |     |     |     |     |     |     NEWLINE+
+      |     |     |     |     |     |     |     |     |     block
+      |     |     |     |     |     |     |     |     |     |  process*
+      |     |     |     |     |     |     |     |     |     |     process
+      |     |     |     |     |     |     |     |     |     |     |  newblock
+      |     |     |     |     |     |     |     |     |     |     |     variable*
+      |     |     |     |     |     |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |  NAME(valueStore)
+      |     |     |     |     |     |     |     |     |     |     |     body
+      |     |     |     |     |     |     |     |     |     |     |     |  NEWLINE+
+      |     |     |     |     |     |     |     |     |     |     |     |  block
+      |     |     |     |     |     |     |     |     |     |     |     |     process*
+      |     |     |     |     |     |     |     |     |     |     |     |     |  process
+      |     |     |     |     |     |     |     |     |     |     |     |     |     send
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |  channel
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  NAME(valueStore)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |  test*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     test
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  andtest
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     nottest
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  comparison
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     expr
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  term
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     factor
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     variable
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     NAME(init)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     multiplication*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  addition*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     compare?
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     conjunction*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  disjunction*
+      |     |     |     |     |     |     |     |     |     |     |     |     |  process
+      |     |     |     |     |     |     |     |     |     |     |     |     |  process
+      |     |     |     |     |     |     |     |     |     |     |     |     |  process
+      |     |     |     |     |     |     |     |     |     |     |     |     |     contract
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |  receipt
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     channel
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     variable
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     NAME(get)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     patternlist
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  pattern*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     pattern
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  NAME(ack)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  remainder?
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |  body
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     NEWLINE+
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     block
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  process*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     process
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  when
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     receipt+
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  receipt
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     channel
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     variable
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     NAME(valueStore)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     patternlist
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  pattern*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     pattern
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  NAME(value)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  remainder?
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     rcvcondition?
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     body
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  NEWLINE+
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  block
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     process*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  process
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     send
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  channel
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  NAME(valueStore)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  test*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     test
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  andtest
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     nottest
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  comparison
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     expr
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  term
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     factor
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     variable
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     NAME(value)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     multiplication*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  addition*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     compare?
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     conjunction*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  disjunction*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  process
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  process
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     send
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  channel
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  NAME(ack)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  test*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     test
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  andtest
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     nottest
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  comparison
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     expr
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  term
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     factor
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     variable
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     NAME(value)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     multiplication*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  addition*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     compare?
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     conjunction*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  disjunction*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  process
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  process
+      |     |     |     |     |     |     |     |     |     |     |     |     |  process
+      |     |     |     |     |     |     |     |     |     |     |     |     |     contract
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |  receipt
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     channel
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     variable
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     NAME(set)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     patternlist
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  pattern*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     pattern
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  NAME(newValue)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     pattern
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  NAME(ack)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  remainder?
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |  body
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     NEWLINE+
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     block
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  process*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     process
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  when
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     receipt+
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  receipt
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     channel
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     variable
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     NAME(valueStore)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     patternlist
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  pattern*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     pattern
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  WILDCARD(_)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  remainder?
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     rcvcondition?
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     body
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  NEWLINE+
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  block
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     process*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  process
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     send
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  channel
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  NAME(valueStore)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  test*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     test
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  andtest
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     nottest
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  comparison
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     expr
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  term
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     factor
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     variable
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     NAME(newValue)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     multiplication*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  addition*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     compare?
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     conjunction*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  disjunction*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  process
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  process
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     send
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  channel
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  NAME(ack)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  test*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     test
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  andtest
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     nottest
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  comparison
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     expr
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  term
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     factor
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     constant
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  BOOL(true)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     multiplication*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  addition*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     compare?
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     conjunction*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  disjunction*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  process
+      |     |     |     |     |     |     |     |  process
+      |     |     |     |     |     |     |     |     newblock
+      |     |     |     |     |     |     |     |     |  variable*
+      |     |     |     |     |     |     |     |     |     variable
+      |     |     |     |     |     |     |     |     |     |  identifier
+      |     |     |     |     |     |     |     |     |     |     NAME(myGet)
+      |     |     |     |     |     |     |     |     |     variable
+      |     |     |     |     |     |     |     |     |     |  identifier
+      |     |     |     |     |     |     |     |     |     |     NAME(mySet)
+      |     |     |     |     |     |     |     |     |  body
+      |     |     |     |     |     |     |     |     |     NEWLINE+
+      |     |     |     |     |     |     |     |     |     block
+      |     |     |     |     |     |     |     |     |     |  process*
+      |     |     |     |     |     |     |     |     |     |     process
+      |     |     |     |     |     |     |     |     |     |     |  send
+      |     |     |     |     |     |     |     |     |     |     |     channel
+      |     |     |     |     |     |     |     |     |     |     |     |  atom
+      |     |     |     |     |     |     |     |     |     |     |     |     variable
+      |     |     |     |     |     |     |     |     |     |     |     |     |  identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |     NAME(MakeCell)
+      |     |     |     |     |     |     |     |     |     |     |     test*
+      |     |     |     |     |     |     |     |     |     |     |     |  test
+      |     |     |     |     |     |     |     |     |     |     |     |     andtest
+      |     |     |     |     |     |     |     |     |     |     |     |     |  nottest
+      |     |     |     |     |     |     |     |     |     |     |     |     |     comparison
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |  expr
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     term
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  factor
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  constant
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     number
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  INTEGER(123)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  multiplication*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     addition*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |  compare?
+      |     |     |     |     |     |     |     |     |     |     |     |     |  conjunction*
+      |     |     |     |     |     |     |     |     |     |     |     |     disjunction*
+      |     |     |     |     |     |     |     |     |     |     |     |  test
+      |     |     |     |     |     |     |     |     |     |     |     |     andtest
+      |     |     |     |     |     |     |     |     |     |     |     |     |  nottest
+      |     |     |     |     |     |     |     |     |     |     |     |     |     comparison
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |  expr
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     term
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  factor
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  NAME(myGet)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  multiplication*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     addition*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |  compare?
+      |     |     |     |     |     |     |     |     |     |     |     |     |  conjunction*
+      |     |     |     |     |     |     |     |     |     |     |     |     disjunction*
+      |     |     |     |     |     |     |     |     |     |     |     |  test
+      |     |     |     |     |     |     |     |     |     |     |     |     andtest
+      |     |     |     |     |     |     |     |     |     |     |     |     |  nottest
+      |     |     |     |     |     |     |     |     |     |     |     |     |     comparison
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |  expr
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     term
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  factor
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  NAME(mySet)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  multiplication*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     addition*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |  compare?
+      |     |     |     |     |     |     |     |     |     |     |     |     |  conjunction*
+      |     |     |     |     |     |     |     |     |     |     |     |     disjunction*
+      |     |     |     |     |     |     |     |     |     |     process
+      |     |     |     |     |     |     |     |     |     |     process
+      |     |     |     |     |     |     |     |     |     |     |  newblock
+      |     |     |     |     |     |     |     |     |     |     |     variable*
+      |     |     |     |     |     |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |  NAME(ack)
+      |     |     |     |     |     |     |     |     |     |     |     body
+      |     |     |     |     |     |     |     |     |     |     |     |  NEWLINE+
+      |     |     |     |     |     |     |     |     |     |     |     |  block
+      |     |     |     |     |     |     |     |     |     |     |     |     process*
+      |     |     |     |     |     |     |     |     |     |     |     |     |  process
+      |     |     |     |     |     |     |     |     |     |     |     |     |     send
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |  channel
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  NAME(myGet)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |  test*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     test
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  andtest
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     nottest
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  comparison
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     expr
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  term
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     factor
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     variable
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     NAME(ack)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     multiplication*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  addition*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     compare?
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     conjunction*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  disjunction*
+      |     |     |     |     |     |     |     |     |     |     |     |     |  process
+      |     |     |     |     |     |     |     |     |     |     |     |     |  process
+      |     |     |     |     |     |     |     |     |     |     |     |     |     when
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |  receipt+
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     receipt
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  channel
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  NAME(ack)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  patternlist
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     pattern*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  pattern
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     variable
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     NAME(result)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     remainder?
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |  rcvcondition?
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |  body
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     NEWLINE+
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     block
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  process*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     process
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  send
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     channel
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     variable
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     NAME(updateTestResult)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     test*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  test
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     andtest
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  nottest
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     comparison
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  expr
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     term
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  factor
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  NAME(result)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  multiplication*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     addition*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  compare?
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     compare
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  RELATION(==)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  expr
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     term
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  factor
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  constant
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     number
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  INTEGER(123)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  multiplication*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     addition*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  conjunction*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     disjunction*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  test
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     andtest
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  nottest
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     comparison
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  expr
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     term
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  factor
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  NAME(ack)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  multiplication*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     addition*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  compare?
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  conjunction*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     disjunction*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     process
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     process
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  when
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     receipt+
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  receipt
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     channel
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     variable
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     NAME(ack)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     patternlist
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  pattern*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     pattern
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  WILDCARD(_)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  remainder?
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     rcvcondition?
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     body
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  NEWLINE+
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  block
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     process*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  process
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     send
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  channel
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  NAME(mySet)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  test*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     test
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  andtest
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     nottest
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  comparison
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     expr
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  term
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     factor
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     constant
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  number
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     INTEGER(456)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     multiplication*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  addition*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     compare?
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     conjunction*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  disjunction*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     test
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  andtest
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     nottest
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  comparison
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     expr
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  term
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     factor
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     variable
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     NAME(ack)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     multiplication*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  addition*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     compare?
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     conjunction*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  disjunction*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  process
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  process
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     when
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  receipt+
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     receipt
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  channel
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  NAME(ack)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  patternlist
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     pattern*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  pattern
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     WILDCARD(_)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     remainder?
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  rcvcondition?
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  body
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     NEWLINE+
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     block
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  process*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     process
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  send
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     channel
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     variable
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     NAME(myGet)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     test*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  test
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     andtest
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  nottest
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     comparison
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  expr
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     term
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  factor
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  NAME(ack)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  multiplication*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     addition*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  compare?
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  conjunction*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     disjunction*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     process
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     process
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  when
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     receipt+
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  receipt
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     channel
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     variable
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     NAME(ack)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     patternlist
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  pattern*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     pattern
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  NAME(result)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  remainder?
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     rcvcondition?
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     body
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  NEWLINE+
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  block
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     process*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  process
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     send
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  channel
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  NAME(updateTestResult)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  test*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     test
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  andtest
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     nottest
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  comparison
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     expr
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  term
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     factor
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     variable
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     NAME(result)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     multiplication*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  addition*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     compare?
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  compare
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     RELATION(==)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     expr
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  term
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     factor
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     constant
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  number
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     INTEGER(456)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     multiplication*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  addition*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     conjunction*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  disjunction*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     test
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  andtest
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     nottest
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  comparison
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     expr
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  term
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     factor
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     variable
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     NAME(ack)
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     multiplication*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  addition*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     compare?
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     conjunction*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  disjunction*
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  process
+      |     |     |  process
+      |     |     |     send
+      |     |     |     |  channel
+      |     |     |     |     atom
+      |     |     |     |     |  constant
+      |     |     |     |     |     STRING("CellDemo")
+      |     |     |     |  test*
+      |     |     |     |     test
+      |     |     |     |     |  andtest
+      |     |     |     |     |     nottest
+      |     |     |     |     |     |  comparison
+      |     |     |     |     |     |     expr
+      |     |     |     |     |     |     |  term
+      |     |     |     |     |     |     |     factor
+      |     |     |     |     |     |     |     |  atom
+      |     |     |     |     |     |     |     |     constant
+      |     |     |     |     |     |     |     |     |  NIL(Nil)
+      |     |     |     |     |     |     |     multiplication*
+      |     |     |     |     |     |     |  addition*
+      |     |     |     |     |     |     compare?
+      |     |     |     |     |     conjunction*
+      |     |     |     |     |  disjunction*
+      |     |     |  process
+
+
+**** Syntax test done ****
+

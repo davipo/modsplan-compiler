@@ -14,22 +14,11 @@ FWDARROW => '=>'
 
 INTEGER => D+
 
-# Operators
+# Additional operators (common ones in expr.tokens)
 AND_OP => 'and'
 OR_OP => 'or'
 NOT_OP => 'not'
 
-RELATION => '=='
-RELATION => '!='
-RELATION => inequality '='?
-inequality => '<'
-inequality => '>'
-
-ADD_OP => '+'
-ADD_OP => '-'
-
-MUL_OP => '*'
-MUL_OP => '/'
 
 SEND => '!'
 SENDMULTIPLE => '!!'

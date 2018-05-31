@@ -4,90 +4,105 @@ Parsing hello_world_again.rho.rho2 ...
 
 Tree:
 
-procs
+block
    COMMENT(#// A simple HelloWorld contract demonstrating a contract being rerun)
-   parallel*
-      parallel
-      parallel
-      |  proc
-      |     var*
-      |     |  var
-      |     |     NAME(helloworld)
-      |     NEWLINE+
-      |     procs
-      |     |  parallel*
-      |     |     parallel
-      |     |     |  proc
-      |     |     |     rreceive
+   process*
+      process
+      process
+      |  newblock
+      |     variable*
+      |     |  variable
+      |     |     identifier
+      |     |     |  NAME(helloworld)
+      |     body
+      |     |  NEWLINE+
+      |     |  block
+      |     |     process*
+      |     |     |  process
+      |     |     |     contract
       |     |     |     |  receipt
       |     |     |     |     channel
-      |     |     |     |     |  var
-      |     |     |     |     |     NAME(helloworld)
-      |     |     |     |     varwild*
-      |     |     |     |     |  varwild
-      |     |     |     |     |     var
-      |     |     |     |     |     |  NAME(world)
-      |     |     |     |     remainder?
-      |     |     |     |  procs
-      |     |     |     |     parallel*
-      |     |     |     |     |  parallel
-      |     |     |     |     |     proc
-      |     |     |     |     |     |  receive
-      |     |     |     |     |     |     receipt*
+      |     |     |     |     |  atom
+      |     |     |     |     |     variable
+      |     |     |     |     |     |  identifier
+      |     |     |     |     |     |     NAME(helloworld)
+      |     |     |     |     patternlist
+      |     |     |     |     |  pattern*
+      |     |     |     |     |     pattern
+      |     |     |     |     |     |  variable
+      |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |  NAME(world)
+      |     |     |     |     |  remainder?
+      |     |     |     |  body
+      |     |     |     |     NEWLINE+
+      |     |     |     |     block
+      |     |     |     |     |  process*
+      |     |     |     |     |     process
+      |     |     |     |     |     |  when
+      |     |     |     |     |     |     receipt+
       |     |     |     |     |     |     |  receipt
       |     |     |     |     |     |     |     channel
-      |     |     |     |     |     |     |     |  var
-      |     |     |     |     |     |     |     |     NAME(world)
-      |     |     |     |     |     |     |     varwild*
-      |     |     |     |     |     |     |     |  varwild
-      |     |     |     |     |     |     |     |     var
-      |     |     |     |     |     |     |     |     |  NAME(msg)
-      |     |     |     |     |     |     |     remainder?
+      |     |     |     |     |     |     |     |  atom
+      |     |     |     |     |     |     |     |     variable
+      |     |     |     |     |     |     |     |     |  identifier
+      |     |     |     |     |     |     |     |     |     NAME(world)
+      |     |     |     |     |     |     |     patternlist
+      |     |     |     |     |     |     |     |  pattern*
+      |     |     |     |     |     |     |     |     pattern
+      |     |     |     |     |     |     |     |     |  variable
+      |     |     |     |     |     |     |     |     |     identifier
+      |     |     |     |     |     |     |     |     |     |  NAME(msg)
+      |     |     |     |     |     |     |     |  remainder?
       |     |     |     |     |     |     rcvcondition?
-      |     |     |     |     |     |     procs
-      |     |     |     |     |     |     |  parallel*
-      |     |     |     |     |     |     |     parallel
-      |     |     |     |     |     |     |     |  proc
+      |     |     |     |     |     |     body
+      |     |     |     |     |     |     |  NEWLINE+
+      |     |     |     |     |     |     |  block
+      |     |     |     |     |     |     |     process*
+      |     |     |     |     |     |     |     |  process
       |     |     |     |     |     |     |     |     send
       |     |     |     |     |     |     |     |     |  channel
-      |     |     |     |     |     |     |     |     |     STRING("stdout")
-      |     |     |     |     |     |     |     |     |  proc*
-      |     |     |     |     |     |     |     |     |     proc
-      |     |     |     |     |     |     |     |     |     |  test
-      |     |     |     |     |     |     |     |     |     |     andtest
-      |     |     |     |     |     |     |     |     |     |     |  nottest
-      |     |     |     |     |     |     |     |     |     |     |     comparison
-      |     |     |     |     |     |     |     |     |     |     |     |  expr
-      |     |     |     |     |     |     |     |     |     |     |     |     term
-      |     |     |     |     |     |     |     |     |     |     |     |     |  factor
-      |     |     |     |     |     |     |     |     |     |     |     |     |     atom
-      |     |     |     |     |     |     |     |     |     |     |     |     |     |  variable
-      |     |     |     |     |     |     |     |     |     |     |     |     |     |     identifier
-      |     |     |     |     |     |     |     |     |     |     |     |     |     |     |  NAME(msg)
-      |     |     |     |     |     |     |     |     |     |     |     |     |  multiplication*
-      |     |     |     |     |     |     |     |     |     |     |     |     addition*
-      |     |     |     |     |     |     |     |     |     |     |     |  compare?
-      |     |     |     |     |     |     |     |     |     |     |  conjunction*
-      |     |     |     |     |     |     |     |     |     |     disjunction*
-      |     |     |     |     |     |     |     parallel
-      |     |     parallel
-      |     |     |  proc
-      |     |     |     var*
-      |     |     |     |  var
-      |     |     |     |     NAME(world)
-      |     |     |     |  var
-      |     |     |     |     NAME(world2)
-      |     |     |     NEWLINE+
-      |     |     |     procs
-      |     |     |     |  parallel*
-      |     |     |     |     parallel
-      |     |     |     |     |  proc
-      |     |     |     |     |     send
-      |     |     |     |     |     |  channel
-      |     |     |     |     |     |     var
-      |     |     |     |     |     |     |  NAME(helloworld)
-      |     |     |     |     |     |  proc*
-      |     |     |     |     |     |     proc
+      |     |     |     |     |     |     |     |     |     atom
+      |     |     |     |     |     |     |     |     |     |  constant
+      |     |     |     |     |     |     |     |     |     |     STRING("stdout")
+      |     |     |     |     |     |     |     |     |  test*
+      |     |     |     |     |     |     |     |     |     test
+      |     |     |     |     |     |     |     |     |     |  andtest
+      |     |     |     |     |     |     |     |     |     |     nottest
+      |     |     |     |     |     |     |     |     |     |     |  comparison
+      |     |     |     |     |     |     |     |     |     |     |     expr
+      |     |     |     |     |     |     |     |     |     |     |     |  term
+      |     |     |     |     |     |     |     |     |     |     |     |     factor
+      |     |     |     |     |     |     |     |     |     |     |     |     |  atom
+      |     |     |     |     |     |     |     |     |     |     |     |     |     variable
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |  identifier
+      |     |     |     |     |     |     |     |     |     |     |     |     |     |     NAME(msg)
+      |     |     |     |     |     |     |     |     |     |     |     |     multiplication*
+      |     |     |     |     |     |     |     |     |     |     |     |  addition*
+      |     |     |     |     |     |     |     |     |     |     |     compare?
+      |     |     |     |     |     |     |     |     |     |     conjunction*
+      |     |     |     |     |     |     |     |     |     |  disjunction*
+      |     |     |     |     |     |     |     |  process
+      |     |     |  process
+      |     |     |     newblock
+      |     |     |     |  variable*
+      |     |     |     |     variable
+      |     |     |     |     |  identifier
+      |     |     |     |     |     NAME(world)
+      |     |     |     |     variable
+      |     |     |     |     |  identifier
+      |     |     |     |     |     NAME(world2)
+      |     |     |     |  body
+      |     |     |     |     NEWLINE+
+      |     |     |     |     block
+      |     |     |     |     |  process*
+      |     |     |     |     |     process
+      |     |     |     |     |     |  send
+      |     |     |     |     |     |     channel
+      |     |     |     |     |     |     |  atom
+      |     |     |     |     |     |     |     variable
+      |     |     |     |     |     |     |     |  identifier
+      |     |     |     |     |     |     |     |     NAME(helloworld)
+      |     |     |     |     |     |     test*
       |     |     |     |     |     |     |  test
       |     |     |     |     |     |     |     andtest
       |     |     |     |     |     |     |     |  nottest
@@ -104,15 +119,15 @@ procs
       |     |     |     |     |     |     |     |     |  compare?
       |     |     |     |     |     |     |     |  conjunction*
       |     |     |     |     |     |     |     disjunction*
-      |     |     |     |     parallel
-      |     |     |     |     parallel
-      |     |     |     |     |  proc
-      |     |     |     |     |     send
-      |     |     |     |     |     |  channel
-      |     |     |     |     |     |     var
-      |     |     |     |     |     |     |  NAME(world)
-      |     |     |     |     |     |  proc*
-      |     |     |     |     |     |     proc
+      |     |     |     |     |     process
+      |     |     |     |     |     process
+      |     |     |     |     |     |  send
+      |     |     |     |     |     |     channel
+      |     |     |     |     |     |     |  atom
+      |     |     |     |     |     |     |     variable
+      |     |     |     |     |     |     |     |  identifier
+      |     |     |     |     |     |     |     |     NAME(world)
+      |     |     |     |     |     |     test*
       |     |     |     |     |     |     |  test
       |     |     |     |     |     |     |     andtest
       |     |     |     |     |     |     |     |  nottest
@@ -128,15 +143,15 @@ procs
       |     |     |     |     |     |     |     |     |  compare?
       |     |     |     |     |     |     |     |  conjunction*
       |     |     |     |     |     |     |     disjunction*
-      |     |     |     |     parallel
-      |     |     |     |     parallel
-      |     |     |     |     |  proc
-      |     |     |     |     |     send
-      |     |     |     |     |     |  channel
-      |     |     |     |     |     |     var
-      |     |     |     |     |     |     |  NAME(helloworld)
-      |     |     |     |     |     |  proc*
-      |     |     |     |     |     |     proc
+      |     |     |     |     |     process
+      |     |     |     |     |     process
+      |     |     |     |     |     |  send
+      |     |     |     |     |     |     channel
+      |     |     |     |     |     |     |  atom
+      |     |     |     |     |     |     |     variable
+      |     |     |     |     |     |     |     |  identifier
+      |     |     |     |     |     |     |     |     NAME(helloworld)
+      |     |     |     |     |     |     test*
       |     |     |     |     |     |     |  test
       |     |     |     |     |     |     |     andtest
       |     |     |     |     |     |     |     |  nottest
@@ -153,15 +168,15 @@ procs
       |     |     |     |     |     |     |     |     |  compare?
       |     |     |     |     |     |     |     |  conjunction*
       |     |     |     |     |     |     |     disjunction*
-      |     |     |     |     parallel
-      |     |     |     |     parallel
-      |     |     |     |     |  proc
-      |     |     |     |     |     send
-      |     |     |     |     |     |  channel
-      |     |     |     |     |     |     var
-      |     |     |     |     |     |     |  NAME(world2)
-      |     |     |     |     |     |  proc*
-      |     |     |     |     |     |     proc
+      |     |     |     |     |     process
+      |     |     |     |     |     process
+      |     |     |     |     |     |  send
+      |     |     |     |     |     |     channel
+      |     |     |     |     |     |     |  atom
+      |     |     |     |     |     |     |     variable
+      |     |     |     |     |     |     |     |  identifier
+      |     |     |     |     |     |     |     |     NAME(world2)
+      |     |     |     |     |     |     test*
       |     |     |     |     |     |     |  test
       |     |     |     |     |     |     |     andtest
       |     |     |     |     |     |     |     |  nottest
@@ -177,7 +192,7 @@ procs
       |     |     |     |     |     |     |     |     |  compare?
       |     |     |     |     |     |     |     |  conjunction*
       |     |     |     |     |     |     |     disjunction*
-      |     |     |     |     parallel
+      |     |     |     |     |     process
 
 
 **** Syntax test done ****

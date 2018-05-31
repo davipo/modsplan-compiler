@@ -77,7 +77,7 @@ constr => Var "(" Proc,* ")"     # from rholang.cf, not in rholang_mercury.cf
 
 # Process variables
 ProcVar => WILDCARD
-# ProcVar => Var
+# ProcVar => Var        ## avoid ambiguity
 
 Name => WILDCARD
 Name => Var

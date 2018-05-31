@@ -1,5 +1,5 @@
 new helloAgain:
-     
+    
     contract helloAgain.rcv(_):
         new chan:
             chan.send("Hello again, world!")
