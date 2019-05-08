@@ -15,7 +15,11 @@ Run "python modsplan/compiler.py" on your command line for usage information.
 Simple calculator example
 
   See modspecs/calc.* for specifications
-  Compare with Lex & Yacc example at http://pltplp.net/lex-yacc/example.html
+  
+  Compare with Lex & Yacc example at 
+    https://web.archive.org/web/20161222154149/http://pltplp.net:80/lex-yacc/example.html.en
+    or
+    https://www.ibm.com/support/knowledgecenter/en/ssw_aix_72/com.ibm.aix.genprogc/ie_prog_4lex_yacc.htm
 
     $ cat sample_source/example.calc
     4 + 2 * -1.5
